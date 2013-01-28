@@ -30,6 +30,7 @@
 @implementation CharacterViewController
 //@synthesize delegate;
 
+# pragma db_GetBookWithID
 - (Book*)db_GetBookWithID:(NSString*) bid
 {
     sqlite3* db;
@@ -128,16 +129,17 @@
 	theView.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
 	theView.backgroundColor = [UIColor  whiteColor];
 	
-	CGRect labelFrame =  CGRectMake(80, 10, 190, 50);
-	nameLabel = [[UILabel alloc] initWithFrame:labelFrame];
-    nameLabel.font = [UIFont systemFontOfSize:25.0];
-	nameLabel.textColor = [UIColor  blackColor];
-	nameLabel.backgroundColor = [UIColor clearColor];
-	nameLabel.textAlignment = UITextAlignmentLeft;   
-	nameLabel.lineBreakMode = UILineBreakModeWordWrap;
+    // name label
+//	CGRect labelFrame =  CGRectMake(80, 10, 190, 50);
+//	nameLabel = [[UILabel alloc] initWithFrame:labelFrame];
+//    nameLabel.font = [UIFont systemFontOfSize:25.0];
+//	nameLabel.textColor = [UIColor  blackColor];
+//	nameLabel.backgroundColor = [UIColor clearColor];
+//	nameLabel.textAlignment = UITextAlignmentLeft;   
+//	nameLabel.lineBreakMode = UILineBreakModeWordWrap;
 	NSString  *theName = [delegate characterNameForShowIndex:delegate.selectedShow.row atIndex:delegate.selectedCharacter.row];
 	nameLabel.text = [NSString stringWithFormat:@"%@:  %@", @"Name", theName];
-    [theView addSubview: nameLabel];
+//    [theView addSubview: nameLabel];
 	UIImageView   *imgView = [[UIImageView alloc] 
 								initWithImage:[UIImage
 												imageNamed:[NSString stringWithFormat:@"%@.jpg",  theName]]];

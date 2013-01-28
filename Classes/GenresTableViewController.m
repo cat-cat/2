@@ -204,7 +204,7 @@
 }
 
 
-- (NSMutableArray *)getGenresAndBooksWithParent:(NSString*) parentItem andOffset:(int) offset andLimit:(int) limit
+- (NSMutableArray *)db_GetGenresAndBooksWithParent:(NSString*) parentItem andOffset:(int) offset andLimit:(int) limit
 {
     
     
@@ -282,7 +282,7 @@
 {
     int oldGenres = [genres count];
     dbOffset += dbLimit;
-    [genres addObjectsFromArray:[self getGenresAndBooksWithParent:parent andOffset:dbOffset andLimit:dbLimit]];
+    [genres addObjectsFromArray:[self db_GetGenresAndBooksWithParent:parent andOffset:dbOffset andLimit:dbLimit]];
     
     
     

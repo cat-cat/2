@@ -29,7 +29,7 @@
 @interface CharacterViewController : UIViewController {
     Book* book;
 	CatalogViewController* delegate;
-    UILabel *nameLabel;
+    __weak IBOutlet UILabel *nameLabel;
 	UIView		*theView;
 }
 

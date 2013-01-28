@@ -27,6 +27,7 @@
 		8E11FBB616AE9B1F0079411A /* DDXMLNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E11FBAF16AE9B1F0079411A /* DDXMLNode.m */; };
 		8E11FBBB16AEE6840079411A /* libxml2.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E11FBBA16AEE6840079411A /* libxml2.2.dylib */; };
 		8E4D7B0916A9AA1B00CC2BEC /* GlobalSingleton.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E4D7B0816A9AA1B00CC2BEC /* GlobalSingleton.m */; };
+		8E52FF1816B6DCED000AD339 /* CharacterViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8E52FF1716B6DCED000AD339 /* CharacterViewController.xib */; };
 		8E71F3DF1600BEAC00639B4D /* Book.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E71F3DE1600BEAC00639B4D /* Book.m */; };
 		8EC60C4D15F623A600D34892 /* CatalogViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8EC60C4C15F623A600D34892 /* CatalogViewController.m */; };
 		8EC60C5115F62A3400D34892 /* GenresTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8EC60C5015F62A3400D34892 /* GenresTableViewController.m */; };
@@ -82,6 +83,7 @@
 		8E11FBBA16AEE6840079411A /* libxml2.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.2.dylib; path = usr/lib/libxml2.2.dylib; sourceTree = SDKROOT; };
 		8E4D7B0716A9AA1B00CC2BEC /* GlobalSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GlobalSingleton.h; sourceTree = "<group>"; };
 		8E4D7B0816A9AA1B00CC2BEC /* GlobalSingleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GlobalSingleton.m; sourceTree = "<group>"; };
+		8E52FF1716B6DCED000AD339 /* CharacterViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CharacterViewController.xib; sourceTree = "<group>"; };
 		8E71F3DD1600BEAC00639B4D /* Book.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Book.h; sourceTree = "<group>"; };
 		8E71F3DE1600BEAC00639B4D /* Book.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Book.m; sourceTree = "<group>"; };
 		8EC60C4B15F623A600D34892 /* CatalogViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CatalogViewController.h; sourceTree = "<group>"; };
@@ -133,6 +135,7 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				8E52FF1716B6DCED000AD339 /* CharacterViewController.xib */,
 				8EE9B1CC16B0149B00C46C60 /* AuthorSettings.h */,
 				8EE9B1CD16B0149B00C46C60 /* AuthorSettings.m */,
 				8EE9B1CE16B0149C00C46C60 /* GenreSettings.h */,
@@ -338,6 +341,7 @@
 				8ED3BCC315FA4B7200326459 /* Default.png in Resources */,
 				8ED3BCC715FA4C3C00326459 /* icon57.png in Resources */,
 				8ED3BCC915FA4C9300326459 /* icon114.png in Resources */,
+				8E52FF1816B6DCED000AD339 /* CharacterViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
