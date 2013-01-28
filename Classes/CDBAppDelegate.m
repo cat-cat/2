@@ -1,0 +1,80 @@
+/******************************************************************************
+ * Copyright (c) 2009, Maher Ali <maher.ali@gmail.com>
+ * iPhone SDK 3 Programming - Advanced Mobile Development for Apple iPhone and iPod touch
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ ******************************************************************************/
+
+#import "CDBAppDelegate.h"
+#import "CDBViewController.h"
+#import "CatalogViewController.h"
+#import "GlobalSingleton.h"
+
+@implementation CDBAppDelegate
+
+- (void)applicationDidFinishLaunching:(UIApplication *)application {	
+  
+	window = [[UIWindow alloc] initWithFrame:[[UIScreen  mainScreen] bounds]] ;
+	
+	catalogViewController = [[CatalogViewController alloc]
+                     initWithMessage:@"Triangle"
+                     andImage:[UIImage imageNamed:@"tri.png"]];
+	catalogViewController.title =  @"Каталог";
+	viewController2 = [[CDBViewController alloc]
+                     initWithMessage:@"Rectangle"
+                     andImage:[UIImage imageNamed:@"rect.png"]];
+	viewController2.title =  @"Rect";
+	viewController3 = [[CDBViewController alloc] 
+                     initWithMessage:@"Ellipse"
+                     andImage:[UIImage imageNamed:@"ellipse.png"]];
+	viewController3.title =  @"Elli";
+	viewController4 = [[CDBViewController alloc] 
+                     initWithMessage:@"Rectangle+Ellipse"
+                     andImage:[UIImage imageNamed:@"rect-elli.png"]];
+	viewController4.title =  @"Слушать";
+	viewController5 = [[CDBViewController alloc] 
+                     initWithMessage:@"Rectangle+Triangle"
+                     andImage:[UIImage imageNamed:@"rect-tri.png"]];
+	viewController5.title =  @"R&T";
+	viewController6 = [[CDBViewController alloc] 
+                     initWithMessage:@"Rectangle+Rectangle"
+                     andImage:[UIImage imageNamed:@"two-tri.png"]];
+	viewController6.title =  @"R&R";
+	tabBarController = [[UITabBarController alloc] init];
+	tabBarController.viewControllers = [NSArray arrayWithObjects:
+                                      catalogViewController,
+                                      viewController2,
+                                      viewController3,
+                                      viewController4,
+                                      viewController5,
+                                      viewController6,
+                                      nil];
+
+	//[window addSubview:tabBarController.view]; // warning: Application windows are expected to have a root view controller at the end of application launch
+    window.rootViewController = tabBarController;
+	[window makeKeyAndVisible];
+}
+
+- (void)changeViewControllerToIndex:(NSUInteger)idx
+{
+    [GlobalSingleton sharedInstance];
+    tabBarController.selectedIndex = idx;
+}
+
+@end
