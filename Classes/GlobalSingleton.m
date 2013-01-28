@@ -164,6 +164,10 @@ static NSString* databaseName;
 + (void) assertNoError:(int) noErrorFlag withMsg:(NSString*)  message
 {
     NSAssert(noErrorFlag, message);
+    
+    if (!noErrorFlag) {
+        int i = 4;
+    }
 }
 
 + (bool)updateCatalog:(NSTimer*)t
@@ -480,6 +484,8 @@ static NSString* databaseName;
             {
                 
                 sqlite3_stmt *Stmt;
+                
+                // authors one
                 NSString *query = @"INSERT OR REPLACE INTO t_authors (author_id, name, name_lower) VALUES (?, ?, ?)";
                 
                 
@@ -503,10 +509,36 @@ static NSString* databaseName;
                 returnCode = sqlite3_finalize(Stmt);
                 [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr cannot finalize: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
                 
+                // authors two
+                query = @"INSERT INTO t_abooks_authors (abook_id, author_id) VALUES (?, ?)";
+                
+                
+                returnCode = sqlite3_prepare_v2(db, [query UTF8String], -1, &Stmt, NULL);
+                [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"unable to prepare: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                
+                for (AuthorSettings *author in a_authors)
+                {
+                    
+                    //NSLog(@"Load book : %d", author.abookId);
+                    
+                    sqlite3_bind_int(Stmt, 1, author.abookId);
+                    sqlite3_bind_int(Stmt, 2, author.authorId);
+                    
+                    returnCode = sqlite3_step(Stmt);
+                    [GlobalSingleton assertNoError: returnCode == SQLITE_DONE withMsg:[NSString stringWithFormat:@"dberr unable to step: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                    
+                    returnCode = sqlite3_reset(Stmt);
+                    [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr unable to reset: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                }
+                
+                returnCode = sqlite3_finalize(Stmt);
+                [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr unable to finalize: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                
             }
             NSLog(@"Readers to Load - %d", a_readers.count);
             if (a_readers.count > 0)
             {
+                // readers one
                 NSString *query = @"INSERT OR REPLACE INTO t_readers (reader_id, name) VALUES (?, ?)";
                 sqlite3_stmt *Stmt;
                 
@@ -529,6 +561,30 @@ static NSString* databaseName;
                 }
                 returnCode = sqlite3_finalize(Stmt);
                 [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr finalize: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                // reders two
+                query = @"INSERT OR REPLACE INTO t_abooks_readers (abook_id, reader_id) VALUES (?, ?)";
+                
+                
+                returnCode = sqlite3_prepare_v2(db, [query UTF8String], -1, &Stmt, NULL);
+                [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberror cannot prepare: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                
+                for (ReaderSettings *reader in a_readers)
+                {
+                    
+                    //NSLog(@"Load reader : %d", reader.readerId);
+                    
+                    sqlite3_bind_int(Stmt, 1, reader.abookId);
+                    sqlite3_bind_int(Stmt, 2, reader.readerId);
+                    
+                    returnCode = sqlite3_step(Stmt);
+                    [GlobalSingleton assertNoError: returnCode == SQLITE_DONE withMsg:[NSString stringWithFormat:@"dberror unable to step: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                    
+                    returnCode = sqlite3_reset(Stmt);
+                    [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberror unable to reset: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                }
+                
+                returnCode = sqlite3_finalize(Stmt);
+                [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr unable to finalize:: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
                 
             }
             
@@ -592,6 +648,7 @@ static NSString* databaseName;
             NSLog(@"Publishers to Load - %d", a_publishers.count);
             if (a_publishers.count > 0)
             {
+                // publishers one
                 NSString *query = @"INSERT OR REPLACE INTO t_publishers (publisher_id, name) VALUES (?, ?)";
                 sqlite3_stmt *Stmt;
                 
@@ -607,17 +664,43 @@ static NSString* databaseName;
                     sqlite3_bind_int(Stmt, 1, publisher.publisherId);
                     sqlite3_bind_text(Stmt, 2, [publisher.publisherName UTF8String], -1, SQLITE_TRANSIENT);
                     
-                    while (sqlite3_step(Stmt) == SQLITE_ROW)
-                    {
-                        break;
-                    }
-                    sqlite3_reset(Stmt);
+                    returnCode = sqlite3_step(Stmt);
+                    [GlobalSingleton assertNoError: returnCode == SQLITE_DONE withMsg:[NSString stringWithFormat:@"dberr unable to step: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                    
+                    returnCode = sqlite3_reset(Stmt);
+                    [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr unable to reset: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
                 }
-                sqlite3_finalize(Stmt);
+                returnCode = sqlite3_finalize(Stmt);
+                [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr unable to finalize: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
                 
-                NSLog(@"END LOAD...............................");
+                // publishers two
+                query = @"INSERT INTO t_abooks_publishers (abook_id, publisher_id) VALUES (?, ?)";
+                
+                
+                returnCode = sqlite3_prepare_v2(db, [query UTF8String], -1, &Stmt, NULL);
+                [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr unable to prepare abook_publishers: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                
+                for (PublisherSettings *publisher in a_publishers)
+                {
+                    
+                    //NSLog(@"Load publisher : %d", publisher.abookId);
+                    
+                    sqlite3_bind_int(Stmt, 1, publisher.abookId);
+                    sqlite3_bind_int(Stmt, 2, publisher.publisherId);
+                    
+                    returnCode = sqlite3_step(Stmt);
+                    [GlobalSingleton assertNoError: returnCode == SQLITE_DONE withMsg:[NSString stringWithFormat:@"db errr cannot step abook_publishers: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                    
+                    returnCode = sqlite3_reset(Stmt);
+                    [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr cannot reset abook_publishers: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                }
+                
+                returnCode = sqlite3_finalize(Stmt);
+                [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr cannot finalize abook_publishers: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                
             }
             
+            NSLog(@"END LOAD...............................");
             returnCode = sqlite3_exec(db, "COMMIT", 0, 0, 0);
             [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"db error commit: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
             

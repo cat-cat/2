@@ -47,11 +47,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Classes/GlobalSingleton.m"
-         timestampString = "380819142.254059"
+         timestampString = "381080068.790889"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "426"
-         endingLineNumber = "426"
+         startingLineNumber = "430"
+         endingLineNumber = "430"
          landmarkName = "+updateCatalog:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -60,11 +60,37 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Classes/GlobalSingleton.m"
-         timestampString = "380819142.254059"
+         timestampString = "381081315.346974"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "588"
-         endingLineNumber = "588"
+         startingLineNumber = "644"
+         endingLineNumber = "644"
+         landmarkName = "+updateCatalog:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Classes/GlobalSingleton.m"
+         timestampString = "381080063.347335"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "169"
+         endingLineNumber = "169"
+         landmarkName = "+assertNoError:withMsg:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Classes/GlobalSingleton.m"
+         timestampString = "381081375.835376"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "692"
+         endingLineNumber = "692"
          landmarkName = "+updateCatalog:"
          landmarkType = "5">
       </FileBreakpoint>
