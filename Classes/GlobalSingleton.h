@@ -7,13 +7,16 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "/usr/include/sqlite3.h"
+#import <sqlite3.h>
+@class Book;
 @class CatalogViewController;
 @class Reachability;
 
 @interface GlobalSingleton : NSObject
 {
 }
+
++ (Book*)db_GetBookWithID:(NSString*) bid;
 + (void) assertNoError:(int)noErrorFlag withMsg:(NSString*)message;
 + (const char*) dbname;
 + (GlobalSingleton*)sharedInstance;

@@ -20,13 +20,14 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  ******************************************************************************/
-#import "GenresTableViewController.h"
-#import "CharacterViewController.h"
+#import "GenresViewController.h"
+#import "BookViewController.h"
 #import "CatalogViewController.h"
 #import "Genre.h"
 #import "GlobalSingleton.h"
+#import "Book.h"
 
-@implementation GenresTableViewController
+@implementation GenresViewController
 
 
 - (void) onRefreshCatalog
@@ -36,13 +37,13 @@
 }
 
 
-- (id)initWithStyle:(UITableViewStyle)style andParentGenre:(NSString*) parentParam andDelegate:(CatalogViewController *)d {
+- (id)initWithStyle:(UITableViewStyle)style andParentGenre:(NSString*) parentParam andParent:(CatalogViewController*)p{
 	if (self = [super initWithStyle:style]) {
-        delegate = d;
+        parent = p;
 		self.title = @"Каталог";
         self.navigationItem.backBarButtonItem.title = @"Каталог";
         
-        parent = [[NSString alloc] initWithString:parentParam];
+        parentGenre = [[NSString alloc] initWithString:parentParam];
         
         genres = [[NSMutableArray alloc] init];
         
@@ -136,13 +137,23 @@
         Genre* g = [genres objectAtIndex:indexPath.row];
         if([g.type isEqualToString:@"1"]) // category
         {
-            GenresTableViewController *subGenresController = [[GenresTableViewController alloc] initWithStyle:UITableViewStylePlain andParentGenre:g.ID andDelegate:delegate];
-            [[delegate navigationController] pushViewController:subGenresController animated:YES];
+            GenresViewController *subGenresController = [[GenresViewController alloc] initWithStyle:UITableViewStylePlain andParentGenre:g.ID andParent:parent];
+            [[parent navigationController] pushViewController:subGenresController animated:YES];
         }
         else // expected @"2" - book
         {
-            CharacterViewController *characterController = [[CharacterViewController alloc] initWithDelegate:delegate andBookID:g.ID];
-            [[delegate navigationController] pushViewController:characterController animated:YES];
+            
+            //*****
+            BookViewController* bookViewController = [[BookViewController alloc] initWithNibName:@"BookView" bundle:nil andBook:g.ID];
+//            if (bookViewController.view) {// !!! accessing view will initialize view with all controls before it's shown
+//                [bookViewController.nameLabel setText:g.name]; // !!! will work only after "if" above
+//            }
+            
+           
+            //*****
+
+            //CharacterViewController *characterController = [[CharacterViewController alloc] initWithDelegate:delegate andBookID:g.ID];
+            [[parent navigationController] pushViewController:bookViewController animated:YES];
         }
 //    ShowCharactersTableViewController *showCharactersController = [[ShowCharactersTableViewController alloc] initWithStyle:UITableViewStylePlain];
 //    showCharactersController.delegate = delegate;
@@ -282,7 +293,7 @@
 {
     int oldGenres = [genres count];
     dbOffset += dbLimit;
-    [genres addObjectsFromArray:[self db_GetGenresAndBooksWithParent:parent andOffset:dbOffset andLimit:dbLimit]];
+    [genres addObjectsFromArray:[self db_GetGenresAndBooksWithParent:parentGenre andOffset:dbOffset andLimit:dbLimit]];
     
     
     

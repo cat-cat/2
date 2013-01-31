@@ -58,8 +58,8 @@
 @property (nonatomic, retain) NSDate *lastOpened;
 @property (assign) int selectedChapter;
 
-- (NSComparisonResult)compareByRating:(Book *)otherObject;
-- (NSComparisonResult)compareByUpdateDate:(Book *)otherObject;
+//- (NSComparisonResult)compareByRating:(Book *)otherObject;
+//- (NSComparisonResult)compareByUpdateDate:(Book *)otherObject;
 
 -(id)initWithID:(NSString*) ID;
 -(id)init;

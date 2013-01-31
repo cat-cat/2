@@ -21,17 +21,23 @@
  * DEALINGS IN THE SOFTWARE.
  ******************************************************************************/
 
-#import <UIKit/UIKit.h>
-
-@class Book;
+@class PlayerFreeViewController;
 @class CatalogViewController;
+@class CDBViewController;
 
-@interface CharacterViewController : UIViewController {
-    Book* book;
-	CatalogViewController* delegate;
-    __weak IBOutlet UILabel *nameLabel;
-	UIView		*theView;
+@interface AppDelegate : NSObject {
+	UIWindow			*window;
+    
+    // catalog page
+	CatalogViewController	*catalogViewController;
+    
+    
+    CDBViewController *viewController2, *viewController3,
+   *viewController5, *viewController6;
+    PlayerFreeViewController *viewController4;
+	UITabBarController  *tabBarController;
 }
 
-- (id)initWithDelegate:(CatalogViewController*) d andBookID:(NSString*) bid;
+- (id) getViewControllerForTabIndex:(int)index;
+- (void)changeViewControllerToIndex:(NSUInteger)idx;
 @end

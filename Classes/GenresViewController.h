@@ -20,20 +20,17 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  ******************************************************************************/
-
 @class CatalogViewController;
-@class CDBViewController;
-
-@interface CDBAppDelegate : NSObject {
-	UIWindow			*window;
-    
-    // catalog page
-	CatalogViewController	*catalogViewController;
-    
-    
-    CDBViewController *viewController2, *viewController3,
-  *viewController4, *viewController5, *viewController6;
-	UITabBarController  *tabBarController;
+@interface GenresViewController : UITableViewController {
+    NSString* parentGenre;
+    int dbOffset;
+    int dbLimit;
+    NSMutableArray *genres;
+   CatalogViewController*  parent;
 }
-- (void)changeViewControllerToIndex:(NSUInteger)idx;
+
+-(id)initWithStyle:(UITableViewStyle)style andParentGenre:(NSString*) parentParam andParent:(CatalogViewController*)p;
+// return - how many genres were added
+//-(int)nextGenres;
+
 @end

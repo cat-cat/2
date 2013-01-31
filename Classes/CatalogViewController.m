@@ -7,7 +7,7 @@
 //
 
 #import "CatalogViewController.h"
-#import "GenresTableViewController.h"
+#import "GenresViewController.h"
 #import "Genre.h"
 #import "GlobalSingleton.h"
 
@@ -25,7 +25,7 @@
 //        selectedGenreIndex = -1;
         [self prepareDataModel];
         //	window = [[UIWindow alloc] initWithFrame:[[UIScreen  mainScreen] bounds]] ;
-        GenresTableViewController *genresViewController = [[GenresTableViewController alloc] initWithStyle:UITableViewStylePlain andParentGenre:@"-1" andDelegate:self];
+        GenresViewController *genresViewController = [[GenresViewController alloc] initWithStyle:UITableViewStylePlain andParentGenre:@"-1" andParent:self];
         navigationController = [[UINavigationController alloc] initWithRootViewController:genresViewController];
 
         [self.view addSubview:[navigationController view]];

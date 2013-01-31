@@ -20,11 +20,15 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  ******************************************************************************/
-
-int main(int argc, char *argv[]) {
-    
-    @autoreleasepool {
-	  	  int retVal = UIApplicationMain(argc, argv, nil, @"AppDelegate");
-    return retVal;
-    }
+@class Book;
+@interface PlayerFreeViewController : UIViewController {
+	Book *book;
 }
+@property (weak, nonatomic) IBOutlet UILabel *labelSmallHeader;
+
+@property (weak, nonatomic) IBOutlet UILabel *labelHeader;
+//@property (nonatomic, strong) NSString *message;
+- (void)updateToBook:(NSString*)bid;
+- (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle andBook:(NSString*) bid;
+
+@end

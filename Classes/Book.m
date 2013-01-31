@@ -9,6 +9,7 @@
 #import "Book.h"
 
 @implementation Book
+
 @synthesize abookId, cover, title, authors, inRentGreen, inRentRed, isHit, rating, readedPercent, downloadedPercent;
 @synthesize downloadBarIsBlue, isTransparent, readers, publishers, lengthTime, bitRate, size, cost, genres, description, isRecommended;
 @synthesize releaseDate, updateDate, bookmarks, dlParams, listen, isExport, tracks, isBought, freeTrack, freePartDate, freePartNumber, lastOpened, isFirstRun, isLoadFromHistory;

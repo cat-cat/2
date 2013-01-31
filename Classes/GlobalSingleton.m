@@ -29,6 +29,77 @@ static NSString* databaseName;
 #define ReachableViaWiFiNetwork          2
 #define ReachableDirectWWAN               (1 << 18)
 
+# pragma db_GetBookWithID
+
++ (Book*)db_GetBookWithID:(NSString*) bid
+{
+    // assuming its not called from multiple threads, only from gui
+    
+    sqlite3* db;
+    
+    int returnCode = sqlite3_open([GlobalSingleton dbname], &db);
+    [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"Unable to open db: %s", sqlite3_errmsg(db) ]];
+    char *sqlStatement;
+    
+    sqlStatement = sqlite3_mprintf("SELECT abook_id"
+                                   " , rate"
+                                   " , title"
+                                   " , summary"
+                                   " , price"
+                                   " , length"
+                                   " , size"
+                                   " , release_date"
+                                   " , update_date"
+                                   " , export"
+                                   " , listen"
+                                   " , bought"
+                                   " , free"
+                                   " , title_lower"
+                                   " , free_part_number"
+                                   " , free_part_downloaded_date"
+                                   " , title_in_english"
+                                   " , in_rent_red"
+                                   " , last_opened"
+                                   " , is_recommended"
+                                   " , readed_percent"
+                                   " , isFreePartDownloaded"
+                                   " , selectedChapter"
+                                   " , isLoadFromHistory"
+                                   " , freePartCount"
+                                   " FROM [t_abooks]"
+                                   " WHERE abook_id=%s"
+                                   " LIMIT 0,1", [bid UTF8String]);
+    
+    sqlite3_stmt *statement;
+    
+    returnCode =
+    sqlite3_prepare_v2(db, sqlStatement, strlen(sqlStatement), &statement, NULL);
+    [GlobalSingleton assertNoError:returnCode==SQLITE_OK withMsg: [NSString stringWithFormat: @"Unable to prepare statement: %s",sqlite3_errmsg(db) ]];
+    
+    sqlite3_free(sqlStatement);
+    
+    
+    // get result
+    Book *locBook;
+    returnCode = sqlite3_step(statement);
+    while(returnCode == SQLITE_ROW){
+        locBook = [[Book alloc] init];
+        locBook.abookId = sqlite3_column_int(statement, 0) == 0 ? -1 : sqlite3_column_int(statement, 0);
+        locBook.title = [NSString stringWithCString:sqlite3_column_text(statement, 2) == nil ? "" : (char *)sqlite3_column_text(statement, 2) encoding:NSUTF8StringEncoding];
+        //        printf("name %s count %s ID %s\n",
+        //               name, count, ID);
+        returnCode = sqlite3_step(statement);
+        
+        
+    }
+    returnCode = sqlite3_finalize(statement);
+    [GlobalSingleton assertNoError:returnCode==SQLITE_OK withMsg:[NSString stringWithFormat:@"Cannot finalize %s", sqlite3_errmsg(db) ]];
+    returnCode = sqlite3_close(db);
+    [GlobalSingleton assertNoError:returnCode==SQLITE_OK withMsg:[NSString stringWithFormat:@"Cannot close %s", sqlite3_errmsg(db) ]];
+    return locBook;
+}
+
+
 + (const char*) dbname
 {
     return [databaseName UTF8String];

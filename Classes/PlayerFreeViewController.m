@@ -20,17 +20,53 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  ******************************************************************************/
-@class CatalogViewController;
-@interface GenresTableViewController : UITableViewController {
-    NSString* parent;
-    int dbOffset;
-    int dbLimit;
-    NSMutableArray *genres;
-   CatalogViewController*  delegate;
+
+#import "PlayerFreeViewController.h"
+#import "CDBUIView.h"
+#import "GlobalSingleton.h"
+#import "Book.h"
+
+@implementation PlayerFreeViewController
+
+
+- (void)updateToBook:(NSString*)bid
+{
+    book = [GlobalSingleton db_GetBookWithID:bid];
 }
 
--(id)initWithStyle:(UITableViewStyle)style andParentGenre:(NSString*) parentParam andDelegate:(CatalogViewController*) d;
-// return - how many genres were added
--(int)nextGenres;
+- (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle andBook:(NSString*) bid
+{
+    if (self = [super initWithNibName:nibName bundle:nibBundle]) {
+        // custom initialization
+        if (bid.length != 0) {
+            book = [GlobalSingleton db_GetBookWithID:bid];
+        }
+        // else: return player without book uninitialized
+        
+    }
+    return self;
+}
 
+//- (id)initWithMessage:(NSString *)theMessage andImage:(UIImage*) image {
+//	if (self = [super initWithNibName:nil bundle:nil]) {
+//		self.message = theMessage;
+//		self.tabBarItem.image  = image;	
+//	}	
+//	return self;
+//}
+
+- (void) viewDidLoad
+{    
+    [_labelHeader setText:book.title];
+    [_labelSmallHeader setText:book.title];
+}
+
+//- (void)loadView {	
+//	CGRect	rectFrame = [UIScreen mainScreen].applicationFrame;
+//	CDBUIView *theView   = [[CDBUIView alloc] initWithFrame:rectFrame];
+//	theView.backgroundColor = [UIColor whiteColor];
+//	theView.myController = self;
+//	theView.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+//	self.view = theView;
+//}
 @end

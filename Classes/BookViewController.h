@@ -21,10 +21,17 @@
  * DEALINGS IN THE SOFTWARE.
  ******************************************************************************/
 
-int main(int argc, char *argv[]) {
-    
-    @autoreleasepool {
-	  	  int retVal = UIApplicationMain(argc, argv, nil, @"AppDelegate");
-    return retVal;
-    }
+#import <UIKit/UIKit.h>
+
+@class Book;
+@class CatalogViewController;
+
+@interface BookViewController : UIViewController {
+    Book* book;
+//	CatalogViewController* delegate;
 }
+@property (weak, nonatomic) IBOutlet UILabel *nameLabel;
+
+- (IBAction)playFreeClicked:(UIButton *)sender;
+- (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle andBook:(NSString*) bid;
+@end

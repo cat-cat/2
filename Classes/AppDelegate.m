@@ -21,12 +21,18 @@
  * DEALINGS IN THE SOFTWARE.
  ******************************************************************************/
 
-#import "CDBAppDelegate.h"
+#import "AppDelegate.h"
 #import "CDBViewController.h"
 #import "CatalogViewController.h"
 #import "GlobalSingleton.h"
+#import "PlayerFreeViewController.h"
 
-@implementation CDBAppDelegate
+@implementation AppDelegate
+
+- (id)getViewControllerForTabIndex:(int)index
+{
+    return [tabBarController.viewControllers objectAtIndex:index];
+}
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application {	
   
@@ -44,12 +50,10 @@
                      initWithMessage:@"Ellipse"
                      andImage:[UIImage imageNamed:@"ellipse.png"]];
 	viewController3.title =  @"Elli";
-	viewController4 = [[CDBViewController alloc] 
-                     initWithMessage:@"Rectangle+Ellipse"
-                     andImage:[UIImage imageNamed:@"rect-elli.png"]];
+	viewController4 = [[PlayerFreeViewController alloc] initWithNibName:@"PlayerFreeView" bundle:nil];
 	viewController4.title =  @"Слушать";
 	viewController5 = [[CDBViewController alloc] 
-                     initWithMessage:@"Rectangle+Triangle"
+                     initWithMessage:@"Играть книгу"
                      andImage:[UIImage imageNamed:@"rect-tri.png"]];
 	viewController5.title =  @"R&T";
 	viewController6 = [[CDBViewController alloc] 
