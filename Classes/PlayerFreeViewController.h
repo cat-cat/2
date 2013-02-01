@@ -20,14 +20,17 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  ******************************************************************************/
+#import "StreamingPlayer.h"
+
 @class Book;
-@interface PlayerFreeViewController : UIViewController {
+@interface PlayerFreeViewController : UIViewController <StreamingPlayerDelegate> {
 	Book *book;
 }
 @property (weak, nonatomic) IBOutlet UILabel *labelSmallHeader;
 
 @property (weak, nonatomic) IBOutlet UILabel *labelHeader;
 //@property (nonatomic, strong) NSString *message;
+- (IBAction)btnPressFF:(UIBarButtonItem *)sender;
 - (void)updateToBook:(NSString*)bid;
 - (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle andBook:(NSString*) bid;
 

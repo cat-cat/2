@@ -25,9 +25,153 @@
 #import "CDBUIView.h"
 #import "GlobalSingleton.h"
 #import "Book.h"
+#import "ASIHTTPRequest.h"
+#import "AudioStreamer.h"
+
 
 @implementation PlayerFreeViewController
 
+
+- (void)request:(ASIHTTPRequest *)request didReceiveResponseHeaders:(NSDictionary *)responseHeaders
+{
+        for (id key in responseHeaders) {
+            NSLog(@"key: %@, value: %@ \n", key, [responseHeaders objectForKey:key]);
+        }
+               // [[NSFileManager defaultManager] removeItemAtPath:currentTrack.audioFilePath error:nil];
+            //if(![[NSFileManager defaultManager] fileExistsAtPath:currentTrack.audioFilePath])
+}
+
+//- (void)request:(ASIHTTPRequest *)request didReceiveData:(NSData *)data
+//{
+
+            // if (!ourData)
+            //   ourData = [NSMutableData dataWithLength:kBufferSize*1000];
+            
+//            [ourData appendData:data];
+//            
+//            fileSize += data.length;
+    
+//                [self.trackFile seekToEndOfFile];
+//                [self.trackFile writeData:data];
+                //ourData = nil;
+//               book.isFreePartBeginDownload = YES;
+//               [dbManager InsUpdBookHeader:book];
+//}
+
+- (void)requestFinished:(ASIHTTPRequest *)request
+{
+    
+    
+    NSLog(@"++Finished request !");
+}
+
+- (void)requestFailed:(ASIHTTPRequest *)request
+{
+    NSLog(@"requestFailed:(ASIHTTPRequest *)request");
+    NSLog(@" error description%@", [request.error description]);
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+}
+
+StreamingPlayer *sPlayer = nil;
+-(void)initPlayerWithUrl:(NSURL*)audioFileURL
+{
+//    [self.player.streamer stop];
+//    if(!audioFileURL)
+//    {
+//        self.player.delegate = nil;
+//        self.player = nil;
+//        NSLog(@"Файл не найден");
+//        [self showAlertViewNoAudio];
+//        return NO;
+//    }
+//    else
+//    {
+//        if (self.player)
+//        {
+//            self.player.delegate = nil;
+//            [self.player.streamer stop];
+//            self.player = nil;
+//            
+//        }
+//        self.player = [[[StreamingPlayer alloc] initPlayerWithURL:audioFileURL] autorelease];
+    sPlayer = [[StreamingPlayer alloc] initPlayerWithURL:audioFileURL];
+    sPlayer.delegate = self;
+    
+    //return YES;
+}
+
+
+- (void) request:(ASIHTTPRequest *)request didReceiveBytes:(unsigned long long) bytes
+{
+    NSLog(@"++bytes received: %lld", bytes);
+//    NSFileHandle   *fileHandle =
+//    [NSFileHandle fileHandleForUpdatingAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"tmp/m.mp3"]];
+    NSURL *bookURL = [NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:@"tmp/m.mp3"]];
+    if (sPlayer==nil) {
+        [self initPlayerWithUrl:bookURL];
+    }
+
+    
+//    if(fileHandle){
+//        [fileHandle seekToFileOffset:11];
+//        NSData *appendedData =
+//        [@" modified " dataUsingEncoding:NSUTF8StringEncoding];
+        //[fileHandle writeData:appendedData];
+        //[fileHandle closeFile];
+//    }
+}
+
+- (IBAction)btnPressFF:(UIBarButtonItem *)sender {
+    
+    NSURL *url = [NSURL URLWithString:
+                  @"http://192.168.0.155/m.mp3"];
+    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
+    
+    NSString *downloadPath = [NSHomeDirectory() stringByAppendingPathComponent:@"tmp/m.mp3"];
+    
+    // The full file will be moved here if and when the request completes successfully
+    [request setDownloadDestinationPath:downloadPath];
+    
+    // This file has part of the download in it already
+    [request setTemporaryFileDownloadPath:[NSHomeDirectory() stringByAppendingPathComponent:@"tmp/m.mp3"]];
+    [request setAllowResumeForFileDownloads:YES];
+    [request setDelegate:self];
+    [request setDownloadProgressDelegate:self];
+//    int alreadyDownloaded = 2354100;
+//    [request addRequestHeader:@"Range" value:[NSString stringWithFormat:@"bytes=%i-", alreadyDownloaded]];
+    [request setMyDontRemoveFlag:true];
+    [request startAsynchronous];
+    
+//    NSError *rerror = nil;
+//    NSURLResponse *response = nil;
+//    
+//    
+//    //    NSURL *aURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/redown.php?file=hasUpdate2.php", AppConnectionHost]];
+//        NSURL *aURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://192.168.0.155/sm.pdf"]];
+//    //NSURL *aURL = [NSURL URLWithString:@"http://93.191.12.7:8081"];
+//    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:aURL];
+//    NSString *range = @"bytes=";
+//    range = [range stringByAppendingString:[[NSNumber numberWithInt:9] stringValue]];
+//    range = [range stringByAppendingString:@"-"];
+//    [request setValue:range forHTTPHeaderField:@"Range"];
+//    //[request setValue:range forHTTPHeaderField:@"Content-Range"];
+//
+//    [request setHTTPMethod:@"HEAD"];
+//    
+//    NSData *result = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&rerror];
+//    NSString *resultString = [[NSString alloc] initWithData:result encoding:NSUTF8StringEncoding];
+//    
+//    NSLog(@"URL: %@", aURL);
+//    NSLog(@"Request: %@", request);
+//    NSLog(@"Result (NSData): %@", result);
+//    NSLog(@"Result (NSString): %@", resultString);
+//    NSLog(@"Response: %@", response);
+//    NSLog(@"Error: %@", rerror);
+//    
+//    if ([response isMemberOfClass:[NSHTTPURLResponse class]]) {
+//        NSLog(@"AllHeaderFields: %@", [((NSHTTPURLResponse *)response) allHeaderFields]);
+//    }
+}
 
 - (void)updateToBook:(NSString*)bid
 {

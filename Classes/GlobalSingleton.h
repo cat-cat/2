@@ -12,6 +12,8 @@
 @class CatalogViewController;
 @class Reachability;
 
+static NSString* AppConnectionHost = @"192.168.0.155:8080";
+
 @interface GlobalSingleton : NSObject
 {
 }

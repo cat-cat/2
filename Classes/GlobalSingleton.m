@@ -24,7 +24,6 @@ static int connectionType;
 static Reachability* hostReachable;
 //static CatalogViewController* delegate;
 //static NSString* AppConnectionHost = @"www.librofon.ru";
-static NSString* AppConnectionHost = @"http://192.168.0.155:8080";
 static NSString* databaseName;
 #define ReachableViaWiFiNetwork          2
 #define ReachableDirectWWAN               (1 << 18)
@@ -201,7 +200,7 @@ static NSString* databaseName;
 + (DDXMLDocument*) GetDocOfPage:(NSString*) page withError:(NSError**) e
 {
     DDXMLDocument *doc;
-    NSString *tmp = [NSString stringWithContentsOfURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", AppConnectionHost, page]] encoding:NSUTF8StringEncoding error:e];
+    NSString *tmp = [NSString stringWithContentsOfURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@%@", AppConnectionHost, page]] encoding:NSUTF8StringEncoding error:e];
     
     //NSLog(@"url string content: %@", tmp);
     
@@ -850,19 +849,19 @@ static NSString* databaseName;
         bzero(&sin, sizeof(sin));
         sin.sin_len = sizeof(sin);
         sin.sin_family = AF_INET;
-        inet_aton([AppConnectionHost UTF8String], &sin.sin_addr);
+        inet_aton([[@"http://" stringByAppendingString: AppConnectionHost] UTF8String], &sin.sin_addr);
         hostReachable = [Reachability reachabilityWithAddress:&sin];
         [hostReachable startNotifier];
         [self checkNetworkStatus:nil];
         
         
-        
-        [NSTimer scheduledTimerWithTimeInterval:5.0 // do not need to save timer, passed to callback function as the only argument
-                                         target:self
-                                       selector:@selector(updateCatalog:)
-                                       userInfo:nil
-                                        repeats:YES];
-    });    
+        // TODO: switch on update timer
+        //[NSTimer scheduledTimerWithTimeInterval:5.0 // do not need to save timer, passed to callback function as the only argument
+//                                         target:self
+//                                       selector:@selector(updateCatalog:)
+//                                       userInfo:nil
+//                                        repeats:YES];
+    });
     
     
     //...
