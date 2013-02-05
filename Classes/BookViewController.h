@@ -24,14 +24,14 @@
 #import <UIKit/UIKit.h>
 
 @class Book;
-@class CatalogViewController;
+@class MainViewController;
 
 @interface BookViewController : UIViewController {
     Book* book;
 //	CatalogViewController* delegate;
 }
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
-
-- (IBAction)playFreeClicked:(UIButton *)sender;
+- (IBAction)btnSeeChaptersClick:(UIButton *)sender;
+- (IBAction)btnPlayFreeClicked:(UIButton *)sender;
 - (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle andBook:(NSString*) bid;
 @end

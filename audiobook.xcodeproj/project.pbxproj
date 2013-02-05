@@ -29,7 +29,7 @@
 		8E4D7B0916A9AA1B00CC2BEC /* GlobalSingleton.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E4D7B0816A9AA1B00CC2BEC /* GlobalSingleton.m */; };
 		8E52FF1816B6DCED000AD339 /* BookView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8E52FF1716B6DCED000AD339 /* BookView.xib */; };
 		8E71F3DF1600BEAC00639B4D /* Book.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E71F3DE1600BEAC00639B4D /* Book.m */; };
-		8EC60C4D15F623A600D34892 /* CatalogViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8EC60C4C15F623A600D34892 /* CatalogViewController.m */; };
+		8EC60C4D15F623A600D34892 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8EC60C4C15F623A600D34892 /* MainViewController.m */; };
 		8EC60C5115F62A3400D34892 /* GenresViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8EC60C5015F62A3400D34892 /* GenresViewController.m */; };
 		8EC60C5315F633FC00D34892 /* hurley.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 8EC60C5215F633FC00D34892 /* hurley.jpg */; };
 		8EC60C5815F64E4100D34892 /* BookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8EC60C5515F64E4100D34892 /* BookViewController.m */; };
@@ -62,6 +62,8 @@
 		CEC6416416BC0B4800AC325F /* AudioStreamer.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC6416116BC0B4800AC325F /* AudioStreamer.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		CEC6416516BC0B4800AC325F /* StreamingPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC6416316BC0B4800AC325F /* StreamingPlayer.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		CEC6416A16BC0D6200AC325F /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC6416916BC0D6200AC325F /* AudioToolbox.framework */; };
+		CEDFAAAD16BFA9DD008601F6 /* ChaptersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEDFAAAB16BFA9DD008601F6 /* ChaptersViewController.m */; };
+		CEDFAAAE16BFA9DD008601F6 /* ChaptersView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEDFAAAC16BFA9DD008601F6 /* ChaptersView.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -102,8 +104,8 @@
 		8E52FF1716B6DCED000AD339 /* BookView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BookView.xib; sourceTree = "<group>"; };
 		8E71F3DD1600BEAC00639B4D /* Book.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Book.h; sourceTree = "<group>"; };
 		8E71F3DE1600BEAC00639B4D /* Book.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Book.m; sourceTree = "<group>"; };
-		8EC60C4B15F623A600D34892 /* CatalogViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CatalogViewController.h; sourceTree = "<group>"; };
-		8EC60C4C15F623A600D34892 /* CatalogViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CatalogViewController.m; sourceTree = "<group>"; };
+		8EC60C4B15F623A600D34892 /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
+		8EC60C4C15F623A600D34892 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		8EC60C4F15F62A3400D34892 /* GenresViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GenresViewController.h; sourceTree = "<group>"; };
 		8EC60C5015F62A3400D34892 /* GenresViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GenresViewController.m; sourceTree = "<group>"; };
 		8EC60C5215F633FC00D34892 /* hurley.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = hurley.jpg; sourceTree = "<group>"; };
@@ -160,6 +162,9 @@
 		CEC6416216BC0B4800AC325F /* StreamingPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamingPlayer.h; sourceTree = "<group>"; };
 		CEC6416316BC0B4800AC325F /* StreamingPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StreamingPlayer.m; sourceTree = "<group>"; };
 		CEC6416916BC0D6200AC325F /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		CEDFAAAA16BFA9DD008601F6 /* ChaptersViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChaptersViewController.h; sourceTree = "<group>"; };
+		CEDFAAAB16BFA9DD008601F6 /* ChaptersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChaptersViewController.m; sourceTree = "<group>"; };
+		CEDFAAAC16BFA9DD008601F6 /* ChaptersView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChaptersView.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -186,14 +191,16 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				CEDFAAAA16BFA9DD008601F6 /* ChaptersViewController.h */,
+				CEDFAAAB16BFA9DD008601F6 /* ChaptersViewController.m */,
 				1D3623240D0F684500981E51 /* AppDelegate.h */,
 				1D3623250D0F684500981E51 /* AppDelegate.m */,
 				8EE9B1CC16B0149B00C46C60 /* AuthorSettings.h */,
 				8EE9B1CD16B0149B00C46C60 /* AuthorSettings.m */,
 				8EC60C5415F64E4100D34892 /* BookViewController.h */,
 				8EC60C5515F64E4100D34892 /* BookViewController.m */,
-				8EC60C4B15F623A600D34892 /* CatalogViewController.h */,
-				8EC60C4C15F623A600D34892 /* CatalogViewController.m */,
+				8EC60C4B15F623A600D34892 /* MainViewController.h */,
+				8EC60C4C15F623A600D34892 /* MainViewController.m */,
 				41B6F5A20FABB9750047CC2A /* CDAUIView.m */,
 				41B6F5A30FABB9750047CC2A /* CDBUIView.h */,
 				41B6F5A40FABB9750047CC2A /* CDBViewController.h */,
@@ -347,6 +354,7 @@
 		CE82EA6916BA6D8400F33698 /* xibs */ = {
 			isa = PBXGroup;
 			children = (
+				CEDFAAAC16BFA9DD008601F6 /* ChaptersView.xib */,
 				8E52FF1716B6DCED000AD339 /* BookView.xib */,
 				CE7FD5ED16B93DEA00748E29 /* PlayerFreeView.xib */,
 			);
@@ -453,6 +461,7 @@
 				8ED3BCC915FA4C9300326459 /* icon114.png in Resources */,
 				8E52FF1816B6DCED000AD339 /* BookView.xib in Resources */,
 				CE7FD5EE16B93DEA00748E29 /* PlayerFreeView.xib in Resources */,
+				CEDFAAAE16BFA9DD008601F6 /* ChaptersView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -467,7 +476,7 @@
 				1D3623260D0F684500981E51 /* AppDelegate.m in Sources */,
 				41B6F5A60FABB9750047CC2A /* CDAUIView.m in Sources */,
 				41B6F5A70FABB9750047CC2A /* CDBViewController.m in Sources */,
-				8EC60C4D15F623A600D34892 /* CatalogViewController.m in Sources */,
+				8EC60C4D15F623A600D34892 /* MainViewController.m in Sources */,
 				8EC60C5115F62A3400D34892 /* GenresViewController.m in Sources */,
 				8EC60C5815F64E4100D34892 /* BookViewController.m in Sources */,
 				8ED3BCB815F7A5E300326459 /* StandardPaths.m in Sources */,
@@ -495,6 +504,7 @@
 				CE82EA8816BA7ABB00F33698 /* ASINetworkQueue.m in Sources */,
 				CEC6416416BC0B4800AC325F /* AudioStreamer.m in Sources */,
 				CEC6416516BC0B4800AC325F /* StreamingPlayer.m in Sources */,
+				CEDFAAAD16BFA9DD008601F6 /* ChaptersViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

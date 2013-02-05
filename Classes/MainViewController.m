@@ -6,16 +6,15 @@
 //
 //
 
-#import "CatalogViewController.h"
+#import "MainViewController.h"
 #import "GenresViewController.h"
 #import "Genre.h"
 #import "GlobalSingleton.h"
 
-@implementation CatalogViewController
+@implementation MainViewController
 @synthesize message;
 @synthesize selectedShow;
 @synthesize selectedCharacter;
-@synthesize navigationController;
 
 - (id)initWithMessage:(NSString *)theMessage andImage:(UIImage*) image {
 	if (self = [super initWithNibName:nil bundle:nil]) {
@@ -25,10 +24,10 @@
 //        selectedGenreIndex = -1;
         [self prepareDataModel];
         //	window = [[UIWindow alloc] initWithFrame:[[UIScreen  mainScreen] bounds]] ;
-        GenresViewController *genresViewController = [[GenresViewController alloc] initWithStyle:UITableViewStylePlain andParentGenre:@"-1" andParent:self];
-        navigationController = [[UINavigationController alloc] initWithRootViewController:genresViewController];
+        GenresViewController *genresViewController = [[GenresViewController alloc] initWithStyle:UITableViewStylePlain andParentGenre:@"-1"];
+        [GlobalSingleton sharedInstance].navigationController = [[UINavigationController alloc] initWithRootViewController:genresViewController];
 
-        [self.view addSubview:[navigationController view]];
+        [self.view addSubview:[[GlobalSingleton sharedInstance].navigationController view]];
         //    [window addSubview:[navigationController view]];
         //	[window makeKeyAndVisible];
 

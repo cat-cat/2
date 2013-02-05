@@ -22,14 +22,14 @@
  ******************************************************************************/
 
 @class PlayerFreeViewController;
-@class CatalogViewController;
+@class MainViewController;
 @class CDBViewController;
 
 @interface AppDelegate : NSObject {
 	UIWindow			*window;
-    
+
     // catalog page
-	CatalogViewController	*catalogViewController;
+	MainViewController	*mainViewController;
     
     
     CDBViewController *viewController2, *viewController3,

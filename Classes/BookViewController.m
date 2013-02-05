@@ -22,16 +22,34 @@
  ******************************************************************************/
 
 #import "BookViewController.h"
-#import "CatalogViewController.h"
+#import "MainViewController.h"
 #import "Book.h"
 #import "AppDelegate.h"
 #import "GlobalSingleton.h"
 #import "PlayerFreeViewController.h"
+#import "ChaptersViewController.h"
 
 @implementation BookViewController
 //@synthesize nameLabel = _nameLabel, book = _book;
 
-- (IBAction)playFreeClicked:(UIButton *)sender {
+- (IBAction)btnSeeChaptersClick:(id)sender {
+    
+    //*****
+    ChaptersViewController* chaptersViewController = [[ChaptersViewController alloc] initWithBook:book.abookId];
+    
+    //            if (bookViewController.view) {// !!! accessing view will initialize view with all controls before it's shown
+    //                [bookViewController.nameLabel setText:g.name]; // !!! will work only after "if" above
+    //            }
+    
+    
+    //*****
+    
+    //CharacterViewController *characterController = [[CharacterViewController alloc] initWithDelegate:delegate andBookID:g.ID];
+    [[GlobalSingleton sharedInstance].navigationController pushViewController:chaptersViewController animated:YES];
+    
+}
+
+- (IBAction)btnPlayFreeClicked:(UIButton *)sender {
     AppDelegate *d = [[UIApplication sharedApplication] delegate];
     PlayerFreeViewController* player = [d getViewControllerForTabIndex:3];
     [player updateToBook:[NSString stringWithFormat:@"%d", book.abookId]];

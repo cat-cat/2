@@ -9,7 +9,7 @@
 
 #import "GlobalSingleton.h"
 #import "KissXML/DDXMLDocument.h"
-#import "CatalogViewController.h"
+#import "MainViewController.h"
 #import "Reachability.h"
 #import "Book.h"
 #import "ReaderSettings.h"
@@ -17,9 +17,11 @@
 #import "GenreSettings.h"
 #import "AuthorSettings.h"
 #import "StandardPaths.h"
+#import "ASINetworkQueue.h"
 
 @implementation GlobalSingleton
-//@synthesize delegate;
+@synthesize navigationController = _navigationController;
+@synthesize queue = _queue;
 static int connectionType;
 static Reachability* hostReachable;
 //static CatalogViewController* delegate;
@@ -186,7 +188,7 @@ static NSString* databaseName;
 //    delegate = d;
 //}
 
-+ (bool)checkError:(NSError*) e
++ (bool)handleError:(NSError*) e
 {
     bool res = NO;
     if (e) {
@@ -204,12 +206,12 @@ static NSString* databaseName;
     
     //NSLog(@"url string content: %@", tmp);
     
-    if([self checkError:*e])
+    if([self handleError:*e])
         return nil;
     
     doc = [[DDXMLDocument alloc] initWithXMLString:tmp options:0 error:e];
     
-    if([self checkError:*e])
+    if([self handleError:*e])
         return nil;
     
     return doc;
@@ -252,13 +254,13 @@ static NSString* databaseName;
         NSError* err;
         
         DDXMLDocument *doc = [self GetDocOfPage:@"/hasUpdate2.php" withError:&err];
-        if ([self checkError:err] || doc == nil) {
+        if ([self handleError:err] || doc == nil) {
             NSLog(@"*Update - updates error");
             return false; // no update error
         }
         
         NSArray* na = [doc nodesForXPath:@"/abooks/update"  error:&err];
-        if([self checkError:err])
+        if([self handleError:err])
         {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Update Error"
                                                             message:[err localizedDescription]
@@ -322,7 +324,7 @@ static NSString* databaseName;
         if (interval > 0 && [self gotConnectionToSrv:YES])
         {
             doc = [self GetDocOfPage:@"/getAbookCatalogUpdate.php" withError:&err];
-            if ([self checkError:err] || doc == nil) {
+            if ([self handleError:err] || doc == nil) {
                 NSLog(@"*Update - catalog updates error");
                 return false; // no update error
             }
@@ -821,6 +823,11 @@ static NSString* databaseName;
     dispatch_once(&onceToken, ^{
         sharedInstance = [[GlobalSingleton alloc] init];
         // Do any other initialisation stuff here
+        
+        //****************** init network operation queue
+        [sharedInstance setQueue:[[ASINetworkQueue alloc] init]];        
+        
+        
         
         
         //******************** save database path for future use

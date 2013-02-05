@@ -20,16 +20,16 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  ******************************************************************************/
-@class CatalogViewController;
+@class MainViewController;
 @interface GenresViewController : UITableViewController {
     NSString* parentGenre;
     int dbOffset;
     int dbLimit;
     NSMutableArray *genres;
-   CatalogViewController*  parent;
+//   CatalogViewController*  parent;
 }
 
--(id)initWithStyle:(UITableViewStyle)style andParentGenre:(NSString*) parentParam andParent:(CatalogViewController*)p;
+-(id)initWithStyle:(UITableViewStyle)style andParentGenre:(NSString*) parentParam;
 // return - how many genres were added
 //-(int)nextGenres;
 

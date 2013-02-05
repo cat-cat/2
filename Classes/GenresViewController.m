@@ -22,7 +22,7 @@
  ******************************************************************************/
 #import "GenresViewController.h"
 #import "BookViewController.h"
-#import "CatalogViewController.h"
+#import "MainViewController.h"
 #import "Genre.h"
 #import "GlobalSingleton.h"
 #import "Book.h"
@@ -37,9 +37,9 @@
 }
 
 
-- (id)initWithStyle:(UITableViewStyle)style andParentGenre:(NSString*) parentParam andParent:(CatalogViewController*)p{
+- (id)initWithStyle:(UITableViewStyle)style andParentGenre:(NSString*) parentParam{
 	if (self = [super initWithStyle:style]) {
-        parent = p;
+//        parent = p;
 		self.title = @"Каталог";
         self.navigationItem.backBarButtonItem.title = @"Каталог";
         
@@ -137,8 +137,8 @@
         Genre* g = [genres objectAtIndex:indexPath.row];
         if([g.type isEqualToString:@"1"]) // category
         {
-            GenresViewController *subGenresController = [[GenresViewController alloc] initWithStyle:UITableViewStylePlain andParentGenre:g.ID andParent:parent];
-            [[parent navigationController] pushViewController:subGenresController animated:YES];
+            GenresViewController *subGenresController = [[GenresViewController alloc] initWithStyle:UITableViewStylePlain andParentGenre:g.ID];
+            [[GlobalSingleton sharedInstance].navigationController pushViewController:subGenresController animated:YES];
         }
         else // expected @"2" - book
         {
@@ -153,7 +153,7 @@
             //*****
 
             //CharacterViewController *characterController = [[CharacterViewController alloc] initWithDelegate:delegate andBookID:g.ID];
-            [[parent navigationController] pushViewController:bookViewController animated:YES];
+            [[GlobalSingleton sharedInstance].navigationController  pushViewController:bookViewController animated:YES];
         }
 //    ShowCharactersTableViewController *showCharactersController = [[ShowCharactersTableViewController alloc] initWithStyle:UITableViewStylePlain];
 //    showCharactersController.delegate = delegate;

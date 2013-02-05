@@ -23,7 +23,7 @@
 
 #import "AppDelegate.h"
 #import "CDBViewController.h"
-#import "CatalogViewController.h"
+#import "MainViewController.h"
 #import "GlobalSingleton.h"
 #import "PlayerFreeViewController.h"
 
@@ -37,11 +37,14 @@
 - (void)applicationDidFinishLaunching:(UIApplication *)application {	
   
 	window = [[UIWindow alloc] initWithFrame:[[UIScreen  mainScreen] bounds]] ;
+
 	
-	catalogViewController = [[CatalogViewController alloc]
+	mainViewController = [[MainViewController alloc]
                      initWithMessage:@"Triangle"
                      andImage:[UIImage imageNamed:@"tri.png"]];
-	catalogViewController.title =  @"Каталог";
+	mainViewController.title =  @"Каталог";
+    // init main navigation controller in catalogViewController as well
+    
 	viewController2 = [[CDBViewController alloc]
                      initWithMessage:@"Rectangle"
                      andImage:[UIImage imageNamed:@"rect.png"]];
@@ -62,7 +65,7 @@
 	viewController6.title =  @"R&R";
 	tabBarController = [[UITabBarController alloc] init];
 	tabBarController.viewControllers = [NSArray arrayWithObjects:
-                                      catalogViewController,
+                                      mainViewController,
                                       viewController2,
                                       viewController3,
                                       viewController4,

@@ -9,9 +9,8 @@
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 //@class Database;
-@interface CatalogViewController : UIViewController {
+@interface MainViewController : UIViewController {
 	NSString *message;
-	UINavigationController *navigationController;
 	NSIndexPath  *selectedShow;
 	NSIndexPath  *selectedCharacter;
 	NSArray		 *theShows;
@@ -21,7 +20,6 @@
 
 @property(nonatomic, strong) NSIndexPath *selectedShow;
 @property(nonatomic, strong) NSIndexPath *selectedCharacter;
-@property(nonatomic, strong) UINavigationController *navigationController;
 
 -(void)resetDBCursor;
 - (id)initWithMessage:(NSString *)theMessage andImage:(UIImage*) image;
