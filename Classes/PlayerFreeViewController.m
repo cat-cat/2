@@ -27,9 +27,23 @@
 #import "Book.h"
 #import "ASIHTTPRequest.h"
 #import "AudioStreamer.h"
+#import "DDXMLDocument.h"
 
 
 @implementation PlayerFreeViewController
+- (void) streamingPlayerIsWaiting:(StreamingPlayer *) anPlayer {
+    NSLog(@"++ player IsWaiting");
+}
+- (void) streamingPlayerDidStartPlaying:(StreamingPlayer *) anPlayer {
+    NSLog(@"++ player DidStartPlaying");
+}
+- (void) streamingPlayerDidStopPlaying:(StreamingPlayer *) anPlayer {
+    NSLog(@"++ player DidStopPlaying");
+}
+
+- (void) streamingPlayer:(StreamingPlayer *) anPlayer didUpdateProgress:(double) anProgress {
+    NSLog(@"++ player DidUpdateProgress: %f", anProgress);
+}
 
 
 - (void)request:(ASIHTTPRequest *)request didReceiveResponseHeaders:(NSDictionary *)responseHeaders
@@ -73,43 +87,16 @@
 }
 
 StreamingPlayer *sPlayer = nil;
--(void)initPlayerWithUrl:(NSURL*)audioFileURL
-{
-//    [self.player.streamer stop];
-//    if(!audioFileURL)
-//    {
-//        self.player.delegate = nil;
-//        self.player = nil;
-//        NSLog(@"Файл не найден");
-//        [self showAlertViewNoAudio];
-//        return NO;
-//    }
-//    else
-//    {
-//        if (self.player)
-//        {
-//            self.player.delegate = nil;
-//            [self.player.streamer stop];
-//            self.player = nil;
-//            
-//        }
-//        self.player = [[[StreamingPlayer alloc] initPlayerWithURL:audioFileURL] autorelease];
-    sPlayer = [[StreamingPlayer alloc] initPlayerWithURL:audioFileURL];
-    sPlayer.delegate = self;
-    
-    //return YES;
-}
-
 
 - (void) request:(ASIHTTPRequest *)request didReceiveBytes:(unsigned long long) bytes
 {
     NSLog(@"++bytes received: %lld", bytes);
 //    NSFileHandle   *fileHandle =
 //    [NSFileHandle fileHandleForUpdatingAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"tmp/m.mp3"]];
-    NSURL *bookURL = [NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:@"tmp/m.mp3"]];
-    if (sPlayer==nil) {
-        [self initPlayerWithUrl:bookURL];
-    }
+//    NSURL *bookURL = [NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:@"tmp/m.mp3"]];
+//    if (sPlayer==nil) {
+//        [self initPlayerWithUrl:bookURL];
+//    }
 
     
 //    if(fileHandle){
@@ -122,6 +109,102 @@ StreamingPlayer *sPlayer = nil;
 }
 
 - (IBAction)btnPressFF:(UIBarButtonItem *)sender {
+}
+
+
+- (id)initWithBook:(int)bid
+{
+    if (self = [super init]) {
+        // custom initialization
+        if (bid != -1) {
+            book = [GlobalSingleton db_GetBookWithID:[NSString stringWithFormat:@"%d",bid]];
+        }
+        
+    }
+    return self;
+}
+
+//- (id)initWithMessage:(NSString *)theMessage andImage:(UIImage*) image {
+//	if (self = [super initWithNibName:nil bundle:nil]) {
+//		self.message = theMessage;
+//		self.tabBarItem.image  = image;	
+//	}	
+//	return self;
+//}
+
+- (void) getAndDisplayFreeTrackMeta
+{
+    // request to server
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/getAbookFreePart.php?bid=%d", AppConnectionHost, book.abookId ]];
+    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
+    [request startSynchronous];
+    NSError *error = [request error];
+    [GlobalSingleton handleError:error];
+    NSString *response;
+    if (!error) {
+        response = [request responseString];
+    }
+    
+    // xml doc and it's handling
+    DDXMLDocument *doc = [[DDXMLDocument alloc] initWithXMLString:response options:0 error:&error];
+    
+    [GlobalSingleton handleError:error];
+    NSArray *nds = [doc nodesForXPath:@"//file_length" error:&error];
+    [GlobalSingleton handleError:error];
+    if (![nds count]) {
+        NSLog(@"**err: file_length is empty or error");
+    }
+    else{
+        progressSlider.minimumValue = 0.0f;
+        NSString *v = [[nds objectAtIndex:0] stringValue];
+        // TODO: set duration value in seconds.miliseconds format
+        //progressSlider.maximumValue = [[nds objectAtIndex:0] doubleValue];
+    }
+}
+
+- (void) viewDidLoad
+{    
+//    [labelHeader setText:book.title];
+//    [labelSmallHeader setText:book.title];
+        self.title = book.title;
+    
+        // TODO: doesn't work
+        // self.navigationItem.backBarButtonItem.title = @"в каталог";
+
+    // get free track meta
+    [self getAndDisplayFreeTrackMeta];
+    
+    // display in a view
+}
+
+//- (void)loadView {	
+//	CGRect	rectFrame = [UIScreen mainScreen].applicationFrame;
+//	CDBUIView *theView   = [[CDBUIView alloc] initWithFrame:rectFrame];
+//	theView.backgroundColor = [UIColor whiteColor];
+//	theView.myController = self;
+//	theView.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+//	self.view = theView;
+//}
+- (IBAction)btnPlayStopClick:(UIBarButtonItem *)sender {
+    
+    // TODO: remove
+    if (sPlayer==nil)
+    {
+        NSURL *bookURL = [NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:@"tmp/m.mp3"]];
+        sPlayer = [[StreamingPlayer alloc] initPlayerWithURL:bookURL];
+        sPlayer.delegate = self;
+    }
+    
+    if (sPlayer.streamer.state == AS_INITIALIZED) {
+        [sPlayer.streamer start];
+    }
+    else    
+        [sPlayer.streamer pause];
+    
+    return;
+
+    
+    
     
     NSURL *url = [NSURL URLWithString:
                   @"http://192.168.0.155/m.mp3"];
@@ -137,80 +220,43 @@ StreamingPlayer *sPlayer = nil;
     [request setAllowResumeForFileDownloads:YES];
     [request setDelegate:self];
     [request setDownloadProgressDelegate:self];
-//    int alreadyDownloaded = 2354100;
-//    [request addRequestHeader:@"Range" value:[NSString stringWithFormat:@"bytes=%i-", alreadyDownloaded]];
+    //    int alreadyDownloaded = 2354100;
+    //    [request addRequestHeader:@"Range" value:[NSString stringWithFormat:@"bytes=%i-", alreadyDownloaded]];
     [request setMyDontRemoveFlag:true];
     [request startAsynchronous];
     
-//    NSError *rerror = nil;
-//    NSURLResponse *response = nil;
-//    
-//    
-//    //    NSURL *aURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/redown.php?file=hasUpdate2.php", AppConnectionHost]];
-//        NSURL *aURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://192.168.0.155/sm.pdf"]];
-//    //NSURL *aURL = [NSURL URLWithString:@"http://93.191.12.7:8081"];
-//    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:aURL];
-//    NSString *range = @"bytes=";
-//    range = [range stringByAppendingString:[[NSNumber numberWithInt:9] stringValue]];
-//    range = [range stringByAppendingString:@"-"];
-//    [request setValue:range forHTTPHeaderField:@"Range"];
-//    //[request setValue:range forHTTPHeaderField:@"Content-Range"];
-//
-//    [request setHTTPMethod:@"HEAD"];
-//    
-//    NSData *result = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&rerror];
-//    NSString *resultString = [[NSString alloc] initWithData:result encoding:NSUTF8StringEncoding];
-//    
-//    NSLog(@"URL: %@", aURL);
-//    NSLog(@"Request: %@", request);
-//    NSLog(@"Result (NSData): %@", result);
-//    NSLog(@"Result (NSString): %@", resultString);
-//    NSLog(@"Response: %@", response);
-//    NSLog(@"Error: %@", rerror);
-//    
-//    if ([response isMemberOfClass:[NSHTTPURLResponse class]]) {
-//        NSLog(@"AllHeaderFields: %@", [((NSHTTPURLResponse *)response) allHeaderFields]);
-//    }
+    //    NSError *rerror = nil;
+    //    NSURLResponse *response = nil;
+    //
+    //
+    //    //    NSURL *aURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/redown.php?file=hasUpdate2.php", AppConnectionHost]];
+    //        NSURL *aURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://192.168.0.155/sm.pdf"]];
+    //    //NSURL *aURL = [NSURL URLWithString:@"http://93.191.12.7:8081"];
+    //    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:aURL];
+    //    NSString *range = @"bytes=";
+    //    range = [range stringByAppendingString:[[NSNumber numberWithInt:9] stringValue]];
+    //    range = [range stringByAppendingString:@"-"];
+    //    [request setValue:range forHTTPHeaderField:@"Range"];
+    //    //[request setValue:range forHTTPHeaderField:@"Content-Range"];
+    //
+    //    [request setHTTPMethod:@"HEAD"];
+    //
+    //    NSData *result = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&rerror];
+    //    NSString *resultString = [[NSString alloc] initWithData:result encoding:NSUTF8StringEncoding];
+    //
+    //    NSLog(@"URL: %@", aURL);
+    //    NSLog(@"Request: %@", request);
+    //    NSLog(@"Result (NSData): %@", result);
+    //    NSLog(@"Result (NSString): %@", resultString);
+    //    NSLog(@"Response: %@", response);
+    //    NSLog(@"Error: %@", rerror);
+    //
+    //    if ([response isMemberOfClass:[NSHTTPURLResponse class]]) {
+    //        NSLog(@"AllHeaderFields: %@", [((NSHTTPURLResponse *)response) allHeaderFields]);
+    //    }
 }
-
-- (void)updateToBook:(NSString*)bid
-{
-    book = [GlobalSingleton db_GetBookWithID:bid];
+- (void)viewDidUnload {
+    progressSlider = nil;
+    [super viewDidUnload];
 }
-
-- (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle andBook:(NSString*) bid
-{
-    if (self = [super initWithNibName:nibName bundle:nibBundle]) {
-        // custom initialization
-        if (bid.length != 0) {
-            book = [GlobalSingleton db_GetBookWithID:bid];
-        }
-        // else: return player without book uninitialized
-        
-    }
-    return self;
-}
-
-//- (id)initWithMessage:(NSString *)theMessage andImage:(UIImage*) image {
-//	if (self = [super initWithNibName:nil bundle:nil]) {
-//		self.message = theMessage;
-//		self.tabBarItem.image  = image;	
-//	}	
-//	return self;
-//}
-
-- (void) viewDidLoad
-{    
-    [_labelHeader setText:book.title];
-    [_labelSmallHeader setText:book.title];
-}
-
-//- (void)loadView {	
-//	CGRect	rectFrame = [UIScreen mainScreen].applicationFrame;
-//	CDBUIView *theView   = [[CDBUIView alloc] initWithFrame:rectFrame];
-//	theView.backgroundColor = [UIColor whiteColor];
-//	theView.myController = self;
-//	theView.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
-//	self.view = theView;
-//}
 @end

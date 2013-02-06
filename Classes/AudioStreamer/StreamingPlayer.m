@@ -33,7 +33,6 @@
 		 name:ASStatusChangedNotification
 		 object:self.streamer];
         
-        [self.streamer start];
 	}
 	return self;
 }

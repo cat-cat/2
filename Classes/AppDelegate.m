@@ -29,10 +29,10 @@
 
 @implementation AppDelegate
 
-- (id)getViewControllerForTabIndex:(int)index
-{
-    return [tabBarController.viewControllers objectAtIndex:index];
-}
+//- (id)getViewControllerForTabIndex:(int)index
+//{
+//    return [tabBarController.viewControllers objectAtIndex:index];
+//}
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application {	
   
@@ -63,25 +63,28 @@
                      initWithMessage:@"Rectangle+Rectangle"
                      andImage:[UIImage imageNamed:@"two-tri.png"]];
 	viewController6.title =  @"R&R";
-	tabBarController = [[UITabBarController alloc] init];
-	tabBarController.viewControllers = [NSArray arrayWithObjects:
-                                      mainViewController,
-                                      viewController2,
-                                      viewController3,
-                                      viewController4,
-                                      viewController5,
-                                      viewController6,
-                                      nil];
+//	tabBarController = [[UITabBarController alloc] init];
+//	tabBarController.viewControllers = [NSArray arrayWithObjects:
+//                                      mainViewController,
+//                                      viewController2,
+//                                      viewController3,
+//                                      viewController4,
+//                                      viewController5,
+//                                      viewController6,
+//                                      nil];
 
 	//[window addSubview:tabBarController.view]; // warning: Application windows are expected to have a root view controller at the end of application launch
-    window.rootViewController = tabBarController;
+    
+    //window.rootViewController = tabBarController;
+    window.rootViewController = mainViewController;
+    
 	[window makeKeyAndVisible];
 }
 
-- (void)changeViewControllerToIndex:(NSUInteger)idx
-{
-    [GlobalSingleton sharedInstance];
-    tabBarController.selectedIndex = idx;
-}
+//- (void)changeViewControllerToIndex:(NSUInteger)idx
+//{
+//    [GlobalSingleton sharedInstance];
+//    tabBarController.selectedIndex = idx;
+//}
 
 @end

@@ -46,7 +46,7 @@
 - (void)requestDone:(ASIHTTPRequest *)request
 {
     NSString *response = [request responseString];
-    NSLog(@"++response %@", response);
+    //NSLog(@"++response %@", response);
     // create xml from string
     NSError *error;
     DDXMLDocument *doc = [[DDXMLDocument alloc] initWithXMLString:response options:0 error:&error];
@@ -55,7 +55,7 @@
     NSArray *items=[doc nodesForXPath:@"/abooks/abook/content/track" error:&error];
     
     for (DDXMLElement *item in items) {
-        NSLog(@"++item contents: %s", [[item XMLString] UTF8String]);
+        //NSLog(@"++item contents: %s", [[item XMLString] UTF8String]);
         doc = [doc initWithXMLString:[item XMLString] options:0 error:&error];
         NSString *cId = [[[doc nodesForXPath:@"//@number" error:&error] objectAtIndex:0] stringValue];
         NSString *cName = [[[doc nodesForXPath:@"//name" error:&error] objectAtIndex:0] stringValue];
@@ -66,9 +66,9 @@
         
     }
     
-    for (Chapter *c in chapters){
-        NSLog(@"chapter's data: %@, %@", c.cId, c.name);
-    }
+//    for (Chapter *c in chapters){
+//        NSLog(@"chapter's data: %@, %@", c.cId, c.name);
+//    }
     
     
     NSFileManager *fm = [NSFileManager defaultManager];    
@@ -151,13 +151,14 @@
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
     
     // Configure the cell...
     NSLog(@"++ the index row number %d", indexPath.row);
     Chapter *lc = [chapters objectAtIndex:indexPath.row];
-    cell.textLabel.text = [NSString stringWithFormat:@"++chNO %@ chTitle %@", lc.cId, lc.name ];
+    cell.textLabel.text = lc.cId;
+    cell.detailTextLabel.text = lc.name;
     
     return cell;
 }

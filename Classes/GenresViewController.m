@@ -41,7 +41,7 @@
 	if (self = [super initWithStyle:style]) {
 //        parent = p;
 		self.title = @"Каталог";
-        self.navigationItem.backBarButtonItem.title = @"Каталог";
+        //self.navigationItem.backBarButtonItem.title = @"назад";
         
         parentGenre = [[NSString alloc] initWithString:parentParam];
         

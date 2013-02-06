@@ -38,6 +38,6 @@
 	UITabBarController  *tabBarController;
 }
 
-- (id) getViewControllerForTabIndex:(int)index;
-- (void)changeViewControllerToIndex:(NSUInteger)idx;
+//- (id) getViewControllerForTabIndex:(int)index;
+//- (void)changeViewControllerToIndex:(NSUInteger)idx;
 @end
