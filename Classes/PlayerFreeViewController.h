@@ -24,12 +24,15 @@
 
 @class Book;
 @interface PlayerFreeViewController : UIViewController <StreamingPlayerDelegate> {
-	Book *book;
+	BOOL bindProgresVal;
+    Book *book;
     __weak IBOutlet UISlider *progressSlider;
 //    __weak IBOutlet UILabel *labelSmallHeader;
 //    __weak IBOutlet UILabel *labelHeader;
 }
+- (IBAction)onSliderUpInside:(UISlider *)sender;
 
+- (IBAction)onSliderDown:(UISlider *)sender;
 - (IBAction)btnPlayStopClick:(UIBarButtonItem *)sender;
 //@property (nonatomic, strong) NSString *message;
 - (IBAction)btnPressFF:(UIBarButtonItem *)sender;

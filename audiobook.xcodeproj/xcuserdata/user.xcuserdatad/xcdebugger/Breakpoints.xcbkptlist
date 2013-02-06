@@ -21,11 +21,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Classes/PlayerFreeViewController.m"
-         timestampString = "381853911.886266"
+         timestampString = "381876752.194434"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "96"
-         endingLineNumber = "96"
+         startingLineNumber = "122"
+         endingLineNumber = "122"
          landmarkName = "-request:didReceiveBytes:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -53,19 +53,6 @@
          startingLineNumber = "90"
          endingLineNumber = "90"
          landmarkName = "-requestDone:"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "Classes/PlayerFreeViewController.m"
-         timestampString = "381859495.438767"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "208"
-         endingLineNumber = "208"
-         landmarkName = "-btnPlayStopClick:"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>
