@@ -14,7 +14,8 @@
 @class Reachability;
 
 //static NSString* AppConnectionHost = @"192.168.0.155:8080";
-static NSString* AppConnectionHost = @"192.168.0.100:8080";
+//static NSString* AppConnectionHost = @"192.168.0.100:8080";
+static NSString* AppConnectionHost = @"192.168.0.101:8080";
 
 @interface GlobalSingleton : NSObject
 {    
@@ -24,7 +25,9 @@ static NSString* AppConnectionHost = @"192.168.0.100:8080";
 @property(nonatomic, strong) UINavigationController *navigationController;
 @property (nonatomic, strong) NSOperationQueue *queue;
 
-+ (bool) handleError:(NSError*)err;
+- (NSString*)dirForBook:(int)bid;
+- (bool) handleError:(NSError*)err;
+- (int) handleSrvError:(NSString*)err;
 + (Book*)db_GetBookWithID:(NSString*) bid;
 + (void) assertNoError:(int)noErrorFlag withMsg:(NSString*)message;
 + (const char*) dbname;

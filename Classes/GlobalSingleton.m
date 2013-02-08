@@ -30,6 +30,23 @@ static NSString* databaseName;
 #define ReachableViaWiFiNetwork          2
 #define ReachableDirectWWAN               (1 << 18)
 
+
+
+-(NSString*) dirForBook:(int)bid
+{
+    @synchronized(self)
+    {
+        // try to create directory first
+        NSString* newDirPath = [NSHomeDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"tmp/%d", bid]];
+        NSURL *urlToDir = [NSURL fileURLWithPath:newDirPath ];
+        NSError *error;
+        bool success = [[NSFileManager defaultManager] createDirectoryAtURL:urlToDir withIntermediateDirectories:true attributes:nil error:&error];
+        [self handleError:error];
+        
+        return  success ? newDirPath : nil;
+    }
+}
+
 # pragma db_GetBookWithID
 
 + (Book*)db_GetBookWithID:(NSString*) bid
@@ -187,16 +204,36 @@ static NSString* databaseName;
 //{
 //    delegate = d;
 //}
-
-+ (bool)handleError:(NSError*) e
+- (int) handleSrvError:(NSString *)err
 {
-    bool res = NO;
-    if (e) {
-        NSLog(@"***Error: %@", [e localizedDescription]);
-        res = YES;
+    @synchronized(self)
+    {
+        int result = 0;
+        NSError *error;
+        DDXMLDocument *doc = [[DDXMLDocument alloc] initWithXMLString:err options:0 error:&error];
+        [[GlobalSingleton sharedInstance] handleError:error];
+        NSArray *arr = [doc nodesForXPath:@"//error" error:&error];
+        if ([arr count]) {
+            result = [[[arr objectAtIndex:0] stringValue] intValue];
+            NSLog(@"***srv Error: %d", result);
+        }
+        
+        return result;
     }
-    
-    return res;
+}
+
+- (bool)handleError:(NSError*) e
+{
+    @synchronized(self)
+    {
+        bool res = NO;
+        if (e) {
+            NSLog(@"***Error: %@", [e localizedDescription]);
+            res = YES;
+        }
+        
+        return res;
+    }
 }
 
 + (DDXMLDocument*) GetDocOfPage:(NSString*) page withError:(NSError**) e
@@ -206,12 +243,12 @@ static NSString* databaseName;
     
     //NSLog(@"url string content: %@", tmp);
     
-    if([self handleError:*e])
+    if([[GlobalSingleton sharedInstance] handleError:*e])
         return nil;
     
     doc = [[DDXMLDocument alloc] initWithXMLString:tmp options:0 error:e];
     
-    if([self handleError:*e])
+    if([[GlobalSingleton sharedInstance] handleError:*e])
         return nil;
     
     return doc;
@@ -254,13 +291,13 @@ static NSString* databaseName;
         NSError* err;
         
         DDXMLDocument *doc = [self GetDocOfPage:@"/hasUpdate2.php" withError:&err];
-        if ([self handleError:err] || doc == nil) {
+        if ([[GlobalSingleton sharedInstance] handleError:err] || doc == nil) {
             NSLog(@"*Update - updates error");
             return false; // no update error
         }
         
         NSArray* na = [doc nodesForXPath:@"/abooks/update"  error:&err];
-        if([self handleError:err])
+        if([[GlobalSingleton sharedInstance] handleError:err])
         {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Update Error"
                                                             message:[err localizedDescription]
@@ -324,7 +361,7 @@ static NSString* databaseName;
         if (interval > 0 && [self gotConnectionToSrv:YES])
         {
             doc = [self GetDocOfPage:@"/getAbookCatalogUpdate.php" withError:&err];
-            if ([self handleError:err] || doc == nil) {
+            if ([[GlobalSingleton sharedInstance] handleError:err] || doc == nil) {
                 NSLog(@"*Update - catalog updates error");
                 return false; // no update error
             }

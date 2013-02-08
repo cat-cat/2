@@ -30,30 +30,29 @@
 
 @implementation ChaptersViewController
 
-- (void)grabURLInTheBackground:(int)bid
+- (void)requestBookMeta:(int)bid
 {
     
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/getAbookById.php?bid=%d", AppConnectionHost, bid]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/bookmeta.php?bid=%d", AppConnectionHost, bid]];
     //NSURL *url = [NSURL URLWithString:@"http://dl.dropbox.com/u/4115029/bookMeta.xml"];
-    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
+    ASIHTTPRequest* request = [ASIHTTPRequest requestWithURL:url];
     [request setDelegate:self];
-    [request setDidFinishSelector:@selector(requestDone:)];
-    [request setDidFailSelector:@selector(requestWentWrong:)];
+//    [request setDidFinishSelector:@selector(requestDone:)];
+//    [request setDidFailSelector:@selector(requestWentWrong:)];
     //[[GlobalSingleton sharedInstance].queue addOperation:request]; //queue is an NSOperationQueue
     [request startAsynchronous];
 }
 
-- (void)requestDone:(ASIHTTPRequest *)request
+- (void) updateMeta:(NSString*) fileContent
 {
-    NSString *response = [request responseString];
-    //NSLog(@"++response %@", response);
     // create xml from string
     NSError *error;
-    DDXMLDocument *doc = [[DDXMLDocument alloc] initWithXMLString:response options:0 error:&error];
-    [GlobalSingleton handleError:error];
+    DDXMLDocument *doc = [[DDXMLDocument alloc] initWithXMLString:fileContent options:0 error:&error];
+    [[GlobalSingleton sharedInstance] handleError:error];
     
     NSArray *items=[doc nodesForXPath:@"/abooks/abook/content/track" error:&error];
     
+    [chapters removeAllObjects];
     for (DDXMLElement *item in items) {
         //NSLog(@"++item contents: %s", [[item XMLString] UTF8String]);
         doc = [doc initWithXMLString:[item XMLString] options:0 error:&error];
@@ -66,37 +65,52 @@
         
     }
     
-//    for (Chapter *c in chapters){
-//        NSLog(@"chapter's data: %@, %@", c.cId, c.name);
-//    }
+    //    for (Chapter *c in chapters){
+    //        NSLog(@"chapter's data: %@, %@", c.cId, c.name);
+    //    }
     
     
-    NSFileManager *fm = [NSFileManager defaultManager];    
-    // save to home directory
-//    NSString *pathToBookDirectory =[ NSHomeDirectory() stringByAppendingPathComponent: [NSString stringWithFormat:@"tmp/books/%d/BookMeta.xml", bookId ]];
-    NSString *pathToBookDirectory =[ NSHomeDirectory() stringByAppendingPathComponent:@"tmp/BookMeta.xml"];
-    if(![fm fileExistsAtPath:pathToBookDirectory])
-    {
-       [NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:pathToBookDirectory] ];
-         bool fileCreationSuccess = [ fm createFileAtPath:pathToBookDirectory contents:[request responseData] attributes:nil];
-        if(fileCreationSuccess == NO){ NSLog(@"Failed to create the html file");
-        }
-    }
     // parse
     
     // save to chapters variable
+    
+    
+}
+
+- (void)requestFinished:(ASIHTTPRequest *)request
+{    
+    NSString *response = [request responseString];
+    
+    int res = [[GlobalSingleton sharedInstance] handleSrvError:response];
+    if (res) { // must be 0 - no error
+        return;
+    }
+    
+    // First write meta to disk
+    NSFileManager *fm = [NSFileManager defaultManager];
+    // save to home directory
+    //    NSString *pathToBookDirectory =[ NSHomeDirectory() stringByAppendingPathComponent: [NSString stringWithFormat:@"tmp/books/%d/BookMeta.xml", bookId ]];
+    NSString *pathToBookDirectory =[ [[GlobalSingleton sharedInstance] dirForBook:bookId] stringByAppendingPathComponent:@"bookMeta.xml"];
+    [NSURL fileURLWithPath:pathToBookDirectory ];
+    bool fileCreationSuccess = [ fm createFileAtPath:pathToBookDirectory contents:[request responseData ]  attributes:nil];
+    if(fileCreationSuccess == NO){ NSLog(@"Failed to create the BookMeta file"); }
+    
+    //NSLog(@"++response %@", response);
+    [self updateMeta:response];
+    
     
     // reload table view
     [(UITableView*)[self view] reloadData];
 }
 
-- (void)requestWentWrong:(ASIHTTPRequest *)request
+- (void)requestFailed:(ASIHTTPRequest *)request
 {
     NSError *error = [request error];
     
     //TODO:  show error with Alert
-    [GlobalSingleton handleError:error];
+    [[GlobalSingleton sharedInstance] handleError:error];
 }
+
 
 - (id)initWithBook:(int)bid
 {
@@ -112,16 +126,32 @@
 {
     [super viewDidLoad];
     
-    chapters = [[NSMutableArray alloc] init];
-    
-    // start request to get chapters, handle answer in handlers
-    [self grabURLInTheBackground:bookId];
 
     // Uncomment the following line to preserve selection between presentations.
      self.clearsSelectionOnViewWillAppear = NO;
+    
+    chapters = [[NSMutableArray alloc] init];
+    
+    NSString* fMetaPath = [NSString stringWithFormat:@"%@/%@",[[GlobalSingleton sharedInstance] dirForBook:bookId ],  @"bookMeta.xml"];
+    // start request to get chapters, handle answer in handlers
+    if(![[NSFileManager defaultManager]  fileExistsAtPath:fMetaPath ])
+    {
+        [self requestBookMeta:bookId];
+    }
+    else
+    {
+        NSError *error;
+        NSString* str = [NSString stringWithContentsOfFile:fMetaPath encoding:NSUTF8StringEncoding error:&error];
+        [[GlobalSingleton sharedInstance] handleError:error];
+        
+        [self updateMeta:str];
+    }
+
  
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    // reload table view
+    [(UITableView*)[self view] reloadData];
 }
 
 - (void)didReceiveMemoryWarning
@@ -155,7 +185,7 @@
     }
     
     // Configure the cell...
-    NSLog(@"++ the index row number %d", indexPath.row);
+    //NSLog(@"++ the index row number %d", indexPath.row);
     Chapter *lc = [chapters objectAtIndex:indexPath.row];
     cell.textLabel.text = lc.cId;
     cell.detailTextLabel.text = lc.name;

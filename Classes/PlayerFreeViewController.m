@@ -163,7 +163,7 @@ StreamingPlayer *sPlayer = nil;
     ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
     [request startSynchronous];
     NSError *error = [request error];
-    [GlobalSingleton handleError:error];
+    [[GlobalSingleton sharedInstance] handleError:error];
     NSString *response;
     if (!error) {
         response = [request responseString];
@@ -172,9 +172,9 @@ StreamingPlayer *sPlayer = nil;
     // xml doc and it's handling
     DDXMLDocument *doc = [[DDXMLDocument alloc] initWithXMLString:response options:0 error:&error];
     
-    [GlobalSingleton handleError:error];
+    [[GlobalSingleton sharedInstance] handleError:error];
     NSArray *nds = [doc nodesForXPath:@"//file_length" error:&error];
-    [GlobalSingleton handleError:error];
+    [[GlobalSingleton sharedInstance] handleError:error];
     if (![nds count]) {
         NSLog(@"**err: file_length is empty or error");
     }
