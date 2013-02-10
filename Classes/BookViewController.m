@@ -25,7 +25,7 @@
 #import "MainViewController.h"
 #import "Book.h"
 #import "AppDelegate.h"
-#import "GlobalSingleton.h"
+#import "gs.h"
 #import "PlayerFreeViewController.h"
 #import "ChaptersViewController.h"
 
@@ -45,14 +45,14 @@
     //*****
     
     //CharacterViewController *characterController = [[CharacterViewController alloc] initWithDelegate:delegate andBookID:g.ID];
-    [[GlobalSingleton sharedInstance].navigationController pushViewController:chaptersViewController animated:YES];
+    [[gs sharedInstance].navigationController pushViewController:chaptersViewController animated:YES];
     
 }
 
 - (IBAction)btnPlayFreeClicked:(UIButton *)sender {
     
-    PlayerFreeViewController *playerController = [[PlayerFreeViewController alloc] initWithBook:book.abookId];
-    [[GlobalSingleton sharedInstance].navigationController pushViewController:playerController animated:YES];
+    PlayerFreeViewController *playerController = [[PlayerFreeViewController alloc] initWithBook:book.abookId andChapter:@"01_01"];
+    [[gs sharedInstance].navigationController pushViewController:playerController animated:YES];
 
     
 //    AppDelegate *d = [[UIApplication sharedApplication] delegate];
@@ -66,7 +66,7 @@
 {
     if (self = [super initWithNibName:nibName bundle:nibBundle]) {
         // custom initialization
-        book = [GlobalSingleton db_GetBookWithID:bid];
+        book = [gs db_GetBookWithID:bid];
     }
     return self;
 }

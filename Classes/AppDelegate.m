@@ -24,7 +24,7 @@
 #import "AppDelegate.h"
 #import "CDBViewController.h"
 #import "MainViewController.h"
-#import "GlobalSingleton.h"
+#import "gs.h"
 #import "PlayerFreeViewController.h"
 
 @implementation AppDelegate

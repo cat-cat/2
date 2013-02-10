@@ -25,6 +25,9 @@
 
 @interface StreamingPlayer : NSObject
 {
+    int bookId;
+    NSString* chapter;
+    
 @private
 	
 	//
@@ -37,10 +40,14 @@
 	NSTimer *progressUpdateTimer;
 }
 
+@property (nonatomic, assign) int bookId;
+@property (nonatomic,copy) NSString * chapter;
 @property (nonatomic, readwrite, assign) id<StreamingPlayerDelegate> delegate;
 @property (nonatomic, retain) AudioStreamer *streamer;
 
-- (id)initPlayerWithURL:(NSURL*)anURL;
+-(void)myrelease;
+//- (id)initPlayerWithURL:(NSURL*)anURL;
+- (id)initPlayerWithBookAndChapter:(int)bid chapter:(NSString*)ch;
 - (void)updateProgress:(NSTimer *)aNotification;
 
 @end

@@ -23,7 +23,7 @@
 
 #import "PlayerFreeViewController.h"
 #import "CDBUIView.h"
-#import "GlobalSingleton.h"
+#import "gs.h"
 #import "Book.h"
 #import "ASIHTTPRequest.h"
 #import "AudioStreamer.h"
@@ -76,12 +76,7 @@
 //               [dbManager InsUpdBookHeader:book];
 //}
 
-- (void)requestFinished:(ASIHTTPRequest *)request
-{
-    
-    
-    NSLog(@"++Finished request !");
-}
+static StreamingPlayer *sPlayer = nil;
 
 - (void)requestFailed:(ASIHTTPRequest *)request
 {
@@ -90,21 +85,30 @@
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 }
 
-StreamingPlayer *sPlayer = nil;
+- (void)requestFinished:(ASIHTTPRequest *)request
+{
+    NSLog(@"++Finished request !");
+    NSString *path = [gss() pathForBookFinished:book.abookId chapter:[sPlayer chapter]];
+    
+    NSFileManager *fm = [NSFileManager defaultManager];
+    bool fileCreationSuccess = [ fm createFileAtPath:path contents:nil  attributes:nil];
+    if(fileCreationSuccess == NO){ NSLog(@"Failed to create the finished! file"); }
+}
 
+bool NeedToStartWithFistDownloadedBytes = false;
 - (void) request:(ASIHTTPRequest *)request didReceiveBytes:(unsigned long long) bytes
 {
     NSLog(@"++bytes received: %lld", bytes);
     
-    if (sPlayer==nil)
+    if (NeedToStartWithFistDownloadedBytes)
     {
-        NSURL *bookURL = [NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:@"tmp/m.mp3"]];
-        sPlayer = [[StreamingPlayer alloc] initPlayerWithURL:bookURL];
-        sPlayer.delegate = self;
+        NeedToStartWithFistDownloadedBytes = false;
         if (sPlayer.streamer.state == AS_INITIALIZED) {
             //[sPlayer.streamer startAtPos:500.0 withFade:NO doPlay:YES];
             [sPlayer.streamer start];
         }
+        else
+            NSLog(@"**err: player is not initialized");
     }
 
     //    else
@@ -136,12 +140,22 @@ StreamingPlayer *sPlayer = nil;
 }
 
 
-- (id)initWithBook:(int)bid
-{
+- (id)initWithBook:(int)bid andChapter:(NSString*) chapter
+{    
     if (self = [super init]) {
         // custom initialization
         if (bid != -1) {
-            book = [GlobalSingleton db_GetBookWithID:[NSString stringWithFormat:@"%d",bid]];
+            book = [gs db_GetBookWithID:[NSString stringWithFormat:@"%d",bid]];
+            
+            
+            if (sPlayer) {
+                if (bid == [sPlayer bookId] && [sPlayer chapter] == chapter) {
+                    return self;
+                }
+
+                [sPlayer myrelease];
+            }
+            sPlayer = [[StreamingPlayer alloc] initPlayerWithBookAndChapter:bid chapter:chapter];
         }
         
     }
@@ -158,12 +172,14 @@ StreamingPlayer *sPlayer = nil;
 
 - (void) getAndDisplayFreeTrackMeta
 {
+    // TODO: read data from local bookMeta.xml
+    
     // request to server
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/getAbookFreePart.php?bid=%d", AppConnectionHost, book.abookId ]];
     ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
     [request startSynchronous];
     NSError *error = [request error];
-    [[GlobalSingleton sharedInstance] handleError:error];
+    [[gs sharedInstance] handleError:error];
     NSString *response;
     if (!error) {
         response = [request responseString];
@@ -172,9 +188,9 @@ StreamingPlayer *sPlayer = nil;
     // xml doc and it's handling
     DDXMLDocument *doc = [[DDXMLDocument alloc] initWithXMLString:response options:0 error:&error];
     
-    [[GlobalSingleton sharedInstance] handleError:error];
+    [[gs sharedInstance] handleError:error];
     NSArray *nds = [doc nodesForXPath:@"//file_length" error:&error];
-    [[GlobalSingleton sharedInstance] handleError:error];
+    [[gs sharedInstance] handleError:error];
     if (![nds count]) {
         NSLog(@"**err: file_length is empty or error");
     }
@@ -219,53 +235,69 @@ StreamingPlayer *sPlayer = nil;
 }
 
 - (IBAction)btnPlayStopClick:(UIBarButtonItem *)sender {
+
+    if(![[NSFileManager defaultManager]  fileExistsAtPath:[gss() pathForBookFinished:book.abookId chapter:[sPlayer chapter] ]])
+    {
+        // if not doewnloaded yet, start downloading or partial downloading
+        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/chapter.php?bid=%d&ch=%@", AppConnectionHost, book.abookId, sPlayer.chapter ]];
+        ASIHTTPRequest *req1 = [ASIHTTPRequest requestWithURL:url];
+        [req1 startSynchronous];
+        NSError *error;
+        error = [req1 error];
+        [[gs sharedInstance] handleError:error];
+        NSString *response = [req1 responseString];
+        [[gs sharedInstance] handleSrvError:response];
+        DDXMLDocument* doc = [[DDXMLDocument  alloc] initWithXMLString:response options:0 error:&error];
+        NSArray* arr = [gss() arrayForDoc:doc xpath:@"//chapter_path"];
+        if (![arr count]) {
+            NSLog(@"**err: chapter_path eror");
+        }
+        
+        ASIHTTPRequest* request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:[arr objectAtIndex:0] ]];
+        NSString *downloadPath = [gss() pathForBook:book.abookId andChapter:[sPlayer chapter] ] ;
+        
+        // create empty file for player could start streaming
+//        if(![[NSFileManager defaultManager]  fileExistsAtPath:downloadPath])
+//            [[NSFileManager defaultManager] createFileAtPath:downloadPath contents:nil attributes:nil];
+        
+        // The full file will be moved here if and when the request completes successfully
+        [request setDownloadDestinationPath:downloadPath];
+        
+        // This file has part of the download in it already
+        [request setTemporaryFileDownloadPath:downloadPath];
+        [request setAllowResumeForFileDownloads:YES];
+        [request setDelegate:self];
+        [request setDownloadProgressDelegate:self];
+        //    int alreadyDownloaded = 2354100;
+        //    [request addRequestHeader:@"Range" value:[NSString stringWithFormat:@"bytes=%i-", alreadyDownloaded]];
+        [request setMyDontRemoveFlag:true];
+        [request startAsynchronous];
+    }
     
     
-    
-    NSURL *url = [NSURL URLWithString:@"http://192.168.0.100:80/m.mp3"];
-    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
-    
-    NSString *downloadPath = [NSHomeDirectory() stringByAppendingPathComponent:@"tmp/m.mp3"];
-    
-    // The full file will be moved here if and when the request completes successfully
-    [request setDownloadDestinationPath:downloadPath];
-    
-    // This file has part of the download in it already
-    [request setTemporaryFileDownloadPath:[NSHomeDirectory() stringByAppendingPathComponent:@"tmp/m.mp3"]];
-    [request setAllowResumeForFileDownloads:YES];
-    [request setDelegate:self];
-    [request setDownloadProgressDelegate:self];
-    //    int alreadyDownloaded = 2354100;
-    //    [request addRequestHeader:@"Range" value:[NSString stringWithFormat:@"bytes=%i-", alreadyDownloaded]];
-    [request setMyDontRemoveFlag:true];
-    [request startAsynchronous];
-    
-    
-    // TODO: try to start playing
-    
-    
-    // TODO: add
-    //    if (sPlayer==nil)
-    //    {
-    //        NSURL *bookURL = [NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:@"tmp/m.mp3"]];
-    //        sPlayer = [[StreamingPlayer alloc] initPlayerWithURL:bookURL];
-    //        sPlayer.delegate = self;
-    //    }
-    //
-    //    if (sPlayer.streamer.state == AS_INITIALIZED) {
-    //        //[sPlayer.streamer startAtPos:500.0 withFade:NO doPlay:YES];
-    //        [sPlayer.streamer start];
-    //    }
-    //    else
-    //        [sPlayer.streamer pause];
-    //    
-    //    return;
-    
+    if (sPlayer.streamer.state == AS_INITIALIZED) {
+        //[sPlayer.streamer startAtPos:500.0 withFade:NO doPlay:YES];
+        if(![[NSFileManager defaultManager]  fileExistsAtPath:[gss() pathForBook:book.abookId andChapter:[sPlayer chapter] ]])
+            NeedToStartWithFistDownloadedBytes = true;
+        else
+        {
+            [sPlayer.streamer start];
+        }
+    }
+    else
+        [sPlayer.streamer pause];
 
     
 }
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [sPlayer setDelegate:nil];
+   // progressSlider = nil;
+    [super viewDidDisappear:animated];
+}
+
 - (void)viewDidUnload {
-    progressSlider = nil;
     [super viewDidUnload];
 }
 @end

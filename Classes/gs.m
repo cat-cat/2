@@ -1,5 +1,5 @@
 //
-//  GlobalSingleton.m
+//  gs.m
 //  audiobook
 //
 //  Created by Mac Pro on 1/18/13.
@@ -7,7 +7,7 @@
 //
 //#import <NSError>
 
-#import "GlobalSingleton.h"
+#import "gs.h"
 #import "KissXML/DDXMLDocument.h"
 #import "MainViewController.h"
 #import "Reachability.h"
@@ -19,7 +19,7 @@
 #import "StandardPaths.h"
 #import "ASINetworkQueue.h"
 
-@implementation GlobalSingleton
+@implementation gs
 @synthesize navigationController = _navigationController;
 @synthesize queue = _queue;
 static int connectionType;
@@ -31,8 +31,39 @@ static NSString* databaseName;
 #define ReachableDirectWWAN               (1 << 18)
 
 
+-(NSArray*) arrayForDoc:(DDXMLDocument *)doc xpath:(NSString*) xpath
+{
+    NSError* error;
+    NSArray *items=[doc nodesForXPath:xpath error:&error];
+    [self handleError:error];
+    NSMutableArray* arr = [[NSMutableArray alloc] init];
+    for (DDXMLElement *item in items) {
+        [arr addObject:[item stringValue]];
+    }
+    return [arr copy];
+}
 
--(NSString*) dirForBook:(int)bid
+-(NSString*) pathForBook:(int)bid andChapter:(NSString*) ch
+{
+    @synchronized(self)
+    {
+        NSString* newDirPath = [self dirsForBook:bid];
+        NSString* path =[ NSString stringWithFormat:@"%@/ca/%@.mp3", newDirPath, ch ];
+        return path;
+    }
+}
+
+-(NSString*) pathForBookFinished:(int)bid chapter:(NSString*) ch
+{
+    @synchronized(self)
+    {
+        NSString* newDirPath = [self dirsForBook:bid];
+        NSString* path =[ NSString stringWithFormat:@"%@/ca/%@finished!", newDirPath, ch ];
+        return path;
+    }
+}
+
+-(NSString*) dirsForBook:(int)bid
 {
     @synchronized(self)
     {
@@ -40,9 +71,12 @@ static NSString* databaseName;
         NSString* newDirPath = [NSHomeDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"tmp/%d", bid]];
         NSURL *urlToDir = [NSURL fileURLWithPath:newDirPath ];
         NSError *error;
+        [[NSFileManager defaultManager] createDirectoryAtURL:urlToDir withIntermediateDirectories:true attributes:nil error:&error];
+        [self handleError:error];
+        NSString* chaptersAudioPath = [newDirPath stringByAppendingString:@"/ca"];
+        urlToDir = [NSURL fileURLWithPath:chaptersAudioPath ];
         bool success = [[NSFileManager defaultManager] createDirectoryAtURL:urlToDir withIntermediateDirectories:true attributes:nil error:&error];
         [self handleError:error];
-        
         return  success ? newDirPath : nil;
     }
 }
@@ -55,8 +89,8 @@ static NSString* databaseName;
     
     sqlite3* db;
     
-    int returnCode = sqlite3_open([GlobalSingleton dbname], &db);
-    [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"Unable to open db: %s", sqlite3_errmsg(db) ]];
+    int returnCode = sqlite3_open([gs dbname], &db);
+    [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"Unable to open db: %s", sqlite3_errmsg(db) ]];
     char *sqlStatement;
     
     sqlStatement = sqlite3_mprintf("SELECT abook_id"
@@ -92,7 +126,7 @@ static NSString* databaseName;
     
     returnCode =
     sqlite3_prepare_v2(db, sqlStatement, strlen(sqlStatement), &statement, NULL);
-    [GlobalSingleton assertNoError:returnCode==SQLITE_OK withMsg: [NSString stringWithFormat: @"Unable to prepare statement: %s",sqlite3_errmsg(db) ]];
+    [gs assertNoError:returnCode==SQLITE_OK withMsg: [NSString stringWithFormat: @"Unable to prepare statement: %s",sqlite3_errmsg(db) ]];
     
     sqlite3_free(sqlStatement);
     
@@ -111,9 +145,9 @@ static NSString* databaseName;
         
     }
     returnCode = sqlite3_finalize(statement);
-    [GlobalSingleton assertNoError:returnCode==SQLITE_OK withMsg:[NSString stringWithFormat:@"Cannot finalize %s", sqlite3_errmsg(db) ]];
+    [gs assertNoError:returnCode==SQLITE_OK withMsg:[NSString stringWithFormat:@"Cannot finalize %s", sqlite3_errmsg(db) ]];
     returnCode = sqlite3_close(db);
-    [GlobalSingleton assertNoError:returnCode==SQLITE_OK withMsg:[NSString stringWithFormat:@"Cannot close %s", sqlite3_errmsg(db) ]];
+    [gs assertNoError:returnCode==SQLITE_OK withMsg:[NSString stringWithFormat:@"Cannot close %s", sqlite3_errmsg(db) ]];
     return locBook;
 }
 
@@ -127,13 +161,13 @@ static NSString* databaseName;
 {
     sqlite3* db;
     sqlite3_stmt *statement;
-    int returnCode = sqlite3_open([GlobalSingleton dbname], &db);
-    [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"Cannot open: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+    int returnCode = sqlite3_open([gs dbname], &db);
+    [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"Cannot open: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
     returnCode =
     sqlite3_prepare_v2(db,
                        sqlStatement, strlen(sqlStatement),
                        &statement, NULL);
-    [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"Cannot prepare: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+    [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"Cannot prepare: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
     
     //sqlite3_free(sqlStatement);
     
@@ -211,7 +245,7 @@ static NSString* databaseName;
         int result = 0;
         NSError *error;
         DDXMLDocument *doc = [[DDXMLDocument alloc] initWithXMLString:err options:0 error:&error];
-        [[GlobalSingleton sharedInstance] handleError:error];
+        [self handleError:error];
         NSArray *arr = [doc nodesForXPath:@"//error" error:&error];
         if ([arr count]) {
             result = [[[arr objectAtIndex:0] stringValue] intValue];
@@ -243,12 +277,12 @@ static NSString* databaseName;
     
     //NSLog(@"url string content: %@", tmp);
     
-    if([[GlobalSingleton sharedInstance] handleError:*e])
+    if([[gs sharedInstance] handleError:*e])
         return nil;
     
     doc = [[DDXMLDocument alloc] initWithXMLString:tmp options:0 error:e];
     
-    if([[GlobalSingleton sharedInstance] handleError:*e])
+    if([[gs sharedInstance] handleError:*e])
         return nil;
     
     return doc;
@@ -291,13 +325,13 @@ static NSString* databaseName;
         NSError* err;
         
         DDXMLDocument *doc = [self GetDocOfPage:@"/hasUpdate2.php" withError:&err];
-        if ([[GlobalSingleton sharedInstance] handleError:err] || doc == nil) {
+        if ([gss() handleError:err] || doc == nil) {
             NSLog(@"*Update - updates error");
             return false; // no update error
         }
         
         NSArray* na = [doc nodesForXPath:@"/abooks/update"  error:&err];
-        if([[GlobalSingleton sharedInstance] handleError:err])
+        if([gss() handleError:err])
         {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Update Error"
                                                             message:[err localizedDescription]
@@ -328,14 +362,14 @@ static NSString* databaseName;
         
         
         // OPEN DB
-        int returnCode = sqlite3_open([GlobalSingleton dbname], &db);
+        int returnCode = sqlite3_open([gs dbname], &db);
         
-        [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"Cannot open: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+        [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"Cannot open: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
         returnCode =
         sqlite3_prepare_v2(db,
                            query, strlen(query),
                            &statement, NULL);
-        [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"Cannot prepare: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+        [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"Cannot prepare: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
         
         
         
@@ -346,7 +380,7 @@ static NSString* databaseName;
             NSLog(@"date : %@",date);
         }
         sqlite3_finalize(statement);
-        [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"error finalize: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+        [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"error finalize: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
         
         [formatter setDateFormat:@"yyyy'-'MM'-'dd HH:mm:ss"];
         NSDate *catalogDate = [formatter dateFromString:date];
@@ -361,7 +395,7 @@ static NSString* databaseName;
         if (interval > 0 && [self gotConnectionToSrv:YES])
         {
             doc = [self GetDocOfPage:@"/getAbookCatalogUpdate.php" withError:&err];
-            if ([[GlobalSingleton sharedInstance] handleError:err] || doc == nil) {
+            if ([gss() handleError:err] || doc == nil) {
                 NSLog(@"*Update - catalog updates error");
                 return false; // no update error
             }
@@ -490,7 +524,7 @@ static NSString* databaseName;
             NSArray *booksToRemoveIds = [doc nodesForXPath:@"//abook/@id[ancestor::remove]" error:&err];
             
             returnCode = sqlite3_exec(db, "BEGIN", 0, 0, 0);
-            [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"db cannot begin: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+            [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"db cannot begin: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
             
             for(DDXMLNode *bidNode in booksToRemoveIds) {
                 // init variables
@@ -505,14 +539,14 @@ static NSString* databaseName;
                 sqlite3_prepare_v2(db,
                                    query, strlen(query),
                                    &statement, NULL);
-                [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"Cannot prepare: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"Cannot prepare: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
                 
                 
                 returnCode  = sqlite3_step(statement);
-                [GlobalSingleton assertNoError: returnCode == SQLITE_DONE withMsg:[NSString stringWithFormat:@"error done: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                [gs assertNoError: returnCode == SQLITE_DONE withMsg:[NSString stringWithFormat:@"error done: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
                 
                 returnCode = sqlite3_finalize(statement);
-                [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"db error cannot finalize: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"db error cannot finalize: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
             }
             
             
@@ -537,7 +571,7 @@ static NSString* databaseName;
                 NSString *freeDate = @"", *lastOpened;
                 
                 returnCode = sqlite3_prepare_v2(db, query, -1, &Stmt, NULL);
-                [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"db error prepare: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"db error prepare: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
                 
                 [formatter setDateFormat:@"yyyy'-'MM'-'dd HH:mm:ss"];
                 [formatter setTimeZone:[NSTimeZone timeZoneWithName:@"Europe/Moscow"]];
@@ -579,10 +613,10 @@ static NSString* databaseName;
                     
                     int returnCode = sqlite3_step(Stmt);
                     
-                    [GlobalSingleton assertNoError: returnCode == SQLITE_DONE withMsg:[NSString stringWithFormat:@"db error step: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                    [gs assertNoError: returnCode == SQLITE_DONE withMsg:[NSString stringWithFormat:@"db error step: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
                     //sqlite3_clear_bindings(Stmt);
                     returnCode = sqlite3_reset(Stmt);
-                    [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"db error reset: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                    [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"db error reset: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
                 }
                 sqlite3_finalize(Stmt);
                 
@@ -599,7 +633,7 @@ static NSString* databaseName;
                 
                 
                 returnCode  = sqlite3_prepare_v2(db, [query UTF8String], -1, &Stmt, NULL);
-                [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr cannot prepare: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr cannot prepare: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
                 
                 for (AuthorSettings *author in a_authors)
                 {
@@ -610,20 +644,20 @@ static NSString* databaseName;
                     sqlite3_bind_text(Stmt, 3, [[author.authorName lowercaseString] UTF8String], -1, SQLITE_TRANSIENT);
                     
                     returnCode = sqlite3_step(Stmt);
-                    [GlobalSingleton assertNoError: returnCode == SQLITE_DONE withMsg:[NSString stringWithFormat:@"dberror cannot step: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                    [gs assertNoError: returnCode == SQLITE_DONE withMsg:[NSString stringWithFormat:@"dberror cannot step: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
                     returnCode = sqlite3_reset(Stmt);
-                    [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberror cannot reset: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                    [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberror cannot reset: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
                 }
                 
                 returnCode = sqlite3_finalize(Stmt);
-                [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr cannot finalize: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr cannot finalize: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
                 
                 // authors two
                 query = @"INSERT INTO t_abooks_authors (abook_id, author_id) VALUES (?, ?)";
                 
                 
                 returnCode = sqlite3_prepare_v2(db, [query UTF8String], -1, &Stmt, NULL);
-                [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"unable to prepare: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"unable to prepare: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
                 
                 for (AuthorSettings *author in a_authors)
                 {
@@ -634,14 +668,14 @@ static NSString* databaseName;
                     sqlite3_bind_int(Stmt, 2, author.authorId);
                     
                     returnCode = sqlite3_step(Stmt);
-                    [GlobalSingleton assertNoError: returnCode == SQLITE_DONE withMsg:[NSString stringWithFormat:@"dberr unable to step: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                    [gs assertNoError: returnCode == SQLITE_DONE withMsg:[NSString stringWithFormat:@"dberr unable to step: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
                     
                     returnCode = sqlite3_reset(Stmt);
-                    [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr unable to reset: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                    [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr unable to reset: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
                 }
                 
                 returnCode = sqlite3_finalize(Stmt);
-                [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr unable to finalize: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr unable to finalize: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
                 
             }
             NSLog(@"Readers to Load - %d", a_readers.count);
@@ -653,7 +687,7 @@ static NSString* databaseName;
                 
                 
                 returnCode = sqlite3_prepare_v2(db, [query UTF8String], -1, &Stmt, NULL);
-                [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr cannot prepare: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr cannot prepare: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
                 
                 for (ReaderSettings *reader in a_readers)
                 {
@@ -664,18 +698,18 @@ static NSString* databaseName;
                     sqlite3_bind_text(Stmt, 2, [reader.readerName UTF8String], -1, SQLITE_TRANSIENT);
                     
                     returnCode = sqlite3_step(Stmt);
-                    [GlobalSingleton assertNoError: returnCode == SQLITE_DONE withMsg:[NSString stringWithFormat:@"dberr cannot step: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                    [gs assertNoError: returnCode == SQLITE_DONE withMsg:[NSString stringWithFormat:@"dberr cannot step: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
                     returnCode = sqlite3_reset(Stmt);
-                    [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr cannot reset: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                    [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr cannot reset: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
                 }
                 returnCode = sqlite3_finalize(Stmt);
-                [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr finalize: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr finalize: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
                 // reders two
                 query = @"INSERT OR REPLACE INTO t_abooks_readers (abook_id, reader_id) VALUES (?, ?)";
                 
                 
                 returnCode = sqlite3_prepare_v2(db, [query UTF8String], -1, &Stmt, NULL);
-                [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberror cannot prepare: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberror cannot prepare: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
                 
                 for (ReaderSettings *reader in a_readers)
                 {
@@ -686,14 +720,14 @@ static NSString* databaseName;
                     sqlite3_bind_int(Stmt, 2, reader.readerId);
                     
                     returnCode = sqlite3_step(Stmt);
-                    [GlobalSingleton assertNoError: returnCode == SQLITE_DONE withMsg:[NSString stringWithFormat:@"dberror unable to step: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                    [gs assertNoError: returnCode == SQLITE_DONE withMsg:[NSString stringWithFormat:@"dberror unable to step: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
                     
                     returnCode = sqlite3_reset(Stmt);
-                    [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberror unable to reset: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                    [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberror unable to reset: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
                 }
                 
                 returnCode = sqlite3_finalize(Stmt);
-                [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr unable to finalize:: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr unable to finalize:: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
                 
             }
             
@@ -763,7 +797,7 @@ static NSString* databaseName;
                 
                 
                 returnCode = sqlite3_prepare_v2(db, [query UTF8String], -1, &Stmt, NULL);
-                [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr prepare: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr prepare: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
                 
                 for (PublisherSettings *publisher in a_publishers)
                 {
@@ -774,20 +808,20 @@ static NSString* databaseName;
                     sqlite3_bind_text(Stmt, 2, [publisher.publisherName UTF8String], -1, SQLITE_TRANSIENT);
                     
                     returnCode = sqlite3_step(Stmt);
-                    [GlobalSingleton assertNoError: returnCode == SQLITE_DONE withMsg:[NSString stringWithFormat:@"dberr unable to step: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                    [gs assertNoError: returnCode == SQLITE_DONE withMsg:[NSString stringWithFormat:@"dberr unable to step: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
                     
                     returnCode = sqlite3_reset(Stmt);
-                    [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr unable to reset: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                    [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr unable to reset: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
                 }
                 returnCode = sqlite3_finalize(Stmt);
-                [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr unable to finalize: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr unable to finalize: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
                 
                 // publishers two
                 query = @"INSERT INTO t_abooks_publishers (abook_id, publisher_id) VALUES (?, ?)";
                 
                 
                 returnCode = sqlite3_prepare_v2(db, [query UTF8String], -1, &Stmt, NULL);
-                [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr unable to prepare abook_publishers: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr unable to prepare abook_publishers: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
                 
                 for (PublisherSettings *publisher in a_publishers)
                 {
@@ -798,24 +832,24 @@ static NSString* databaseName;
                     sqlite3_bind_int(Stmt, 2, publisher.publisherId);
                     
                     returnCode = sqlite3_step(Stmt);
-                    [GlobalSingleton assertNoError: returnCode == SQLITE_DONE withMsg:[NSString stringWithFormat:@"db errr cannot step abook_publishers: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                    [gs assertNoError: returnCode == SQLITE_DONE withMsg:[NSString stringWithFormat:@"db errr cannot step abook_publishers: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
                     
                     returnCode = sqlite3_reset(Stmt);
-                    [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr cannot reset abook_publishers: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                    [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr cannot reset abook_publishers: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
                 }
                 
                 returnCode = sqlite3_finalize(Stmt);
-                [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr cannot finalize abook_publishers: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+                [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr cannot finalize abook_publishers: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
                 
             }
             
             NSLog(@"END LOAD...............................");
             returnCode = sqlite3_exec(db, "COMMIT", 0, 0, 0);
-            [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"db error commit: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+            [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"db error commit: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
             
             // DB CLOSE
             returnCode = sqlite3_close(db);
-            [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr close: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
+            [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr close: %s, func: %s", sqlite3_errmsg(db), __func__ ]];
             
             //            [AudiobookAppDelegate delegate].isDBLocked = NO;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"ntf_onRefreshCatalog" object:nil];
@@ -853,12 +887,12 @@ static NSString* databaseName;
 
 //#include <netinet/in.h>
 #include <arpa/inet.h>
-+ (GlobalSingleton *)sharedInstance
++ (gs *)sharedInstance
 {
-    static GlobalSingleton *sharedInstance = nil;
+    static gs *sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        sharedInstance = [[GlobalSingleton alloc] init];
+        sharedInstance = [[gs alloc] init];
         // Do any other initialisation stuff here
         
         //****************** init network operation queue
@@ -913,3 +947,8 @@ static NSString* databaseName;
 }
 
 @end
+
+gs* gss()
+{
+    return [gs sharedInstance];
+}

@@ -24,7 +24,7 @@
 #import "BookViewController.h"
 #import "MainViewController.h"
 #import "Genre.h"
-#import "GlobalSingleton.h"
+#import "gs.h"
 #import "Book.h"
 
 @implementation GenresViewController
@@ -138,7 +138,7 @@
         if([g.type isEqualToString:@"1"]) // category
         {
             GenresViewController *subGenresController = [[GenresViewController alloc] initWithStyle:UITableViewStylePlain andParentGenre:g.ID];
-            [[GlobalSingleton sharedInstance].navigationController pushViewController:subGenresController animated:YES];
+            [[gs sharedInstance].navigationController pushViewController:subGenresController animated:YES];
         }
         else // expected @"2" - book
         {
@@ -153,7 +153,7 @@
             //*****
 
             //CharacterViewController *characterController = [[CharacterViewController alloc] initWithDelegate:delegate andBookID:g.ID];
-            [[GlobalSingleton sharedInstance].navigationController  pushViewController:bookViewController animated:YES];
+            [[gs sharedInstance].navigationController  pushViewController:bookViewController animated:YES];
         }
 //    ShowCharactersTableViewController *showCharactersController = [[ShowCharactersTableViewController alloc] initWithStyle:UITableViewStylePlain];
 //    showCharactersController.delegate = delegate;
@@ -249,15 +249,15 @@
     
     //    printf(sqlStatement);
     sqlite3* db;
-    int returnCode = sqlite3_open([GlobalSingleton dbname], &db);
-    [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr open: %s", sqlite3_errmsg(db) ]];
+    int returnCode = sqlite3_open([gs dbname], &db);
+    [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr open: %s", sqlite3_errmsg(db) ]];
     
     sqlite3_stmt* statement;
     returnCode =
     sqlite3_prepare_v2(db,
                        sqlStatement, strlen(sqlStatement),
                        &statement, NULL);
-    [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr prepare: %s", sqlite3_errmsg(db) ]];
+    [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr prepare: %s", sqlite3_errmsg(db) ]];
     sqlite3_free(sqlStatement);
     
     
@@ -279,10 +279,10 @@
         
     }
     returnCode = sqlite3_finalize(statement);
-    [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr finalize: %s", sqlite3_errmsg(db) ]];
+    [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr finalize: %s", sqlite3_errmsg(db) ]];
     
     returnCode = sqlite3_close(db);
-    [GlobalSingleton assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr close: %s", sqlite3_errmsg(db) ]];
+    [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"dberr close: %s", sqlite3_errmsg(db) ]];
     
     return [genresList copy];
 }

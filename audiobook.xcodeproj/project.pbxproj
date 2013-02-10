@@ -26,7 +26,7 @@
 		8E11FBB516AE9B1F0079411A /* DDXMLElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E11FBAD16AE9B1F0079411A /* DDXMLElement.m */; };
 		8E11FBB616AE9B1F0079411A /* DDXMLNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E11FBAF16AE9B1F0079411A /* DDXMLNode.m */; };
 		8E11FBBB16AEE6840079411A /* libxml2.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E11FBBA16AEE6840079411A /* libxml2.2.dylib */; };
-		8E4D7B0916A9AA1B00CC2BEC /* GlobalSingleton.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E4D7B0816A9AA1B00CC2BEC /* GlobalSingleton.m */; };
+		8E4D7B0916A9AA1B00CC2BEC /* gs.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E4D7B0816A9AA1B00CC2BEC /* gs.m */; };
 		8E52FF1816B6DCED000AD339 /* BookView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8E52FF1716B6DCED000AD339 /* BookView.xib */; };
 		8E71F3DF1600BEAC00639B4D /* Book.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E71F3DE1600BEAC00639B4D /* Book.m */; };
 		8EC60C4D15F623A600D34892 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8EC60C4C15F623A600D34892 /* MainViewController.m */; };
@@ -118,8 +118,8 @@
 		8E11FBAF16AE9B1F0079411A /* DDXMLNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDXMLNode.m; sourceTree = "<group>"; };
 		8E11FBB116AE9B1F0079411A /* DDXMLPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXMLPrivate.h; sourceTree = "<group>"; };
 		8E11FBBA16AEE6840079411A /* libxml2.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.2.dylib; path = usr/lib/libxml2.2.dylib; sourceTree = SDKROOT; };
-		8E4D7B0716A9AA1B00CC2BEC /* GlobalSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GlobalSingleton.h; sourceTree = "<group>"; };
-		8E4D7B0816A9AA1B00CC2BEC /* GlobalSingleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GlobalSingleton.m; sourceTree = "<group>"; };
+		8E4D7B0716A9AA1B00CC2BEC /* gs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gs.h; sourceTree = "<group>"; };
+		8E4D7B0816A9AA1B00CC2BEC /* gs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = gs.m; sourceTree = "<group>"; };
 		8E52FF1716B6DCED000AD339 /* BookView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BookView.xib; sourceTree = "<group>"; };
 		8E71F3DD1600BEAC00639B4D /* Book.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Book.h; sourceTree = "<group>"; };
 		8E71F3DE1600BEAC00639B4D /* Book.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Book.m; sourceTree = "<group>"; };
@@ -247,8 +247,8 @@
 				8EE9B1CF16B0149C00C46C60 /* GenreSettings.m */,
 				8EC60C4F15F62A3400D34892 /* GenresViewController.h */,
 				8EC60C5015F62A3400D34892 /* GenresViewController.m */,
-				8E4D7B0716A9AA1B00CC2BEC /* GlobalSingleton.h */,
-				8E4D7B0816A9AA1B00CC2BEC /* GlobalSingleton.m */,
+				8E4D7B0716A9AA1B00CC2BEC /* gs.h */,
+				8E4D7B0816A9AA1B00CC2BEC /* gs.m */,
 				CE7FD5EA16B9397C00748E29 /* PlayerFreeViewController.h */,
 				CE7FD5EB16B9397C00748E29 /* PlayerFreeViewController.m */,
 				8EE9B1D016B0149C00C46C60 /* PublisherSettings.h */,
@@ -574,7 +574,7 @@
 				8ED3BCB815F7A5E300326459 /* StandardPaths.m in Sources */,
 				8ED3BCBF15F8E9C100326459 /* Genre.m in Sources */,
 				8E71F3DF1600BEAC00639B4D /* Book.m in Sources */,
-				8E4D7B0916A9AA1B00CC2BEC /* GlobalSingleton.m in Sources */,
+				8E4D7B0916A9AA1B00CC2BEC /* gs.m in Sources */,
 				8E11FBB216AE9B1F0079411A /* DDXMLElementAdditions.m in Sources */,
 				8E11FBB316AE9B1F0079411A /* NSString+DDXML.m in Sources */,
 				8E11FBB416AE9B1F0079411A /* DDXMLDocument.m in Sources */,

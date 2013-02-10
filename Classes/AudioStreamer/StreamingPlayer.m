@@ -7,16 +7,19 @@
 #import <QuartzCore/CoreAnimation.h>
 #import <MediaPlayer/MediaPlayer.h>
 #import <CFNetwork/CFNetwork.h>
+#import "gs.h"
 
 @implementation StreamingPlayer
-
+@synthesize bookId, chapter;
 @synthesize delegate;
 @synthesize streamer;
-
-- (id)initPlayerWithURL:(NSURL*)anURL
+- (id)initPlayerWithBookAndChapter:(int)bid chapter:(NSString*)ch
 {
 	if ((self = [super init]))
 	{
+        bookId = bid;
+        chapter = ch;
+        NSURL* anURL = [NSURL fileURLWithPath: [[gs sharedInstance] pathForBook:bid andChapter:ch]];
 		streamer = [[AudioStreamer alloc] initWithURL:anURL] ;
         NSLog(@"++stream URL: %@", anURL);
 		
@@ -34,7 +37,35 @@
 		 object:self.streamer];
         
 	}
-	return self;
+	return self;    
+}
+
+//- (id)initPlayerWithURL:(NSURL*)anURL
+//{
+//	if ((self = [super init]))
+//	{
+//		streamer = [[AudioStreamer alloc] initWithURL:anURL] ;
+//        NSLog(@"++stream URL: %@", anURL);
+//		
+//		progressUpdateTimer =
+//		[NSTimer
+//		 scheduledTimerWithTimeInterval:0.1
+//		 target:self
+//		 selector:@selector(updateProgress:)
+//		 userInfo:nil
+//		 repeats:YES];
+//		[[NSNotificationCenter defaultCenter]
+//		 addObserver:self
+//		 selector:@selector(playbackStateChanged:)
+//		 name:ASStatusChangedNotification
+//		 object:self.streamer];
+//        
+//	}
+//	return self;
+//}
+-(void)myrelease
+{
+    [self release];
 }
 
 - (void) dealloc

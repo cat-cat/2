@@ -7,7 +7,7 @@
 //
 
 #import "ChaptersViewController.h"
-#import "GlobalSingleton.h"
+#import "gs.h"
 #import "ASIHTTPRequest.h"
 #import "DDXMLDocument.h"
 
@@ -48,7 +48,7 @@
     // create xml from string
     NSError *error;
     DDXMLDocument *doc = [[DDXMLDocument alloc] initWithXMLString:fileContent options:0 error:&error];
-    [[GlobalSingleton sharedInstance] handleError:error];
+    [[gs sharedInstance] handleError:error];
     
     NSArray *items=[doc nodesForXPath:@"/abooks/abook/content/track" error:&error];
     
@@ -81,7 +81,7 @@
 {    
     NSString *response = [request responseString];
     
-    int res = [[GlobalSingleton sharedInstance] handleSrvError:response];
+    int res = [[gs sharedInstance] handleSrvError:response];
     if (res) { // must be 0 - no error
         return;
     }
@@ -90,7 +90,7 @@
     NSFileManager *fm = [NSFileManager defaultManager];
     // save to home directory
     //    NSString *pathToBookDirectory =[ NSHomeDirectory() stringByAppendingPathComponent: [NSString stringWithFormat:@"tmp/books/%d/BookMeta.xml", bookId ]];
-    NSString *pathToBookDirectory =[ [[GlobalSingleton sharedInstance] dirForBook:bookId] stringByAppendingPathComponent:@"bookMeta.xml"];
+    NSString *pathToBookDirectory =[ [[gs sharedInstance] dirsForBook:bookId] stringByAppendingPathComponent:@"bookMeta.xml"];
     [NSURL fileURLWithPath:pathToBookDirectory ];
     bool fileCreationSuccess = [ fm createFileAtPath:pathToBookDirectory contents:[request responseData ]  attributes:nil];
     if(fileCreationSuccess == NO){ NSLog(@"Failed to create the BookMeta file"); }
@@ -108,7 +108,7 @@
     NSError *error = [request error];
     
     //TODO:  show error with Alert
-    [[GlobalSingleton sharedInstance] handleError:error];
+    [[gs sharedInstance] handleError:error];
 }
 
 
@@ -132,7 +132,7 @@
     
     chapters = [[NSMutableArray alloc] init];
     
-    NSString* fMetaPath = [NSString stringWithFormat:@"%@/%@",[[GlobalSingleton sharedInstance] dirForBook:bookId ],  @"bookMeta.xml"];
+    NSString* fMetaPath = [NSString stringWithFormat:@"%@/%@",[[gs sharedInstance] dirsForBook:bookId ],  @"bookMeta.xml"];
     // start request to get chapters, handle answer in handlers
     if(![[NSFileManager defaultManager]  fileExistsAtPath:fMetaPath ])
     {
@@ -142,7 +142,7 @@
     {
         NSError *error;
         NSString* str = [NSString stringWithContentsOfFile:fMetaPath encoding:NSUTF8StringEncoding error:&error];
-        [[GlobalSingleton sharedInstance] handleError:error];
+        [[gs sharedInstance] handleError:error];
         
         [self updateMeta:str];
     }

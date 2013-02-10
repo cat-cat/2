@@ -9,7 +9,7 @@
 #import "MainViewController.h"
 #import "GenresViewController.h"
 #import "Genre.h"
-#import "GlobalSingleton.h"
+#import "gs.h"
 
 @implementation MainViewController
 @synthesize message;
@@ -25,9 +25,9 @@
         [self prepareDataModel];
         //	window = [[UIWindow alloc] initWithFrame:[[UIScreen  mainScreen] bounds]] ;
         GenresViewController *genresViewController = [[GenresViewController alloc] initWithStyle:UITableViewStylePlain andParentGenre:@"-1"];
-        [GlobalSingleton sharedInstance].navigationController = [[UINavigationController alloc] initWithRootViewController:genresViewController];
+        gss().navigationController = [[UINavigationController alloc] initWithRootViewController:genresViewController];
 
-        [self.view addSubview:[[GlobalSingleton sharedInstance].navigationController view]];
+        [self.view addSubview:[gss().navigationController view]];
         //    [window addSubview:[navigationController view]];
         //	[window makeKeyAndVisible];
 
@@ -88,7 +88,7 @@
 //    [GlobalSingleton setDelegate:self];
     
     // start update timer
-    [GlobalSingleton sharedInstance];
+    gss();
     
 }
 

@@ -1092,7 +1092,7 @@ cleanup:
         int i = 0;
         while (!self.isPlaying )
         {    
-            NSLog(@"wait fo runing1 - loop # %d ...", i++);
+            NSLog(@"wait fo runing1 - loop # %d, state:%d ...", i++, state);
             [NSThread sleepForTimeInterval:0.2];
         }
         
@@ -1100,11 +1100,12 @@ cleanup:
         [self stop];
         
         BOOL isRun = NO;
-        i=0;
+        //i=0;
         while (!self.isPlaying )
         {
             [NSThread sleepForTimeInterval:0.2];
-            if (!isRun)
+            NSLog(@"wait fo runing - loop # %d, state2:%d ...", i++, state);
+           if (!isRun)
             {
                 [self seekToTime:newSeekTime];
                 [self start];
