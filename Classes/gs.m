@@ -30,17 +30,42 @@ static NSString* databaseName;
 #define ReachableViaWiFiNetwork          2
 #define ReachableDirectWWAN               (1 << 18)
 
+-(DDXMLDocument*) docForFile:(NSString *)path
+{
+    @synchronized(self)
+    {
+        NSError* error;
+        NSString* str = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
+        [gss() handleError:error];
+        DDXMLDocument *xmldoc = [[DDXMLDocument alloc] initWithXMLString:str options:0 error:&error];
+        [gss() handleError:error];
+        return xmldoc;
+    }
+}
 
 -(NSArray*) arrayForDoc:(DDXMLDocument *)doc xpath:(NSString*) xpath
 {
-    NSError* error;
-    NSArray *items=[doc nodesForXPath:xpath error:&error];
-    [self handleError:error];
-    NSMutableArray* arr = [[NSMutableArray alloc] init];
-    for (DDXMLElement *item in items) {
-        [arr addObject:[item stringValue]];
+    @synchronized(self)
+    {
+        NSError* error;
+        NSArray *items=[doc nodesForXPath:xpath error:&error];
+        [self handleError:error];
+        NSMutableArray* arr = [[NSMutableArray alloc] init];
+        for (DDXMLElement *item in items) {
+            [arr addObject:[item stringValue]];
+        }
+        return [arr copy];
     }
-    return [arr copy];
+}
+
+-(NSString*) pathForBookMeta:(int)bid
+{
+    @synchronized(self)
+    {
+        NSString* newDirPath = [self dirsForBook:bid];
+        NSString* path =[ NSString stringWithFormat:@"%@/bookMeta.xml", newDirPath ];
+        return path;
+    }
 }
 
 -(NSString*) pathForBook:(int)bid andChapter:(NSString*) ch

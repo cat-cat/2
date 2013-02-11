@@ -82,7 +82,6 @@
 		CEC6416516BC0B4800AC325F /* StreamingPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC6416316BC0B4800AC325F /* StreamingPlayer.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		CEC6416A16BC0D6200AC325F /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC6416916BC0D6200AC325F /* AudioToolbox.framework */; };
 		CEDFAAAD16BFA9DD008601F6 /* ChaptersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEDFAAAB16BFA9DD008601F6 /* ChaptersViewController.m */; };
-		CEDFAAAE16BFA9DD008601F6 /* ChaptersView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEDFAAAC16BFA9DD008601F6 /* ChaptersView.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -202,7 +201,6 @@
 		CEC6416916BC0D6200AC325F /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		CEDFAAAA16BFA9DD008601F6 /* ChaptersViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChaptersViewController.h; sourceTree = "<group>"; };
 		CEDFAAAB16BFA9DD008601F6 /* ChaptersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChaptersViewController.m; sourceTree = "<group>"; };
-		CEDFAAAC16BFA9DD008601F6 /* ChaptersView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChaptersView.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -427,7 +425,6 @@
 		CE82EA6916BA6D8400F33698 /* xibs */ = {
 			isa = PBXGroup;
 			children = (
-				CEDFAAAC16BFA9DD008601F6 /* ChaptersView.xib */,
 				8E52FF1716B6DCED000AD339 /* BookView.xib */,
 				CE7FD5ED16B93DEA00748E29 /* PlayerFreeView.xib */,
 			);
@@ -534,7 +531,6 @@
 				8ED3BCC915FA4C9300326459 /* icon114.png in Resources */,
 				8E52FF1816B6DCED000AD339 /* BookView.xib in Resources */,
 				CE7FD5EE16B93DEA00748E29 /* PlayerFreeView.xib in Resources */,
-				CEDFAAAE16BFA9DD008601F6 /* ChaptersView.xib in Resources */,
 				CE17B29E16C279F500D0FB36 /* player_bar_button@2x.png in Resources */,
 				CE17B29F16C279F500D0FB36 /* player_bookmark_off@2x.png in Resources */,
 				CE17B2A016C279F500D0FB36 /* player_bookmark_on@2x.png in Resources */,

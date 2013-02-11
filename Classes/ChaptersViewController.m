@@ -10,6 +10,9 @@
 #import "gs.h"
 #import "ASIHTTPRequest.h"
 #import "DDXMLDocument.h"
+#import "PlayerFreeViewController.h"
+#import "PlayerFreeViewController.h"
+#import "Book.h"
 
 @interface ChaptersViewController ()
 
@@ -29,7 +32,7 @@
 @end
 
 @implementation ChaptersViewController
-
+//@synthesize bookId;
 - (void)requestBookMeta:(int)bid
 {
     
@@ -111,25 +114,24 @@
     [[gs sharedInstance] handleError:error];
 }
 
-
-- (id)initWithBook:(int)bid
-{
-    self = [super init];
-    if (self) {
-        // Custom initialization
-        bookId = bid;
-    }
-    return self;
-}
+//
+//- (id)initWithBook:(int)bid
+//{
+//    self = [super init];
+//    if (self) {
+//        // Custom initialization
+//        bookId = bid;
+//    }
+//    return self;
+//}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-
+        
     // Uncomment the following line to preserve selection between presentations.
      self.clearsSelectionOnViewWillAppear = NO;
-    
+    bookId = playerController.bookId;
     chapters = [[NSMutableArray alloc] init];
     
     NSString* fMetaPath = [NSString stringWithFormat:@"%@/%@",[[gs sharedInstance] dirsForBook:bookId ],  @"bookMeta.xml"];
@@ -237,12 +239,23 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // Navigation logic may go here. Create and push another view controller.
-    /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     */
+    // get chapter id from index and find that chapter id in bookMeta.xml
+    int rowIdx = indexPath.row;
+    // create xml from string
+    DDXMLDocument *xmldoc = [gss() docForFile:[gss() pathForBookMeta:bookId]];
+    NSArray* arr = [gss() arrayForDoc:xmldoc xpath:[NSString stringWithFormat:@"//abook[@id='%d']/content/track[%d]/@number", bookId, rowIdx+1]];
+    if ([arr count] != 1) {
+        NSLog(@"**err: invalid tracks array");
+    }
+    NSString* chid = [arr objectAtIndex:0];
+    
+    
+    [playerController startChapter:chid];
+//    
+//     PlayerFreeViewController *plConroller = [[PlayerFreeViewController alloc] initWithBook:bookId andChapter:chid];
+//     // ...
+//     // Pass the selected object to the new view controller.
+//     [gss().navigationController pushViewController:plConroller animated:YES];    
 }
 
 @end

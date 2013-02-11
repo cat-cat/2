@@ -28,9 +28,11 @@
 #import "ASIHTTPRequest.h"
 #import "AudioStreamer.h"
 #import "DDXMLDocument.h"
-
+#import "ChaptersViewController.h"
 
 @implementation PlayerFreeViewController
+@synthesize bookId;
+
 - (void) streamingPlayerIsWaiting:(StreamingPlayer *) anPlayer {
     NSLog(@"++ player IsWaiting");
 }
@@ -42,10 +44,10 @@
 }
 
 - (void) streamingPlayer:(StreamingPlayer *) anPlayer didUpdateProgress:(double) anProgress {
-    //NSLog(@"++ player DidUpdateProgress: %f", anProgress);
     
-    if (bindProgresVal) {
+    if (bindProgressVal) {
         progressSlider.value = anProgress;        
+        //NSLog(@"++ player DidUpdateProgress: %f", anProgress);
     }
 }
 
@@ -139,6 +141,15 @@ bool NeedToStartWithFistDownloadedBytes = false;
 - (IBAction)btnPressFF:(UIBarButtonItem *)sender {
 }
 
+-(void)startChapter:(NSString *)chid
+{
+    if (chid != [sPlayer chapter]) {
+        [sPlayer myrelease];
+        sPlayer = [[StreamingPlayer alloc] initPlayerWithBookAndChapter:[sPlayer bookId]  chapter:chid];
+        sPlayer.delegate = self;
+        [self btnPlayStopClick:nil];
+    }
+}
 
 - (id)initWithBook:(int)bid andChapter:(NSString*) chapter
 {    
@@ -146,16 +157,18 @@ bool NeedToStartWithFistDownloadedBytes = false;
         // custom initialization
         if (bid != -1) {
             book = [gs db_GetBookWithID:[NSString stringWithFormat:@"%d",bid]];
-            
+            bookId = bid;
             
             if (sPlayer) {
-                if (bid == [sPlayer bookId] && [sPlayer chapter] == chapter) {
+                if (bid == [sPlayer bookId]) {
                     return self;
                 }
 
                 [sPlayer myrelease];
+                bindProgressVal = YES;
             }
             sPlayer = [[StreamingPlayer alloc] initPlayerWithBookAndChapter:bid chapter:chapter];
+            sPlayer.delegate = self;
         }
         
     }
@@ -213,6 +226,9 @@ bool NeedToStartWithFistDownloadedBytes = false;
 
     // get free track meta
     [self getAndDisplayFreeTrackMeta];
+    chaptersTableView.delegate = chaptersController;
+    chaptersTableView.dataSource = chaptersController;
+    //[chaptersTableView reloadData];
     
     // display in a view
 }
@@ -227,15 +243,15 @@ bool NeedToStartWithFistDownloadedBytes = false;
 //}
 - (IBAction)onSliderUpInside:(UISlider *)sender {
     [sPlayer.streamer startAtPos:progressSlider.value withFade:NO doPlay:YES];
-    bindProgresVal = YES;
+    bindProgressVal = YES;
 }
 
 - (IBAction)onSliderDown:(UISlider *)sender {
-    bindProgresVal = NO;
+    bindProgressVal = NO;
 }
 
 - (IBAction)btnPlayStopClick:(UIBarButtonItem *)sender {
-
+    
     if(![[NSFileManager defaultManager]  fileExistsAtPath:[gss() pathForBookFinished:book.abookId chapter:[sPlayer chapter] ]])
     {
         // if not doewnloaded yet, start downloading or partial downloading
@@ -298,6 +314,8 @@ bool NeedToStartWithFistDownloadedBytes = false;
 }
 
 - (void)viewDidUnload {
+    chaptersTableView = nil;
+    chaptersController = nil;
     [super viewDidUnload];
 }
 @end

@@ -21,15 +21,21 @@
  * DEALINGS IN THE SOFTWARE.
  ******************************************************************************/
 #import "StreamingPlayer.h"
-
+@class ChaptersViewController;
 @class Book;
 @interface PlayerFreeViewController : UIViewController <StreamingPlayerDelegate> {
-	BOOL bindProgresVal;
+
+    IBOutlet ChaptersViewController *chaptersController;
+    __weak IBOutlet UITableView *chaptersTableView;
+	BOOL bindProgressVal;
     Book *book;
     __weak IBOutlet UISlider *progressSlider;
 //    __weak IBOutlet UILabel *labelSmallHeader;
 //    __weak IBOutlet UILabel *labelHeader;
 }
+
+@property (nonatomic, assign) int bookId;
+-(void)startChapter:(NSString*)chid;
 - (IBAction)onSliderUpInside:(UISlider *)sender;
 
 - (IBAction)onSliderDown:(UISlider *)sender;

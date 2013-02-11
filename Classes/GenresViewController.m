@@ -21,7 +21,7 @@
  * DEALINGS IN THE SOFTWARE.
  ******************************************************************************/
 #import "GenresViewController.h"
-#import "BookViewController.h"
+#import "PlayerFreeViewController.h"
 #import "MainViewController.h"
 #import "Genre.h"
 #import "gs.h"
@@ -142,18 +142,24 @@
         }
         else // expected @"2" - book
         {
+            // Navigation logic may go here. Create and push another view controller.
+            // get chapter id from index and find that chapter id in bookMeta.xml
+            int rowIdx = indexPath.row;
+            // create xml from string
+            DDXMLDocument *xmldoc = [gss() docForFile:[gss() pathForBookMeta:[g.ID intValue]]];
+            NSArray* arr = [gss() arrayForDoc:xmldoc xpath:[NSString stringWithFormat:@"//abook[@id='%@']/content/track[%d]/@number", g.ID, rowIdx+1]];
+            if ([arr count] != 1) {
+                NSLog(@"**err: invalid tracks array");
+            }
+            NSString* chid = [arr objectAtIndex:0];
             
-            //*****
-            BookViewController* bookViewController = [[BookViewController alloc] initWithNibName:@"BookView" bundle:nil andBook:g.ID];
-//            if (bookViewController.view) {// !!! accessing view will initialize view with all controls before it's shown
-//                [bookViewController.nameLabel setText:g.name]; // !!! will work only after "if" above
-//            }
             
-           
-            //*****
-
-            //CharacterViewController *characterController = [[CharacterViewController alloc] initWithDelegate:delegate andBookID:g.ID];
-            [[gs sharedInstance].navigationController  pushViewController:bookViewController animated:YES];
+            
+            
+            PlayerFreeViewController *plConroller = [[PlayerFreeViewController alloc] initWithBook:[g.ID intValue] andChapter:chid];
+            // ...
+            // Pass the selected object to the new view controller.
+            [gss().navigationController pushViewController:plConroller animated:YES];    
         }
 //    ShowCharactersTableViewController *showCharactersController = [[ShowCharactersTableViewController alloc] initWithStyle:UITableViewStylePlain];
 //    showCharactersController.delegate = delegate;

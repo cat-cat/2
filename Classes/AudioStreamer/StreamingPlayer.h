@@ -41,7 +41,7 @@
 }
 
 @property (nonatomic, assign) int bookId;
-@property (nonatomic,copy) NSString * chapter;
+@property (nonatomic, retain) NSString * chapter;
 @property (nonatomic, readwrite, assign) id<StreamingPlayerDelegate> delegate;
 @property (nonatomic, retain) AudioStreamer *streamer;
 

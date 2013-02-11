@@ -35,7 +35,8 @@
 - (IBAction)btnSeeChaptersClick:(id)sender {
     
     //*****
-    ChaptersViewController* chaptersViewController = [[ChaptersViewController alloc] initWithBook:book.abookId];
+#pragma warning! removed with stand alone chapters view
+    //ChaptersViewController* chaptersViewController = [[ChaptersViewController alloc] initWithBook:book.abookId];
     
     //            if (bookViewController.view) {// !!! accessing view will initialize view with all controls before it's shown
     //                [bookViewController.nameLabel setText:g.name]; // !!! will work only after "if" above
@@ -45,7 +46,7 @@
     //*****
     
     //CharacterViewController *characterController = [[CharacterViewController alloc] initWithDelegate:delegate andBookID:g.ID];
-    [[gs sharedInstance].navigationController pushViewController:chaptersViewController animated:YES];
+//    [[gs sharedInstance].navigationController pushViewController:chaptersViewController animated:YES];
     
 }
 

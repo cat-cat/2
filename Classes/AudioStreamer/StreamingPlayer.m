@@ -18,7 +18,7 @@
 	if ((self = [super init]))
 	{
         bookId = bid;
-        chapter = ch;
+        chapter = [[NSString alloc] initWithString: ch];
         NSURL* anURL = [NSURL fileURLWithPath: [[gs sharedInstance] pathForBook:bid andChapter:ch]];
 		streamer = [[AudioStreamer alloc] initWithURL:anURL] ;
         NSLog(@"++stream URL: %@", anURL);
@@ -82,7 +82,8 @@
 	self.delegate = nil;
 	[progressUpdateTimer invalidate];
 	progressUpdateTimer = nil;
-	
+	[chapter release];
+    
 	[super dealloc];
 }
 

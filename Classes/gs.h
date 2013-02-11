@@ -26,6 +26,8 @@ static NSString* AppConnectionHost = @"192.168.0.101:8080";
 @property(nonatomic, strong) UINavigationController *navigationController;
 @property (nonatomic, strong) NSOperationQueue *queue;
 
+-(DDXMLDocument*) docForFile:(NSString*)path;
+-(NSString*) pathForBookMeta:(int)bid;
 -(NSString*) pathForBookFinished:(int)bid chapter:(NSString*) ch;
 -(NSString*) pathForBook:(int)bid andChapter:(NSString*) ch;
 -(NSArray*) arrayForDoc:(DDXMLDocument *)doc xpath:(NSString*) xpath;

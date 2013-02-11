@@ -7,13 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-
+@class PlayerFreeViewController;
 @interface ChaptersViewController : UITableViewController
 {
+    __weak IBOutlet PlayerFreeViewController *playerController;
     NSMutableArray* chapters;
-    IBOutlet UITableView *view;
     int bookId;
 }
-
--(id)initWithBook:(int) bid;
+//@property (nonatomic, assign) int bookId;
 @end
