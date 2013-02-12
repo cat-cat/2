@@ -46,7 +46,10 @@
 - (void) streamingPlayer:(StreamingPlayer *) anPlayer didUpdateProgress:(double) anProgress {
     
     if (bindProgressVal) {
-        progressSlider.value = anProgress;        
+        progressSlider.value = anProgress;
+        float passedTime = anProgress;
+        float leftTime   = progressSlider.maximumValue - anProgress;
+        [self setPassedTime:passedTime leftTime:leftTime];
         //NSLog(@"++ player DidUpdateProgress: %f", anProgress);
     }
 }
@@ -100,7 +103,10 @@ static StreamingPlayer *sPlayer = nil;
 bool NeedToStartWithFistDownloadedBytes = false;
 - (void) request:(ASIHTTPRequest *)request didReceiveBytes:(unsigned long long) bytes
 {
-    NSLog(@"++bytes received: %lld", bytes);
+//    NSLog(@"++bytes received: %lld", bytes);
+    trackLength += bytes;        
+    progressView.progress = (float)trackLength/(float)trackSize;
+
     
     if (NeedToStartWithFistDownloadedBytes)
     {
@@ -148,6 +154,50 @@ bool NeedToStartWithFistDownloadedBytes = false;
         sPlayer = [[StreamingPlayer alloc] initPlayerWithBook:bookId  chapter:chid];
         sPlayer.delegate = self;
         [self handlePlayPauseClick];
+        
+        // set meta track length
+        DDXMLDocument *xmldoc = [gss() docForFile:[gss() pathForBookMeta:bookId]];
+        NSArray* arr = [gss() arrayForDoc:xmldoc xpath:[NSString stringWithFormat:@"//abook[@id='%d']/content/track[@number='%@']/file/length", bookId, chid]];
+        if ([arr count] != 1) {
+            NSLog(@"**err: invalid length for book: %d, chpater: %@", bookId, chid);
+            progressSlider.maximumValue = 0;
+        }
+        else
+        {
+            int fsz = [[arr objectAtIndex:0] intValue];
+            progressSlider.maximumValue = fsz;
+        }
+        
+        // set meta file size
+        NSArray* arr1 = [gss() arrayForDoc:xmldoc xpath:[NSString stringWithFormat:@"//abook[@id='%d']/content/track[@number='%@']/file/size", bookId, chid]];
+        if ([arr1 count] != 1) {
+            NSLog(@"**err: invalid meta size for book: %d, chpater: %@", bookId, chid);
+            trackSize = 0;
+        }
+        else
+        {
+            //int fsz = [[arr1 objectAtIndex:0] intValue];
+            trackSize = [[arr1 objectAtIndex:0] intValue];
+        }
+        
+        // get actual file size and set progressView.progress
+        NSError *error = nil;
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        NSDictionary *fileAttributes = [fileManager attributesOfItemAtPath:[gss() pathForBook:bookId andChapter:chid] error:&error];
+        if (nil != error)
+        {
+            NSLog(@"**err: chapter not found for bookid: %d chapter: %@", bookId, chid);
+            trackLength = 0;
+            progressView.progress = 0.0;
+        }
+        else
+        {
+            NSNumber *length = [fileAttributes objectForKey:NSFileSize];
+            trackLength = [length intValue];
+            float downloadProgress = (float)trackLength / (float)trackSize;
+
+            progressView.progress = downloadProgress;
+        }
     }
 }
 
@@ -212,6 +262,7 @@ bool NeedToStartWithFistDownloadedBytes = false;
     if (self = [super init]) {
         // custom initialization
         if (bid > 0) {
+            trackSize = 0;
             book = [gs db_GetBookWithID:[NSString stringWithFormat:@"%d",bid]];
             bookId = bid;
             
@@ -238,6 +289,16 @@ bool NeedToStartWithFistDownloadedBytes = false;
 //	}	
 //	return self;
 //}
+
+
+- (void)setPassedTime:(double)passedTime leftTime:(double)leftTime
+{
+	lbTimePassed.text = [NSString stringWithFormat:@"%d:%02d", (NSInteger)(passedTime / 60.0),
+                              (NSInteger)(passedTime) % 60];
+	lbTimeLeft.text   = [NSString stringWithFormat:@"%d:%02d", (NSInteger)((leftTime) / 60.0),
+                              (NSInteger)(leftTime) % 60];
+}
+
 
 - (void) getAndDisplayFreeTrackMeta
 {
@@ -328,6 +389,9 @@ bool NeedToStartWithFistDownloadedBytes = false;
 - (void)viewDidUnload {
     chaptersTableView = nil;
     chaptersController = nil;
+    lbTimeLeft = nil;
+    lbTimePassed = nil;
+    progressView = nil;
     [super viewDidUnload];
 }
 

@@ -24,7 +24,11 @@
 @class ChaptersViewController;
 @class Book;
 @interface PlayerFreeViewController : UIViewController <StreamingPlayerDelegate> {
-
+    NSInteger trackLength;
+    NSInteger trackSize;
+    IBOutlet UIProgressView *progressView;
+    IBOutlet UILabel *lbTimePassed;
+    IBOutlet UILabel *lbTimeLeft;
     IBOutlet ChaptersViewController *chaptersController;
     __weak IBOutlet UITableView *chaptersTableView;
 	BOOL bindProgressVal;

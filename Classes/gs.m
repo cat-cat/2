@@ -52,6 +52,7 @@ static NSString* databaseName;
         [self handleError:error];
         NSMutableArray* arr = [[NSMutableArray alloc] init];
         for (DDXMLElement *item in items) {
+            NSLog(@"++ item string value: %@", [item stringValue]);
             [arr addObject:[item stringValue]];
         }
         return [arr copy];
