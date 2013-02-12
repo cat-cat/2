@@ -50,18 +50,18 @@
     
 }
 
-- (IBAction)btnPlayFreeClicked:(UIButton *)sender {
-    
-    PlayerFreeViewController *playerController = [[PlayerFreeViewController alloc] initWithBook:book.abookId andChapter:@"01_01"];
-    [[gs sharedInstance].navigationController pushViewController:playerController animated:YES];
-
-    
-//    AppDelegate *d = [[UIApplication sharedApplication] delegate];
-//    PlayerFreeViewController* player = [d getViewControllerForTabIndex:3];
-//    [player updateToBook:[NSString stringWithFormat:@"%d", book.abookId]];
+//- (IBAction)btnPlayFreeClicked:(UIButton *)sender {
 //    
-//    [d changeViewControllerToIndex:3];
-}
+//    PlayerFreeViewController *playerController = [[PlayerFreeViewController alloc] initWithBook:book.abookId];
+//    [[gs sharedInstance].navigationController pushViewController:playerController animated:YES];
+//
+//    
+////    AppDelegate *d = [[UIApplication sharedApplication] delegate];
+////    PlayerFreeViewController* player = [d getViewControllerForTabIndex:3];
+////    [player updateToBook:[NSString stringWithFormat:@"%d", book.abookId]];
+////    
+////    [d changeViewControllerToIndex:3];
+//}
 
 - (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle andBook:(NSString*) bid
 {

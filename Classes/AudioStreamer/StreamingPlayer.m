@@ -13,7 +13,7 @@
 @synthesize bookId, chapter;
 @synthesize delegate;
 @synthesize streamer;
-- (id)initPlayerWithBookAndChapter:(int)bid chapter:(NSString*)ch
+- (id)initPlayerWithBook:(int)bid chapter:(NSString*)ch
 {
 	if ((self = [super init]))
 	{

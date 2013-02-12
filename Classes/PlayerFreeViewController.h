@@ -43,6 +43,6 @@
 //@property (nonatomic, strong) NSString *message;
 - (IBAction)btnPressFF:(UIBarButtonItem *)sender;
 //- (void)updateToBook:(NSString*)bid;
-- (id)initWithBook:(int) bid andChapter:(NSString*)chapter;
+- (id)initWithBook:(int) bid;
 
 @end

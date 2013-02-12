@@ -145,30 +145,86 @@ bool NeedToStartWithFistDownloadedBytes = false;
 {
     if (chid != [sPlayer chapter]) {
         [sPlayer myrelease];
-        sPlayer = [[StreamingPlayer alloc] initPlayerWithBookAndChapter:[sPlayer bookId]  chapter:chid];
+        sPlayer = [[StreamingPlayer alloc] initPlayerWithBook:bookId  chapter:chid];
         sPlayer.delegate = self;
-        [self btnPlayStopClick:nil];
+        [self handlePlayPauseClick];
     }
 }
 
-- (id)initWithBook:(int)bid andChapter:(NSString*) chapter
+-(void) handlePlayPauseClick
+{
+    if(![[NSFileManager defaultManager]  fileExistsAtPath:[gss() pathForBookFinished:book.abookId chapter:[sPlayer chapter] ]])
+    {
+        // if not doewnloaded yet, start downloading or partial downloading
+        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/chapter.php?bid=%d&ch=%@", AppConnectionHost, book.abookId, sPlayer.chapter ]];
+        ASIHTTPRequest *req1 = [ASIHTTPRequest requestWithURL:url];
+        [req1 startSynchronous];
+        NSError *error;
+        error = [req1 error];
+        [[gs sharedInstance] handleError:error];
+        NSString *response = [req1 responseString];
+        [[gs sharedInstance] handleSrvError:response];
+        DDXMLDocument* doc = [[DDXMLDocument  alloc] initWithXMLString:response options:0 error:&error];
+        NSArray* arr = [gss() arrayForDoc:doc xpath:@"//chapter_path"];
+        if (![arr count]) {
+            NSLog(@"**err: chapter_path eror");
+        }
+        
+        ASIHTTPRequest* request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:[arr objectAtIndex:0] ]];
+        NSString *downloadPath = [gss() pathForBook:book.abookId andChapter:[sPlayer chapter] ] ;
+        
+        // create empty file for player could start streaming
+        //        if(![[NSFileManager defaultManager]  fileExistsAtPath:downloadPath])
+        //            [[NSFileManager defaultManager] createFileAtPath:downloadPath contents:nil attributes:nil];
+        
+        // The full file will be moved here if and when the request completes successfully
+        [request setDownloadDestinationPath:downloadPath];
+        
+        // This file has part of the download in it already
+        [request setTemporaryFileDownloadPath:downloadPath];
+        [request setAllowResumeForFileDownloads:YES];
+        [request setDelegate:self];
+        [request setDownloadProgressDelegate:self];
+        //    int alreadyDownloaded = 2354100;
+        //    [request addRequestHeader:@"Range" value:[NSString stringWithFormat:@"bytes=%i-", alreadyDownloaded]];
+        [request setMyDontRemoveFlag:true];
+        [request startAsynchronous];
+    }
+    
+    
+    
+    if (sPlayer.streamer.state == AS_INITIALIZED) {
+        //[sPlayer.streamer startAtPos:500.0 withFade:NO doPlay:YES];
+        if(![[NSFileManager defaultManager]  fileExistsAtPath:[gss() pathForBook:book.abookId andChapter:[sPlayer chapter] ]])
+            NeedToStartWithFistDownloadedBytes = true;
+        else
+        {
+            [sPlayer.streamer start];
+        }
+    }
+    else
+        [sPlayer.streamer pause];
+        
+}
+
+- (id)initWithBook:(int)bid
 {    
     if (self = [super init]) {
         // custom initialization
-        if (bid != -1) {
+        if (bid > 0) {
             book = [gs db_GetBookWithID:[NSString stringWithFormat:@"%d",bid]];
             bookId = bid;
             
-            if (sPlayer) {
-                if (bid == [sPlayer bookId]) {
-                    return self;
-                }
+//            if (sPlayer) {
+//                if (bid == [sPlayer bookId]) {
+//                    return self;
+//                }
 
-                [sPlayer myrelease];
                 bindProgressVal = YES;
-            }
-            sPlayer = [[StreamingPlayer alloc] initPlayerWithBookAndChapter:bid chapter:chapter];
-            sPlayer.delegate = self;
+//            }
+        }
+        else{
+            NSLog(@"**err: invalid bid initialized in player!");
         }
         
     }
@@ -252,58 +308,14 @@ bool NeedToStartWithFistDownloadedBytes = false;
 
 - (IBAction)btnPlayStopClick:(UIBarButtonItem *)sender {
     
-    if(![[NSFileManager defaultManager]  fileExistsAtPath:[gss() pathForBookFinished:book.abookId chapter:[sPlayer chapter] ]])
-    {
-        // if not doewnloaded yet, start downloading or partial downloading
-        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/chapter.php?bid=%d&ch=%@", AppConnectionHost, book.abookId, sPlayer.chapter ]];
-        ASIHTTPRequest *req1 = [ASIHTTPRequest requestWithURL:url];
-        [req1 startSynchronous];
-        NSError *error;
-        error = [req1 error];
-        [[gs sharedInstance] handleError:error];
-        NSString *response = [req1 responseString];
-        [[gs sharedInstance] handleSrvError:response];
-        DDXMLDocument* doc = [[DDXMLDocument  alloc] initWithXMLString:response options:0 error:&error];
-        NSArray* arr = [gss() arrayForDoc:doc xpath:@"//chapter_path"];
-        if (![arr count]) {
-            NSLog(@"**err: chapter_path eror");
-        }
-        
-        ASIHTTPRequest* request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:[arr objectAtIndex:0] ]];
-        NSString *downloadPath = [gss() pathForBook:book.abookId andChapter:[sPlayer chapter] ] ;
-        
-        // create empty file for player could start streaming
-//        if(![[NSFileManager defaultManager]  fileExistsAtPath:downloadPath])
-//            [[NSFileManager defaultManager] createFileAtPath:downloadPath contents:nil attributes:nil];
-        
-        // The full file will be moved here if and when the request completes successfully
-        [request setDownloadDestinationPath:downloadPath];
-        
-        // This file has part of the download in it already
-        [request setTemporaryFileDownloadPath:downloadPath];
-        [request setAllowResumeForFileDownloads:YES];
-        [request setDelegate:self];
-        [request setDownloadProgressDelegate:self];
-        //    int alreadyDownloaded = 2354100;
-        //    [request addRequestHeader:@"Range" value:[NSString stringWithFormat:@"bytes=%i-", alreadyDownloaded]];
-        [request setMyDontRemoveFlag:true];
-        [request startAsynchronous];
-    }
-    
-    
-    if (sPlayer.streamer.state == AS_INITIALIZED) {
-        //[sPlayer.streamer startAtPos:500.0 withFade:NO doPlay:YES];
-        if(![[NSFileManager defaultManager]  fileExistsAtPath:[gss() pathForBook:book.abookId andChapter:[sPlayer chapter] ]])
-            NeedToStartWithFistDownloadedBytes = true;
-        else
-        {
-            [sPlayer.streamer start];
+    if (!sPlayer) {
+        NSString* cid = [self firstChapter];
+        if (cid) {
+            [self startChapter:cid];
         }
     }
     else
-        [sPlayer.streamer pause];
-
-    
+        [self handlePlayPauseClick];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -317,5 +329,18 @@ bool NeedToStartWithFistDownloadedBytes = false;
     chaptersTableView = nil;
     chaptersController = nil;
     [super viewDidUnload];
+}
+
+- (NSString*)firstChapter
+{
+    // create xml from string
+    DDXMLDocument *xmldoc = [gss() docForFile:[gss() pathForBookMeta:bookId]];
+    NSArray* arr = [gss() arrayForDoc:xmldoc xpath:[NSString stringWithFormat:@"//abook[@id='%d']/content/track[1]/@number", bookId]];
+    if ([arr count] != 1) {
+        NSLog(@"**err: invalid tracks array");
+        return nil;
+    }
+    NSString* chid = [arr objectAtIndex:0];
+    return chid;
 }
 @end

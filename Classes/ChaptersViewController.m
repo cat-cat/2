@@ -78,6 +78,8 @@
     // save to chapters variable
     
     
+    // reload table view
+    [(UITableView*)[self view] reloadData];
 }
 
 - (void)requestFinished:(ASIHTTPRequest *)request
@@ -102,8 +104,6 @@
     [self updateMeta:response];
     
     
-    // reload table view
-    [(UITableView*)[self view] reloadData];
 }
 
 - (void)requestFailed:(ASIHTTPRequest *)request
@@ -153,7 +153,7 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     // reload table view
-    [(UITableView*)[self view] reloadData];
+    //[(UITableView*)[self view] reloadData];
 }
 
 - (void)didReceiveMemoryWarning

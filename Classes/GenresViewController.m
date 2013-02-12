@@ -142,21 +142,8 @@
         }
         else // expected @"2" - book
         {
-            // Navigation logic may go here. Create and push another view controller.
-            // get chapter id from index and find that chapter id in bookMeta.xml
-            int rowIdx = indexPath.row;
-            // create xml from string
-            DDXMLDocument *xmldoc = [gss() docForFile:[gss() pathForBookMeta:[g.ID intValue]]];
-            NSArray* arr = [gss() arrayForDoc:xmldoc xpath:[NSString stringWithFormat:@"//abook[@id='%@']/content/track[%d]/@number", g.ID, rowIdx+1]];
-            if ([arr count] != 1) {
-                NSLog(@"**err: invalid tracks array");
-            }
-            NSString* chid = [arr objectAtIndex:0];
             
-            
-            
-            
-            PlayerFreeViewController *plConroller = [[PlayerFreeViewController alloc] initWithBook:[g.ID intValue] andChapter:chid];
+            PlayerFreeViewController *plConroller = [[PlayerFreeViewController alloc] initWithBook:[g.ID intValue]];
             // ...
             // Pass the selected object to the new view controller.
             [gss().navigationController pushViewController:plConroller animated:YES];    

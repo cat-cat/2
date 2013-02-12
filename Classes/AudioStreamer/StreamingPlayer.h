@@ -47,7 +47,7 @@
 
 -(void)myrelease;
 //- (id)initPlayerWithURL:(NSURL*)anURL;
-- (id)initPlayerWithBookAndChapter:(int)bid chapter:(NSString*)ch;
+- (id)initPlayerWithBook:(int)bid chapter:(NSString*)ch;
 - (void)updateProgress:(NSTimer *)aNotification;
 
 @end

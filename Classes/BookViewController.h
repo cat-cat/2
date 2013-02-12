@@ -32,6 +32,6 @@
 }
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 - (IBAction)btnSeeChaptersClick:(UIButton *)sender;
-- (IBAction)btnPlayFreeClicked:(UIButton *)sender;
+//- (IBAction)btnPlayFreeClicked:(UIButton *)sender;
 - (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle andBook:(NSString*) bid;
 @end
