@@ -11,6 +11,7 @@
 @protocol StreamingPlayerDelegate <NSObject>
 
 @optional
+- (void) setPlayButton:(int)play;
 - (void) streamingPlayerIsWaiting:(StreamingPlayer *) anPlayer;
 - (void) streamingPlayerDidStartPlaying:(StreamingPlayer *) anPlayer;
 - (void) streamingPlayerDidStopPlaying:(StreamingPlayer *) anPlayer;

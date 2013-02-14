@@ -1090,8 +1090,8 @@ cleanup:
     {
         [self start];
         int i = 0;
-        while (!self.isPlaying )
-        {    
+        while (!self.isPlaying && state != AS_INITIALIZED)
+        {
             NSLog(@"wait fo runing1 - loop # %d, state:%d ...", i++, state);
             [NSThread sleepForTimeInterval:0.2];
         }
@@ -1103,7 +1103,6 @@ cleanup:
         //i=0;
         while (!self.isPlaying )
         {
-            [NSThread sleepForTimeInterval:0.2];
             NSLog(@"wait fo runing - loop # %d, state2:%d ...", i++, state);
            if (!isRun)
             {
@@ -1111,6 +1110,11 @@ cleanup:
                 [self start];
                 isRun = YES;
             }    
+            [NSThread sleepForTimeInterval:0.2];
+            // TODO: blind exit, need investigation
+            if (state == AS_INITIALIZED) {
+                break;
+            }
         }
         
         if (!play)

@@ -33,6 +33,15 @@
 @implementation PlayerFreeViewController
 @synthesize bookId;
 
+
+-(void) setPlayButton:(int)play
+{
+    if (play)
+        [btnPlay setImage:[UIImage imageNamed:@"player_button_pause.png"]];
+    else
+        [btnPlay setImage:[UIImage imageNamed:@"player_button_play.png"]];
+}
+
 - (void) streamingPlayerIsWaiting:(StreamingPlayer *) anPlayer {
     NSLog(@"++ player IsWaiting");
 }
@@ -100,6 +109,18 @@ static StreamingPlayer *sPlayer = nil;
     if(fileCreationSuccess == NO){ NSLog(@"Failed to create the finished! file"); }
 }
 
+-(void)startPlayer
+{
+    float stps = [self getTrackProgress];
+    if (stps == 0) {
+        [sPlayer.streamer start];
+    }
+    else
+    {
+        [sPlayer.streamer startAtPos:stps withFade:NO doPlay:YES];
+    }
+}
+
 bool NeedToStartWithFistDownloadedBytes = false;
 - (void) request:(ASIHTTPRequest *)request didReceiveBytes:(unsigned long long) bytes
 {
@@ -112,8 +133,7 @@ bool NeedToStartWithFistDownloadedBytes = false;
     {
         NeedToStartWithFistDownloadedBytes = false;
         if (sPlayer.streamer.state == AS_INITIALIZED) {
-            //[sPlayer.streamer startAtPos:500.0 withFade:NO doPlay:YES];
-            [sPlayer.streamer start];
+            [self startPlayer];
         }
         else
             NSLog(@"**err: player is not initialized");
@@ -147,13 +167,110 @@ bool NeedToStartWithFistDownloadedBytes = false;
 - (IBAction)btnPressFF:(UIBarButtonItem *)sender {
 }
 
+//-(void)runOnce
+//{
+//    sqlite3* db;
+//    int returnCode = sqlite3_open([gs dbname], &db);
+//    [gs assertNoError:returnCode==SQLITE_OK withMsg:[NSString stringWithFormat:@"**dberr %s: cannot open : %s", __func__, sqlite3_errmsg(db) ]];
+//    returnCode = sqlite3_exec(db, "delete from t_tracks", 0, 0, 0);
+//    [gs assertNoError:returnCode==SQLITE_OK withMsg:[NSString stringWithFormat:@"**dberr %s: cannnot execute : %s", __func__, sqlite3_errmsg(db) ]];
+//    returnCode = sqlite3_exec(db, "create unique index idx_t_tracks on t_tracks (abook_id, track_number)", 0, 0, 0);
+//    [gs assertNoError:returnCode==SQLITE_OK withMsg:[NSString stringWithFormat:@"**dberr %s: cannnot execute : %s", __func__, sqlite3_errmsg(db) ]];
+//}
+
+-(void)saveTrackProgress
+{
+    sqlite3* db;
+    
+//    [self runOnce];
+    
+    // OPEN DB
+    int returnCode = sqlite3_open([gs dbname], &db);
+    [gs assertNoError:returnCode==SQLITE_OK withMsg:[NSString stringWithFormat:@"**dberr cannot open db: %s", sqlite3_errmsg(db) ]];
+
+        const char *sqlStatement = "INSERT OR REPLACE INTO t_tracks (abook_id, track_number, name, created_date, begin_time, end_time, free, in_progress, downloaded_length, size, length, bitrate, path, text_data_path, current_progress, isReachEnd) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        sqlite3_stmt *compiledStatement;
+        
+        returnCode = sqlite3_prepare_v2(db, sqlStatement, -1, &compiledStatement, NULL);
+        [gs assertNoError:returnCode==SQLITE_OK withMsg:[NSString stringWithFormat:@"**err db prepare2: %s", sqlite3_errmsg(db) ]];
+       
+        sqlite3_bind_int(compiledStatement, 1, book.abookId);
+        sqlite3_bind_text(compiledStatement, 2, [sPlayer.chapter UTF8String], -1, SQLITE_TRANSIENT);
+        sqlite3_bind_text(compiledStatement, 3, NULL, -1, SQLITE_TRANSIENT);
+        sqlite3_bind_text(compiledStatement, 4, NULL, -1, SQLITE_TRANSIENT);
+        sqlite3_bind_int(compiledStatement, 5, 0);
+        sqlite3_bind_int(compiledStatement, 6, 0);
+        sqlite3_bind_int(compiledStatement, 7, 0);
+        sqlite3_bind_int(compiledStatement, 8, 0);
+        sqlite3_bind_int(compiledStatement, 9, 0);
+        sqlite3_bind_int(compiledStatement, 10, 0);
+        sqlite3_bind_int(compiledStatement, 11, 0);
+        sqlite3_bind_int(compiledStatement, 12, 0);
+        sqlite3_bind_text(compiledStatement, 13, NULL, -1, SQLITE_TRANSIENT);
+        sqlite3_bind_text(compiledStatement, 14, NULL, -1, SQLITE_TRANSIENT);
+        
+        NSLog(@"Progress : %lf", progressSlider.value);
+        sqlite3_bind_double(compiledStatement, 15, progressSlider.value);
+        
+        sqlite3_bind_int(compiledStatement, 16, 0);
+        
+    returnCode = sqlite3_step(compiledStatement);
+    [gs assertNoError:returnCode==SQLITE_DONE withMsg:[NSString stringWithFormat:@"**dberr %s: cannot step  %s", __func__, sqlite3_errmsg(db) ]];
+        
+        returnCode = sqlite3_finalize(compiledStatement);
+    [gs assertNoError:returnCode==SQLITE_OK withMsg:[NSString stringWithFormat:@"**dberr %s: cannot finalize : %s", __func__, sqlite3_errmsg(db) ]];
+    returnCode = sqlite3_close(db);
+    [gs assertNoError:returnCode==SQLITE_OK withMsg:[NSString stringWithFormat:@"**dberr %s: cannot close db : %s", __func__, sqlite3_errmsg(db) ]];
+}
+
+-(float)getTrackProgress
+{
+    // assuming its not called from multiple threads, only from gui
+    
+    sqlite3* db;
+    
+    int returnCode = sqlite3_open([gs dbname], &db);
+    [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"Unable to open db: %s", sqlite3_errmsg(db) ]];
+    char *sqlStatement;
+    
+    sqlStatement = sqlite3_mprintf("SELECT current_progress from t_tracks where track_number='%s' AND abook_id=%d"
+                                   " LIMIT 0,1", [sPlayer.chapter UTF8String], sPlayer.bookId);
+    
+    sqlite3_stmt *statement;
+    
+    returnCode =
+    sqlite3_prepare_v2(db, sqlStatement, strlen(sqlStatement), &statement, NULL);
+    [gs assertNoError:returnCode==SQLITE_OK withMsg: [NSString stringWithFormat: @"Unable to prepare statement: %s",sqlite3_errmsg(db) ]];
+    
+    sqlite3_free(sqlStatement);
+    
+    
+    // get result
+   float f = 0;
+    returnCode = sqlite3_step(statement);
+    while(returnCode == SQLITE_ROW){
+        f = (float)sqlite3_column_double(statement, 0);
+        returnCode = sqlite3_step(statement);
+    }
+    returnCode = sqlite3_finalize(statement);
+    [gs assertNoError:returnCode==SQLITE_OK withMsg:[NSString stringWithFormat:@"Cannot finalize %s", sqlite3_errmsg(db) ]];
+    returnCode = sqlite3_close(db);
+    [gs assertNoError:returnCode==SQLITE_OK withMsg:[NSString stringWithFormat:@"Cannot close %s", sqlite3_errmsg(db) ]];
+    
+    return f;
+}
+
 -(void)startChapter:(NSString *)chid
 {
     if (chid != [sPlayer chapter]) {
+        if (sPlayer) { // already playied something
+            [self saveTrackProgress];
+        }
+        
         [sPlayer myrelease];
         sPlayer = [[StreamingPlayer alloc] initPlayerWithBook:bookId  chapter:chid];
         sPlayer.delegate = self;
-        [self handlePlayPauseClick];
+        [self handlePlayPause];
         
         // set meta track length
         DDXMLDocument *xmldoc = [gss() docForFile:[gss() pathForBookMeta:bookId]];
@@ -184,24 +301,45 @@ bool NeedToStartWithFistDownloadedBytes = false;
         NSError *error = nil;
         NSFileManager *fileManager = [NSFileManager defaultManager];
         NSDictionary *fileAttributes = [fileManager attributesOfItemAtPath:[gss() pathForBook:bookId andChapter:chid] error:&error];
+        trackLength = 0;
+        progressView.progress = 0.0;
         if (nil != error)
         {
             NSLog(@"**err: chapter not found for bookid: %d chapter: %@", bookId, chid);
-            trackLength = 0;
-            progressView.progress = 0.0;
+            [fileManager removeItemAtPath:[gss() pathForBookFinished:bookId chapter:chid] error:&error];
+            if (error) {
+                NSLog(@"**err: cannot remove finished! for book: %d, chapter: %@, error: %@", bookId, chid, [error localizedDescription]);
+            }
         }
         else
         {
             NSNumber *length = [fileAttributes objectForKey:NSFileSize];
             trackLength = [length intValue];
+            // TODO: unreliable logic
+            if (trackLength < 320) { // http 416 file range is not satisfiable (approx text 314 bytes)
+                trackLength = 0; // will cause to delete finished! in the next if
+                [fileManager removeItemAtPath:[gss() pathForBook:bookId andChapter:chid] error:&error];
+                if (error) {
+                    NSLog(@"**err: cannot remove chapter for book: %d, chapter: %@, error: %@", bookId, chid, [error localizedDescription]);
+                }
+            }
             float downloadProgress = (float)trackLength / (float)trackSize;
+            
+            // ASIHttpRequest somtimest fihishes for incomplete downloads
+            if([fileManager fileExistsAtPath:[gss() pathForBookFinished:bookId chapter:chid]] && downloadProgress < 1.0)
+            {
+                [fileManager removeItemAtPath:[gss() pathForBookFinished:bookId chapter:chid] error:&error];
+                if (error) {
+                    NSLog(@"**err: cannot remove finished! for book: %d, chapter: %@, error: %@", bookId, chid, [error localizedDescription]);
+                }
+            }
 
             progressView.progress = downloadProgress;
         }
     }
 }
 
--(void) handlePlayPauseClick
+-(void) handlePlayPause
 {
     if(![[NSFileManager defaultManager]  fileExistsAtPath:[gss() pathForBookFinished:book.abookId chapter:[sPlayer chapter] ]])
     {
@@ -218,9 +356,15 @@ bool NeedToStartWithFistDownloadedBytes = false;
         NSArray* arr = [gss() arrayForDoc:doc xpath:@"//chapter_path"];
         if (![arr count]) {
             NSLog(@"**err: chapter_path eror");
+            // TODO: message to user about not found chapter
+            return;
         }
         
-        ASIHTTPRequest* request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:[arr objectAtIndex:0] ]];
+        if (currentRequest) { // cancel previous request before starting new
+            [currentRequest cancel];
+        }
+        
+        currentRequest = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:[arr objectAtIndex:0] ]];
         NSString *downloadPath = [gss() pathForBook:book.abookId andChapter:[sPlayer chapter] ] ;
         
         // create empty file for player could start streaming
@@ -228,17 +372,17 @@ bool NeedToStartWithFistDownloadedBytes = false;
         //            [[NSFileManager defaultManager] createFileAtPath:downloadPath contents:nil attributes:nil];
         
         // The full file will be moved here if and when the request completes successfully
-        [request setDownloadDestinationPath:downloadPath];
+        [currentRequest setDownloadDestinationPath:downloadPath];
         
         // This file has part of the download in it already
-        [request setTemporaryFileDownloadPath:downloadPath];
-        [request setAllowResumeForFileDownloads:YES];
-        [request setDelegate:self];
-        [request setDownloadProgressDelegate:self];
+        [currentRequest setTemporaryFileDownloadPath:downloadPath];
+        [currentRequest setAllowResumeForFileDownloads:YES];
+        [currentRequest setDelegate:self];
+        [currentRequest setDownloadProgressDelegate:self];
         //    int alreadyDownloaded = 2354100;
         //    [request addRequestHeader:@"Range" value:[NSString stringWithFormat:@"bytes=%i-", alreadyDownloaded]];
-        [request setMyDontRemoveFlag:true];
-        [request startAsynchronous];
+        [currentRequest setMyDontRemoveFlag:true];
+        [currentRequest startAsynchronous];
     }
     
     
@@ -249,7 +393,7 @@ bool NeedToStartWithFistDownloadedBytes = false;
             NeedToStartWithFistDownloadedBytes = true;
         else
         {
-            [sPlayer.streamer start];
+            [self startPlayer];
         }
     }
     else
@@ -306,13 +450,13 @@ bool NeedToStartWithFistDownloadedBytes = false;
     
     // request to server
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/getAbookFreePart.php?bid=%d", AppConnectionHost, book.abookId ]];
-    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
-    [request startSynchronous];
-    NSError *error = [request error];
+    ASIHTTPRequest *req = [ASIHTTPRequest requestWithURL:url];
+    [req startSynchronous];
+    NSError *error = [req error];
     [[gs sharedInstance] handleError:error];
     NSString *response;
     if (!error) {
-        response = [request responseString];
+        response = [req responseString];
     }
     
     // xml doc and it's handling
@@ -374,9 +518,12 @@ bool NeedToStartWithFistDownloadedBytes = false;
         if (cid) {
             [self startChapter:cid];
         }
+        else
+            // TODO: add error to user
+            NSLog(@"**err: no first chapter for book: %d", bookId);
     }
     else
-        [self handlePlayPauseClick];
+        [self handlePlayPause];
 }
 
 - (void)viewWillDisappear:(BOOL)animated

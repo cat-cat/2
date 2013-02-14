@@ -3,6 +3,17 @@
    version = "1.0">
    <ContextStates>
       <ContextState
+         contextName = "-[PlayerFreeViewController saveTrackProgress]:PlayerFreeViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "book">
+            </PersistentString>
+            <PersistentString
+               value = "sPlayer">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "-[PlayerFreeViewController getAndDisplayFreeTrackMeta]:PlayerFreeViewController.m">
          <PersistentStrings>
             <PersistentString

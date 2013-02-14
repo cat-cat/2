@@ -21,9 +21,12 @@
  * DEALINGS IN THE SOFTWARE.
  ******************************************************************************/
 #import "StreamingPlayer.h"
+@class ASIHTTPRequest;
 @class ChaptersViewController;
 @class Book;
 @interface PlayerFreeViewController : UIViewController <StreamingPlayerDelegate> {
+    ASIHTTPRequest* currentRequest;
+    IBOutlet UIBarButtonItem *btnPlay;
     NSInteger trackLength;
     NSInteger trackSize;
     IBOutlet UIProgressView *progressView;

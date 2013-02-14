@@ -100,6 +100,15 @@
 //
 - (void)playbackStateChanged:(NSNotification *)aNotification
 {
+    // for play button
+    if( delegate && [delegate respondsToSelector:@selector(setPlayButton:)] )
+    {
+        if ([streamer isPlaying])
+			[delegate setPlayButton:1];
+        else
+            [delegate setPlayButton:0];
+    }
+    
 	if ([streamer isWaiting])
 	{
 		if( delegate && [delegate respondsToSelector:@selector(streamingPlayerIsWaiting:)] )

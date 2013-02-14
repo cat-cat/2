@@ -335,7 +335,6 @@ static NSString* databaseName;
     NSAssert(noErrorFlag, message);
     
     if (!noErrorFlag) {
-        int i = 4;
     }
 }
 

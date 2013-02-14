@@ -403,6 +403,14 @@
 					<int key="connectionID">419</int>
 				</object>
 				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">btnPlay</string>
+						<reference key="source" ref="372490531"/>
+						<reference key="destination" ref="324498283"/>
+					</object>
+					<int key="connectionID">420</int>
+				</object>
+				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
 						<string key="label">onSliderDown:</string>
 						<reference key="source" ref="240256843"/>
@@ -717,7 +725,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">419</int>
+			<int key="maxID">420</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes"/>
 		<int key="IBDocument.localizationMode">0</int>
@@ -740,9 +748,9 @@
 			<object class="NSArray" key="dict.values">
 				<bool key="EncodedWithXMLCoder">YES</bool>
 				<string>{21, 21}</string>
-				<string>{16, 16}</string>
-				<string>{16, 16}</string>
-				<string>{16, 16}</string>
+				<string>{30, 20}</string>
+				<string>{23, 20}</string>
+				<string>{28, 20}</string>
 			</object>
 		</object>
 		<string key="IBCocoaTouchPluginVersion">1930</string>
