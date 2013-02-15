@@ -76,7 +76,7 @@
     // parse
     
     // save to chapters variable
-    
+
     
     // reload table view
     [(UITableView*)[self view] reloadData];
@@ -154,6 +154,27 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     // reload table view
     //[(UITableView*)[self view] reloadData];
+    
+}
+
+-(void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    // scroll down to previosly selected row
+    if (rowIdx>=0 && [chapters count]>=rowIdx) {
+        //end of loading
+        //for example [activityIndicator stopAnimating];
+        UITableView* thisView =  (UITableView*)[self view];
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:rowIdx inSection:0];
+        @try {
+            [thisView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionBottom];
+            [thisView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+        }
+        @catch (NSException *exception) {
+            NSLog(@"**err:cannot scroll table: %@", [exception description]);
+        }
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -191,7 +212,7 @@
     Chapter *lc = [chapters objectAtIndex:indexPath.row];
     cell.textLabel.text = lc.cId;
     cell.detailTextLabel.text = lc.name;
-    
+
     return cell;
 }
 
@@ -235,27 +256,46 @@
 */
 
 #pragma mark - Table view delegate
-
+static int rowIdx = -1;
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // Navigation logic may go here. Create and push another view controller.
     // get chapter id from index and find that chapter id in bookMeta.xml
-    int rowIdx = indexPath.row;
+    rowIdx = indexPath.row;
     // create xml from string
     DDXMLDocument *xmldoc = [gss() docForFile:[gss() pathForBookMeta:bookId]];
     NSArray* arr = [gss() arrayForDoc:xmldoc xpath:[NSString stringWithFormat:@"//abook[@id='%d']/content/track[%d]/@number", bookId, rowIdx+1]];
     if ([arr count] != 1) {
         NSLog(@"**err: invalid tracks array");
+        if (rowIdx>0) {
+            --rowIdx; // leave at last position
+        }
+        else
+        {
+            rowIdx = 0; // set to first chapter
+        }
+        return;
     }
     NSString* chid = [arr objectAtIndex:0];
     
+    if (!tableView) { // call from player to select previous/next chapter
+        [(UITableView*)[self view] selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionBottom];
+    }
     
     [playerController startChapter:chid];
-//    
+    
+//
 //     PlayerFreeViewController *plConroller = [[PlayerFreeViewController alloc] initWithBook:bookId andChapter:chid];
 //     // ...
 //     // Pass the selected object to the new view controller.
 //     [gss().navigationController pushViewController:plConroller animated:YES];    
 }
 
+- (IBAction)next:(UIBarButtonItem *)sender {
+    [self tableView:nil didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:++rowIdx inSection:0]];
+}
+
+- (IBAction)prev:(UIBarButtonItem *)sender {
+    [self tableView:nil didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:--rowIdx inSection:0]];
+}
 @end

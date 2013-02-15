@@ -25,10 +25,7 @@
 @class ChaptersViewController;
 @class Book;
 @interface PlayerFreeViewController : UIViewController <StreamingPlayerDelegate> {
-    ASIHTTPRequest* currentRequest;
     IBOutlet UIBarButtonItem *btnPlay;
-    NSInteger trackLength;
-    NSInteger trackSize;
     IBOutlet UIProgressView *progressView;
     IBOutlet UILabel *lbTimePassed;
     IBOutlet UILabel *lbTimeLeft;
@@ -48,7 +45,7 @@
 - (IBAction)onSliderDown:(UISlider *)sender;
 - (IBAction)btnPlayStopClick:(UIBarButtonItem *)sender;
 //@property (nonatomic, strong) NSString *message;
-- (IBAction)btnPressFF:(UIBarButtonItem *)sender;
+//- (IBAction)btnPressFF:(UIBarButtonItem *)sender;
 //- (void)updateToBook:(NSString*)bid;
 - (id)initWithBook:(int) bid;
 

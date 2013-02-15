@@ -33,6 +33,7 @@
 @implementation PlayerFreeViewController
 @synthesize bookId;
 
+static ASIHTTPRequest* currentRequest;
 
 -(void) setPlayButton:(int)play
 {
@@ -121,6 +122,7 @@ static StreamingPlayer *sPlayer = nil;
     }
 }
 
+NSInteger trackLength = 0, trackSize = 0;
 bool NeedToStartWithFistDownloadedBytes = false;
 - (void) request:(ASIHTTPRequest *)request didReceiveBytes:(unsigned long long) bytes
 {
@@ -164,8 +166,8 @@ bool NeedToStartWithFistDownloadedBytes = false;
 //    }
 }
 
-- (IBAction)btnPressFF:(UIBarButtonItem *)sender {
-}
+//- (IBAction)btnPressFF:(UIBarButtonItem *)sender {
+//}
 
 //-(void)runOnce
 //{
@@ -180,6 +182,10 @@ bool NeedToStartWithFistDownloadedBytes = false;
 
 -(void)saveTrackProgress
 {
+    if (!sPlayer || ![sPlayer.chapter length]) {
+        return;
+    }
+    
     sqlite3* db;
     
 //    [self runOnce];
@@ -225,6 +231,10 @@ bool NeedToStartWithFistDownloadedBytes = false;
 
 -(float)getTrackProgress
 {
+    if (!sPlayer || ![sPlayer.chapter length]) {
+        return 0.0;
+    }
+    
     // assuming its not called from multiple threads, only from gui
     
     sqlite3* db;
@@ -260,83 +270,92 @@ bool NeedToStartWithFistDownloadedBytes = false;
     return f;
 }
 
+-(void)checkChapter:(NSString*)chid
+{
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    bool finished_exists = [fileManager fileExistsAtPath:[gss() pathForBookFinished:bookId chapter:chid]];
+    NSInteger actualSize = [self actualSizeForChapter:chid];
+    NSInteger metaSize = [self metaSizeForChapter:chid];
+     if((finished_exists && actualSize<metaSize) || (!finished_exists && actualSize<400))
+     {        
+        NSError *error;
+        [fileManager removeItemAtPath:[gss() pathForBookFinished:bookId chapter:chid] error:&error];
+        if (error) {
+            NSLog(@"--warning: cannot remove finished! for book: %d, chapter: %@, error: %@", bookId, chid, [error localizedDescription]);
+        }
+        [fileManager removeItemAtPath:[gss() pathForBook:bookId andChapter:chid] error:&error];
+        if (error) {
+            NSLog(@"--warning: cannot remove chapter for book: %d, chapter: %@, error: %@", bookId, chid, [error localizedDescription]);
+        }
+     }
+}
+
+-(NSInteger) metaSizeForChapter:(NSString*) chid
+{
+    NSInteger returnValue = 0;
+    DDXMLDocument *xmldoc = [gss() docForFile:[gss() pathForBookMeta:bookId]];
+    // set meta file size
+    NSArray* arr1 = [gss() arrayForDoc:xmldoc xpath:[NSString stringWithFormat:@"//abook[@id='%d']/content/track[@number='%@']/file/size", bookId, chid]];
+    if ([arr1 count] != 1) {
+        NSLog(@"**err: invalid meta size for book: %d, chpater: %@", bookId, chid);
+    }
+    else
+    {
+        returnValue = [[arr1 objectAtIndex:0] intValue];
+    }
+    
+    return returnValue;
+}
+
+-(NSInteger) actualSizeForChapter:(NSString*)chid
+{
+    NSInteger returnValue = 0;
+    // get actual file size and set progressView.progress
+    NSError *error = nil;
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSDictionary *fileAttributes = [fileManager attributesOfItemAtPath:[gss() pathForBook:bookId andChapter:chid] error:&error];
+    if (nil != error)
+    {
+        NSLog(@"**err: chapter not found for bookid: %d chapter: %@", bookId, chid);
+    }
+    else
+    {
+        NSNumber *length = [fileAttributes objectForKey:NSFileSize];
+        returnValue = [length intValue];
+    }
+    return returnValue;
+}
+
+-(float)calcDownProgressForChapter:(NSString*)chid
+{
+    trackSize = [self metaSizeForChapter:chid];
+    
+    trackLength = [self actualSizeForChapter:chid];
+    
+    float downloadProgress = (float)trackLength / (float)trackSize;
+    
+    return downloadProgress;
+}
+
 -(void)startChapter:(NSString *)chid
 {
     if (chid != [sPlayer chapter]) {
+        [self checkChapter:chid];
+        
         if (sPlayer) { // already playied something
             [self saveTrackProgress];
         }
+        
+        progressSlider.maximumValue = [self metaLengthForChapter:chid];
         
         [sPlayer myrelease];
         sPlayer = [[StreamingPlayer alloc] initPlayerWithBook:bookId  chapter:chid];
         sPlayer.delegate = self;
         [self handlePlayPause];
         
-        // set meta track length
-        DDXMLDocument *xmldoc = [gss() docForFile:[gss() pathForBookMeta:bookId]];
-        NSArray* arr = [gss() arrayForDoc:xmldoc xpath:[NSString stringWithFormat:@"//abook[@id='%d']/content/track[@number='%@']/file/length", bookId, chid]];
-        if ([arr count] != 1) {
-            NSLog(@"**err: invalid length for book: %d, chpater: %@", bookId, chid);
-            progressSlider.maximumValue = 0;
-        }
-        else
-        {
-            int fsz = [[arr objectAtIndex:0] intValue];
-            progressSlider.maximumValue = fsz;
-        }
-        
-        // set meta file size
-        NSArray* arr1 = [gss() arrayForDoc:xmldoc xpath:[NSString stringWithFormat:@"//abook[@id='%d']/content/track[@number='%@']/file/size", bookId, chid]];
-        if ([arr1 count] != 1) {
-            NSLog(@"**err: invalid meta size for book: %d, chpater: %@", bookId, chid);
-            trackSize = 0;
-        }
-        else
-        {
-            //int fsz = [[arr1 objectAtIndex:0] intValue];
-            trackSize = [[arr1 objectAtIndex:0] intValue];
-        }
-        
-        // get actual file size and set progressView.progress
-        NSError *error = nil;
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-        NSDictionary *fileAttributes = [fileManager attributesOfItemAtPath:[gss() pathForBook:bookId andChapter:chid] error:&error];
-        trackLength = 0;
-        progressView.progress = 0.0;
-        if (nil != error)
-        {
-            NSLog(@"**err: chapter not found for bookid: %d chapter: %@", bookId, chid);
-            [fileManager removeItemAtPath:[gss() pathForBookFinished:bookId chapter:chid] error:&error];
-            if (error) {
-                NSLog(@"**err: cannot remove finished! for book: %d, chapter: %@, error: %@", bookId, chid, [error localizedDescription]);
-            }
-        }
-        else
-        {
-            NSNumber *length = [fileAttributes objectForKey:NSFileSize];
-            trackLength = [length intValue];
-            // TODO: unreliable logic
-            if (trackLength < 320) { // http 416 file range is not satisfiable (approx text 314 bytes)
-                trackLength = 0; // will cause to delete finished! in the next if
-                [fileManager removeItemAtPath:[gss() pathForBook:bookId andChapter:chid] error:&error];
-                if (error) {
-                    NSLog(@"**err: cannot remove chapter for book: %d, chapter: %@, error: %@", bookId, chid, [error localizedDescription]);
-                }
-            }
-            float downloadProgress = (float)trackLength / (float)trackSize;
-            
-            // ASIHttpRequest somtimest fihishes for incomplete downloads
-            if([fileManager fileExistsAtPath:[gss() pathForBookFinished:bookId chapter:chid]] && downloadProgress < 1.0)
-            {
-                [fileManager removeItemAtPath:[gss() pathForBookFinished:bookId chapter:chid] error:&error];
-                if (error) {
-                    NSLog(@"**err: cannot remove finished! for book: %d, chapter: %@, error: %@", bookId, chid, [error localizedDescription]);
-                }
-            }
-
-            progressView.progress = downloadProgress;
-        }
+        progressView.progress = [self calcDownProgressForChapter:chid];
     }
+    // else - user come to the player at for the already playied book, so just do nothing
 }
 
 -(void) handlePlayPause
@@ -444,36 +463,22 @@ bool NeedToStartWithFistDownloadedBytes = false;
 }
 
 
-- (void) getAndDisplayFreeTrackMeta
+- (NSInteger) metaLengthForChapter:(NSString*)chid
 {
-    // TODO: read data from local bookMeta.xml
-    
-    // request to server
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/getAbookFreePart.php?bid=%d", AppConnectionHost, book.abookId ]];
-    ASIHTTPRequest *req = [ASIHTTPRequest requestWithURL:url];
-    [req startSynchronous];
-    NSError *error = [req error];
-    [[gs sharedInstance] handleError:error];
-    NSString *response;
-    if (!error) {
-        response = [req responseString];
+    NSInteger returnValue = 0;
+    // set meta track length
+    DDXMLDocument *xmldoc = [gss() docForFile:[gss() pathForBookMeta:bookId]];
+    NSArray* arr = [gss() arrayForDoc:xmldoc xpath:[NSString stringWithFormat:@"//abook[@id='%d']/content/track[@number='%@']/file/length", bookId, chid]];
+    if ([arr count] != 1) {
+        NSLog(@"**err: invalid length for book: %d, chpater: %@", bookId, chid);
+    }
+    else
+    {
+        int fsz = [[arr objectAtIndex:0] intValue];
+        returnValue = fsz;
     }
     
-    // xml doc and it's handling
-    DDXMLDocument *doc = [[DDXMLDocument alloc] initWithXMLString:response options:0 error:&error];
-    
-    [[gs sharedInstance] handleError:error];
-    NSArray *nds = [doc nodesForXPath:@"//file_length" error:&error];
-    [[gs sharedInstance] handleError:error];
-    if (![nds count]) {
-        NSLog(@"**err: file_length is empty or error");
-    }
-    else{
-        progressSlider.minimumValue = 0.0f;
-        NSString *v = [[nds objectAtIndex:0] stringValue];
-        // TODO: set duration value in seconds.miliseconds format
-        progressSlider.maximumValue = [v doubleValue];
-    }
+    return returnValue;
 }
 
 - (void) viewDidLoad
@@ -486,9 +491,13 @@ bool NeedToStartWithFistDownloadedBytes = false;
         // self.navigationItem.backBarButtonItem.title = @"в каталог";
 
     // get free track meta
-    [self getAndDisplayFreeTrackMeta];
+    if (sPlayer) {
+        progressSlider.maximumValue = [self metaLengthForChapter:sPlayer.chapter];
+    }
+    
     chaptersTableView.delegate = chaptersController;
     chaptersTableView.dataSource = chaptersController;
+    [chaptersController viewDidAppear:NO];
     //[chaptersTableView reloadData];
     
     // display in a view
@@ -503,7 +512,27 @@ bool NeedToStartWithFistDownloadedBytes = false;
 //	self.view = theView;
 //}
 - (IBAction)onSliderUpInside:(UISlider *)sender {
-    [sPlayer.streamer startAtPos:progressSlider.value withFade:NO doPlay:YES];
+    // progressSliderValue
+    // 34:60×100≈56.6%
+    
+    if (sPlayer) {
+        // preserve setting slider beyond downloaded part of audio file
+        int actual = [self actualSizeForChapter:sPlayer.chapter];
+        int meta = [self metaSizeForChapter:sPlayer.chapter];
+        float procSize = ((float)actual / (float)meta) * 100;
+        int length = [self metaLengthForChapter:sPlayer.chapter];
+        int val = (procSize / 100) * length;
+        
+        if (progressSlider.value < val) {
+            [sPlayer.streamer startAtPos:progressSlider.value withFade:NO doPlay:YES];        
+        }
+        else
+        {
+            progressSlider.value = val;
+            [sPlayer.streamer startAtPos:progressSlider.value withFade:NO doPlay:YES];
+        }
+    }
+    
     bindProgressVal = YES;
 }
 
@@ -523,13 +552,37 @@ bool NeedToStartWithFistDownloadedBytes = false;
             NSLog(@"**err: no first chapter for book: %d", bookId);
     }
     else
+    {
+        [self saveTrackProgress];
         [self handlePlayPause];
+    }
+}
+
+-(void)setDelegates:(id)obj
+{
+    if (currentRequest) {
+        [currentRequest setDownloadProgressDelegate:obj];
+        [currentRequest setDelegate:obj];        
+    }
+    
+    if (sPlayer && sPlayer.streamer.isPlaying) {
+        [btnPlay setImage:[UIImage imageNamed:@"player_button_pause.png"]];
+        [sPlayer setDelegate:obj];
+    }
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [self setDelegates:self];
+    if (sPlayer) {
+        [self calcDownProgressForChapter:sPlayer.chapter];
+    }
+    [super viewWillAppear:animated];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    [sPlayer setDelegate:nil];
-   // progressSlider = nil;
+    [self setDelegates:nil];
     [super viewDidDisappear:animated];
 }
 

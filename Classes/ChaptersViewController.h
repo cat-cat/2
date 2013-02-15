@@ -15,4 +15,6 @@
     int bookId;
 }
 //@property (nonatomic, assign) int bookId;
+- (IBAction)next:(UIBarButtonItem *)sender;
+- (IBAction)prev:(UIBarButtonItem *)sender;
 @end
