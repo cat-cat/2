@@ -15,6 +15,8 @@
     int bookId;
 }
 //@property (nonatomic, assign) int bookId;
+-(void)first;
+-(void) scrollToLastSelection;
 - (IBAction)next:(UIBarButtonItem *)sender;
 - (IBAction)prev:(UIBarButtonItem *)sender;
 @end

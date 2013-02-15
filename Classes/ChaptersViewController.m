@@ -157,10 +157,8 @@
     
 }
 
--(void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-    
+-(void)scrollToLastSelection
+{    
     // scroll down to previosly selected row
     if (rowIdx>=0 && [chapters count]>=rowIdx) {
         //end of loading
@@ -289,6 +287,12 @@ static int rowIdx = -1;
 //     // ...
 //     // Pass the selected object to the new view controller.
 //     [gss().navigationController pushViewController:plConroller animated:YES];    
+}
+
+-(void)first
+{
+    rowIdx=-1;
+    [self next:nil];
 }
 
 - (IBAction)next:(UIBarButtonItem *)sender {

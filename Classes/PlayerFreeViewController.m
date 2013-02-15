@@ -112,13 +112,20 @@ static StreamingPlayer *sPlayer = nil;
 
 -(void)startPlayer
 {
-    float stps = [self getTrackProgress];
+    float stps = [self getdbTrackProgress];
     if (stps == 0) {
         [sPlayer.streamer start];
     }
     else
     {
-        [sPlayer.streamer startAtPos:stps withFade:NO doPlay:YES];
+        int val = [self getPossibleProgressVal];
+        if (stps < val) {
+            [sPlayer.streamer startAtPos:stps withFade:NO doPlay:YES];
+        }
+        else
+        {
+            [sPlayer.streamer startAtPos:val withFade:NO doPlay:YES];
+        }
     }
 }
 
@@ -180,9 +187,9 @@ bool NeedToStartWithFistDownloadedBytes = false;
 //    [gs assertNoError:returnCode==SQLITE_OK withMsg:[NSString stringWithFormat:@"**dberr %s: cannnot execute : %s", __func__, sqlite3_errmsg(db) ]];
 //}
 
--(void)saveTrackProgress
+-(void)savedbTrackProgress
 {
-    if (!sPlayer || ![sPlayer.chapter length]) {
+    if (!sPlayer || ![sPlayer.chapter length] || sPlayer.bookId != bookId) {
         return;
     }
     
@@ -229,9 +236,9 @@ bool NeedToStartWithFistDownloadedBytes = false;
     [gs assertNoError:returnCode==SQLITE_OK withMsg:[NSString stringWithFormat:@"**dberr %s: cannot close db : %s", __func__, sqlite3_errmsg(db) ]];
 }
 
--(float)getTrackProgress
+-(float)getdbTrackProgress
 {
-    if (!sPlayer || ![sPlayer.chapter length]) {
+    if (!sPlayer || ![sPlayer.chapter length] || sPlayer.bookId != bookId) {
         return 0.0;
     }
     
@@ -343,7 +350,7 @@ bool NeedToStartWithFistDownloadedBytes = false;
         [self checkChapter:chid];
         
         if (sPlayer) { // already playied something
-            [self saveTrackProgress];
+            [self savedbTrackProgress];
         }
         
         progressSlider.maximumValue = [self metaLengthForChapter:chid];
@@ -497,7 +504,9 @@ bool NeedToStartWithFistDownloadedBytes = false;
     
     chaptersTableView.delegate = chaptersController;
     chaptersTableView.dataSource = chaptersController;
-    [chaptersController viewDidAppear:NO];
+    if (sPlayer && sPlayer.bookId == bookId) {
+        [chaptersController scrollToLastSelection];
+    }
     //[chaptersTableView reloadData];
     
     // display in a view
@@ -511,18 +520,23 @@ bool NeedToStartWithFistDownloadedBytes = false;
 //	theView.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
 //	self.view = theView;
 //}
+-(int)getPossibleProgressVal
+{
+    int actual = [self actualSizeForChapter:sPlayer.chapter];
+    int meta = [self metaSizeForChapter:sPlayer.chapter];
+    float procSize = ((float)actual / (float)meta) * 100;
+    int length = [self metaLengthForChapter:sPlayer.chapter];
+    int val = (procSize / 100) * length;
+    return val;
+}
+
 - (IBAction)onSliderUpInside:(UISlider *)sender {
     // progressSliderValue
     // 34:60×100≈56.6%
     
     if (sPlayer) {
         // preserve setting slider beyond downloaded part of audio file
-        int actual = [self actualSizeForChapter:sPlayer.chapter];
-        int meta = [self metaSizeForChapter:sPlayer.chapter];
-        float procSize = ((float)actual / (float)meta) * 100;
-        int length = [self metaLengthForChapter:sPlayer.chapter];
-        int val = (procSize / 100) * length;
-        
+        int val = [self getPossibleProgressVal];
         if (progressSlider.value < val) {
             [sPlayer.streamer startAtPos:progressSlider.value withFade:NO doPlay:YES];        
         }
@@ -542,18 +556,12 @@ bool NeedToStartWithFistDownloadedBytes = false;
 
 - (IBAction)btnPlayStopClick:(UIBarButtonItem *)sender {
     
-    if (!sPlayer) {
-        NSString* cid = [self firstChapter];
-        if (cid) {
-            [self startChapter:cid];
-        }
-        else
-            // TODO: add error to user
-            NSLog(@"**err: no first chapter for book: %d", bookId);
+    if (!sPlayer || sPlayer.bookId != bookId) {
+        [chaptersController first]; // will start first chapter
     }
     else
     {
-        [self saveTrackProgress];
+        [self savedbTrackProgress];
         [self handlePlayPause];
     }
 }
@@ -573,15 +581,23 @@ bool NeedToStartWithFistDownloadedBytes = false;
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    [self setDelegates:self];
     if (sPlayer) {
-        [self calcDownProgressForChapter:sPlayer.chapter];
+        if (sPlayer.bookId == bookId) {
+            [self setDelegates:self];
+            progressView.progress = [self calcDownProgressForChapter:sPlayer.chapter];            
+        }
+        else{
+            Book *b = [gs db_GetBookWithID:[NSString stringWithFormat:@"%d", sPlayer.bookId ]];
+            [self showAlertAtTimer:b.title delay:2.0];
+        }
     }
+    
     [super viewWillAppear:animated];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    [self savedbTrackProgress];
     [self setDelegates:nil];
     [super viewDidDisappear:animated];
 }
@@ -607,4 +623,23 @@ bool NeedToStartWithFistDownloadedBytes = false;
     NSString* chid = [arr objectAtIndex:0];
     return chid;
 }
+
+- (void) showAlertAtTimer:(NSString*)msg delay:(int)delayInSeconds
+{
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"проигрывается"
+                                                        message:msg
+                                                       delegate:self
+                                              cancelButtonTitle:nil
+                                              otherButtonTitles:nil];
+    //[alertView show];
+    [alertView performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:YES];
+    
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        
+        [alertView dismissWithClickedButtonIndex:-1 animated:YES];
+    });
+    alertView = nil;
+}
+
 @end
