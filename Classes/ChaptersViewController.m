@@ -13,6 +13,32 @@
 #import "PlayerFreeViewController.h"
 #import "PlayerFreeViewController.h"
 #import "Book.h"
+#import "ChapterCellViewController.h"
+
+//@interface UITableViewCell (FindUIViewController)
+//- (UIViewController *) firstAvailableUIViewController;
+//- (id) traverseResponderChainForUIViewController;
+//@end
+//
+//@implementation UITableViewCell (FindUIViewController)
+//- (UIViewController *) firstAvailableUIViewController {
+//    // convenience function for casting and to "mask" the recursive function
+//    return (UIViewController *)[self traverseResponderChainForUIViewController];
+//}
+//
+//- (id) traverseResponderChainForUIViewController {
+//    id nextResponder = [self nextResponder];
+//    if ([nextResponder isKindOfClass:[ChapterCellViewController class]]) {
+//        return nextResponder;
+//    }
+//    else if ([nextResponder isKindOfClass:[UITableViewCell class]]) {
+//        return [nextResponder traverseResponderChainForUIViewController];
+//    }
+//    else {
+//        return nil;
+//    }
+//}
+//@end
 
 @interface ChaptersViewController ()
 
@@ -197,21 +223,50 @@
     return [chapters count];
 }
 
+-(void)downClick:(UIButton*)sender
+{
+    NSLog(@"++btn state: %@", [sender titleForState:UIControlStateApplication]);
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
+    static NSString *CellIdentifier = @"myCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        ChapterCellViewController* c = [[ChapterCellViewController alloc] init];
+        cell = (UITableViewCell *) [c view];
+        cell.tag = 1000+indexPath.row;
     }
     
     // Configure the cell...
-    //NSLog(@"++ the index row number %d", indexPath.row);
     Chapter *lc = [chapters objectAtIndex:indexPath.row];
-    cell.textLabel.text = lc.cId;
-    cell.detailTextLabel.text = lc.name;
+    UILabel* lblBig = (UILabel*)[cell viewWithTag:1];
+    lblBig.text = lc.cId;
+    UILabel* lblSmall = (UILabel*)[cell viewWithTag:2];
+    lblSmall.text = lc.name;
+    UIProgressView* progress = (UIProgressView*) [cell viewWithTag:3];
+    progress.progress = 0.3;
+    UIButton* btn = (UIButton*)[cell viewWithTag:4];
+    [btn setTitle:@"Скачать" forState:UIControlStateNormal];
+    [btn setTitle:[NSString stringWithFormat:@"%d",indexPath.row ] forState:UIControlStateApplication];
+    [btn addTarget:self action:@selector(downClick:) forControlEvents:UIControlEventTouchUpInside];
 
     return cell;
+    
+    
+//    static NSString *CellIdentifier = @"Cell";
+//    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+//    if (cell == nil) {
+//        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+//    }
+//    
+//    // Configure the cell...
+//    //NSLog(@"++ the index row number %d", indexPath.row);
+//    Chapter *lc = [chapters objectAtIndex:indexPath.row];
+//    cell.textLabel.text = lc.cId;
+//    cell.detailTextLabel.text = lc.name;
+//    
+//    return cell;
 }
 
 /*

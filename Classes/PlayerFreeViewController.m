@@ -50,7 +50,14 @@ static ASIHTTPRequest* currentRequest;
     NSLog(@"++ player DidStartPlaying");
 }
 - (void) streamingPlayerDidStopPlaying:(StreamingPlayer *) anPlayer {
-    NSLog(@"++ player DidStopPlaying");
+    // reinit player
+    NSString* chid = sPlayer.chapter;
+    int bid = sPlayer.bookId;
+    [sPlayer myrelease];
+    progressSlider.value = 0.0;
+    [self savedbTrackProgress];
+    sPlayer = [[StreamingPlayer alloc] initPlayerWithBook:bid  chapter:chid];
+    [self setDelegates:self];
 }
 
 - (void) streamingPlayer:(StreamingPlayer *) anPlayer didUpdateProgress:(double) anProgress {
@@ -573,9 +580,11 @@ bool NeedToStartWithFistDownloadedBytes = false;
         [currentRequest setDelegate:obj];        
     }
     
-    if (sPlayer && sPlayer.streamer.isPlaying) {
-        [btnPlay setImage:[UIImage imageNamed:@"player_button_pause.png"]];
+    if (sPlayer) {
         [sPlayer setDelegate:obj];
+        if (sPlayer.streamer.isPlaying) {
+            [btnPlay setImage:[UIImage imageNamed:@"player_button_pause.png"]];
+        }
     }
 }
 
