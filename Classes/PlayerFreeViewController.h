@@ -21,9 +21,13 @@
  * DEALINGS IN THE SOFTWARE.
  ******************************************************************************/
 #import "StreamingPlayer.h"
-//@class ASIHTTPRequest;
+
+@interface StaticPlayer : NSObject <StreamingPlayerDelegate> {
+}
+@property (nonatomic, strong) NSMutableArray* downq; // queue for downloading
+@end
+
 @class ChaptersViewController;
-//@class Book;
 @interface PlayerFreeViewController : UIViewController {
     IBOutlet UIBarButtonItem *btnPlay;
     IBOutlet UIProgressView *progressView;
@@ -51,6 +55,7 @@
 
 +(void)startChapter:(NSString*)chid;
 - (IBAction)onSliderUpInside:(UISlider *)sender;
+- (IBAction)btnOpenDownloadQueueClick:(UIBarButtonItem *)sender;
 
 - (IBAction)onSliderDown:(UISlider *)sender;
 - (IBAction)btnPlayStopClick:(UIBarButtonItem *)sender;

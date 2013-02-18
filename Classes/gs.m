@@ -955,7 +955,6 @@ static NSString* databaseName;
         
         //****************** init requests queue
         //[sharedInstance setQueue:[[ASINetworkQueue alloc] init]];
-        [sharedInstance setDownq:[[NSMutableArray alloc] init] ];
         
         
         

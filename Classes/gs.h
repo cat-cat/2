@@ -19,9 +19,8 @@ static NSString* AppConnectionHost = @"192.168.0.100:8080";
 @interface gs : NSObject
 {    
     UINavigationController *navigationController;
-    ASINetworkQueue* queue;
+//    ASINetworkQueue* queue;
 }
-@property (nonatomic, strong) NSMutableArray* downq; // queue for downloading
 @property(nonatomic, strong) UINavigationController *navigationController;
 //@property (nonatomic, strong) NSOperationQueue *queue;
 

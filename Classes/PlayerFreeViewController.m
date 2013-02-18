@@ -29,10 +29,8 @@
 #import "AudioStreamer.h"
 #import "DDXMLDocument.h"
 #import "ChaptersViewController.h"
+#import "DownloadsViewController.h"
 
-@interface StaticPlayer : NSObject <StreamingPlayerDelegate> {
-}
-@end
 
 static int bookId;
 NSInteger trackLength = 0, trackSize = 0;
@@ -201,7 +199,8 @@ static StreamingPlayer *sPlayer = nil;
     dispatch_once(&onceToken, ^{
         sharedInstance = [[StaticPlayer alloc] init];
         // Do any other initialisation stuff here
-        
+        [sharedInstance setDownq:[[NSMutableArray alloc] init] ];
+
     });
     
     
@@ -263,13 +262,13 @@ static ASIHTTPRequest* currentRequest;
     NSString* object = [self chapterIdentityFromURL:completedURL];
     
     //if([[gss() downq] count] > 1)
-    [[gss() downq] removeObject:object];
+    [[[StaticPlayer sharedInstance] downq] removeObject:object];
     
     if (chaptersControllerPtr) {
         [chaptersControllerPtr chapterFinishDownload:object];
     }
     
-    for (NSString* item in [gss() downq]) {
+    for (NSString* item in [[StaticPlayer sharedInstance] downq]) {
         NSString* curChId = [self chapterIdentityFromURL:[[currentRequest url] absoluteString]];
         if ([curChId isEqualToString:item]) {
             continue;
@@ -302,8 +301,8 @@ static ASIHTTPRequest* currentRequest;
 
 //- (IBAction)btnPressFF:(UIBarButtonItem *)sender {
 //}
-
-//-(void)runOnce
+// TODO: must permenently add index to the thracks table
+//+(void)runOnce
 //{
 //    sqlite3* db;
 //    int returnCode = sqlite3_open([gs dbname], &db);
@@ -313,6 +312,7 @@ static ASIHTTPRequest* currentRequest;
 //    returnCode = sqlite3_exec(db, "create unique index idx_t_tracks on t_tracks (abook_id, track_number)", 0, 0, 0);
 //    [gs assertNoError:returnCode==SQLITE_OK withMsg:[NSString stringWithFormat:@"**dberr %s: cannnot execute : %s", __func__, sqlite3_errmsg(db) ]];
 //}
+
 +(int)myGetBookId
 {
     return bookId;
@@ -320,6 +320,8 @@ static ASIHTTPRequest* currentRequest;
 
 +(void)savedbTrackProgress
 {
+    //[self runOnce];
+    
     if (!sPlayer || ![sPlayer.chapter length] || sPlayer.bookId != bookId) {
         return;
     }
@@ -507,11 +509,11 @@ static ASIHTTPRequest* currentRequest;
 
 +(void)appendChapterIdentityForDownloading:(NSString*)chapterIdentity
 {
-    [[gss() downq] addObject:chapterIdentity];
+    [[[StaticPlayer sharedInstance] downq] addObject:chapterIdentity];
     int bid =  [gss() bidFromChapterIdentity:chapterIdentity];
     NSString* chid = [gss() chidFromChapterIdentity:chapterIdentity];
     
-    if ([[gss() downq] count] == 1) {
+    if ([[[StaticPlayer sharedInstance] downq] count] == 1) {
         [self startDownloadBook:bid chapter:chid];
     }
 }
@@ -571,8 +573,8 @@ static ASIHTTPRequest* currentRequest;
     {
         
         // set downloaded object to the top of array
-        [[gss() downq] removeObject:object];
-        [[gss() downq] insertObject:object atIndex:0];
+        [[[StaticPlayer sharedInstance] downq] removeObject:object];
+        [[[StaticPlayer sharedInstance] downq] insertObject:object atIndex:0];
         
         
         [self startDownloadBook:book.abookId chapter:sPlayer.chapter];
@@ -729,6 +731,16 @@ static ASIHTTPRequest* currentRequest;
     }
     
     bindProgressVal = YES;
+}
+
+- (IBAction)btnOpenDownloadQueueClick:(UIBarButtonItem *)sender {
+    DownloadsViewController *dController = [[DownloadsViewController alloc] initWithStyle:UITableViewStylePlain andDelegate:[StaticPlayer sharedInstance ]];
+    [[gs sharedInstance].navigationController pushViewController:dController animated:YES];
+//    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:dController];
+//    
+//    navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+//    [self presentModalViewController:navController animated:YES];
+    //[[gs sharedInstance].navigationController presentModalViewController:dController animated:YES];
 }
 
 - (IBAction)onSliderDown:(UISlider *)sender {
