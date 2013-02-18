@@ -294,9 +294,9 @@
     if (cell == nil) {
         ChapterCellViewController* c = [[ChapterCellViewController alloc] init];
         cell = (UITableViewCell *) [c view];
-        cell.tag = 1000+indexPath.row;
     }
     
+    cell.tag = 1000+indexPath.row;
     // Configure the cell...
     Chapter *lc = [chapters objectAtIndex:indexPath.row];
     UILabel* lblBig = (UILabel*)[cell viewWithTag:1];

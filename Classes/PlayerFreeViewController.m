@@ -168,10 +168,14 @@ static StreamingPlayer *sPlayer = nil;
     
 	[chaptersController chapterFinishDownload:object];
     
-//	download(downQ.next());
-    if ([[gss() downq] count]) {
-        object = [[gss() downq] objectAtIndex:0];
-        [self startDownloadBook:[gss() bidFromChapterIdentity:object] chapter:[gss() chidFromChapterIdentity:object]];
+    for (NSString* item in [gss() downq]) {
+        NSString* curChId = [self chapterIdentityFromURL:[[currentRequest url] absoluteString]];
+        if ([curChId isEqualToString:item]) {
+            continue;
+        }
+        // drop here for the only item from downq, which is not being downloaded already
+        [self startDownloadBook:[gss() bidFromChapterIdentity:item] chapter:[gss() chidFromChapterIdentity:item]];
+        break;
     }
 }
 
@@ -508,13 +512,15 @@ bool NeedToStartWithFistDownloadedBytes = false;
 
 -(void) handlePlayPause
 {
-    if(![[NSFileManager defaultManager]  fileExistsAtPath:[gss() pathForBookFinished:book.abookId chapter:[sPlayer chapter] ]])
+    NSString* object = [NSString stringWithFormat:@"%d:%@", book.abookId, sPlayer.chapter ];
+    NSString* curChId = [self chapterIdentityFromURL:[[currentRequest url] absoluteString]];
+    if(![[NSFileManager defaultManager]  fileExistsAtPath:[gss() pathForBookFinished:book.abookId chapter:[sPlayer chapter] ]] && ![curChId isEqualToString:object])
     {
-        NSString* object = [NSString stringWithFormat:@"%d:%@", book.abookId, sPlayer.chapter ];
         
         // set downloaded object to the top of array
         [[gss() downq] removeObject:object];
         [[gss() downq] insertObject:object atIndex:0];
+        
         
         [self startDownloadBook:book.abookId chapter:sPlayer.chapter];
     }
