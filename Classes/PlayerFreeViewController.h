@@ -21,28 +21,35 @@
  * DEALINGS IN THE SOFTWARE.
  ******************************************************************************/
 #import "StreamingPlayer.h"
-@class ASIHTTPRequest;
+//@class ASIHTTPRequest;
 @class ChaptersViewController;
-@class Book;
-@interface PlayerFreeViewController : UIViewController <StreamingPlayerDelegate> {
+//@class Book;
+@interface PlayerFreeViewController : UIViewController {
     IBOutlet UIBarButtonItem *btnPlay;
     IBOutlet UIProgressView *progressView;
     IBOutlet UILabel *lbTimePassed;
     IBOutlet UILabel *lbTimeLeft;
     IBOutlet ChaptersViewController *chaptersController;
     __weak IBOutlet UITableView *chaptersTableView;
-	BOOL bindProgressVal;
-    Book *book;
     __weak IBOutlet UISlider *progressSlider;
-//    __weak IBOutlet UILabel *labelSmallHeader;
-//    __weak IBOutlet UILabel *labelHeader;
+    //    __weak IBOutlet UILabel *labelSmallHeader;
+    //    __weak IBOutlet UILabel *labelHeader;
 }
++(NSInteger) metaSizeForChapter:(int)bid chapter:(NSString*) chid;
++(NSInteger) actualSizeForChapter:(int)bid chapter:(NSString*)chid;
++(void)startPlayer;
++(void)startChapter:(NSString *)chid;
++(void)downqNextAfter:(NSString*)completedURL;
++ (void)setPassedTime:(double)passedTime leftTime:(double)leftTime;
++(void)setDelegates:(id)obj;
++(void)savedbTrackProgress;
++(void)checkChapter:(NSString*)chid;
++(NSString*)chapterIdentityFromURL:(NSString*)url;
++(int)myGetBookId;
++(void)appendChapterIdentityForDownloading:(NSString*)chapterIdentity;
++(float)calcDownProgressForChapter:(NSString*)chid;
 
-@property (nonatomic, assign) int bookId;
--(void)appendChapterIdentityForDownloading:(NSString*)chapterIdentity;
--(float)calcDownProgressForChapter:(NSString*)chid;
-
--(void)startChapter:(NSString*)chid;
++(void)startChapter:(NSString*)chid;
 - (IBAction)onSliderUpInside:(UISlider *)sender;
 
 - (IBAction)onSliderDown:(UISlider *)sender;

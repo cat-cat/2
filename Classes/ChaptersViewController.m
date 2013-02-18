@@ -157,7 +157,7 @@
         
     // Uncomment the following line to preserve selection between presentations.
      self.clearsSelectionOnViewWillAppear = NO;
-    bookId = playerController.bookId;
+    bookId = [PlayerFreeViewController myGetBookId];
     chapters = [[NSMutableArray alloc] init];
     
     NSString* fMetaPath = [NSString stringWithFormat:@"%@/%@",[[gs sharedInstance] dirsForBook:bookId ],  @"bookMeta.xml"];
@@ -227,7 +227,7 @@
 {
     Chapter* c = (Chapter*) [chapters objectAtIndex:[[sender titleForState:UIControlStateApplication]intValue]];
     NSString* chapterIdentity = [NSString stringWithFormat:@"%d:%@", bookId, c.cId ];
-    [playerController appendChapterIdentityForDownloading:chapterIdentity];
+    [PlayerFreeViewController appendChapterIdentityForDownloading:chapterIdentity];
     NSLog(@"++btn state: %@", [sender titleForState:UIControlStateApplication]);
 }
 
@@ -268,7 +268,7 @@
     
     NSString* chid = [gss() chidFromChapterIdentity:chapterIdentity];
     
-    float progress = [playerController calcDownProgressForChapter:chid];
+    float progress = [PlayerFreeViewController calcDownProgressForChapter:chid];
     [self setProgressForChapter:chid value: progress];
     [self setBtnTitleForChapter:chid title:@"Скачать"];
 }
@@ -304,7 +304,7 @@
     UILabel* lblSmall = (UILabel*)[cell viewWithTag:2];
     lblSmall.text = lc.name;
     UIProgressView* progress = (UIProgressView*) [cell viewWithTag:3];
-    progress.progress = [playerController calcDownProgressForChapter:lc.cId];
+    progress.progress = [PlayerFreeViewController calcDownProgressForChapter:lc.cId];
     UIButton* btn = (UIButton*)[cell viewWithTag:4];
     [btn setTitle:@"Скачать" forState:UIControlStateNormal];
     [btn setTitle:[NSString stringWithFormat:@"%d",indexPath.row ] forState:UIControlStateApplication];
@@ -394,7 +394,7 @@ static int rowIdx = -1;
         [(UITableView*)[self view] selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionBottom];
     }
     
-    [playerController startChapter:chid];
+    [PlayerFreeViewController startChapter:chid];
     
 //
 //     PlayerFreeViewController *plConroller = [[PlayerFreeViewController alloc] initWithBook:bookId andChapter:chid];

@@ -3,17 +3,6 @@
    version = "1.0">
    <ContextStates>
       <ContextState
-         contextName = "-[PlayerFreeViewController request:didReceiveBytes:]:PlayerFreeViewController.m">
-         <PersistentStrings>
-            <PersistentString
-               value = "sPlayer.chapter">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "-[PlayerFreeViewController downqNext]:PlayerFreeViewController.m">
-      </ContextState>
-      <ContextState
          contextName = "-[PlayerFreeViewController handlePlayPause]:PlayerFreeViewController.m">
          <PersistentStrings>
             <PersistentString
@@ -30,12 +19,18 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
+         contextName = "-[PlayerFreeViewController downqNext]:PlayerFreeViewController.m">
+      </ContextState>
+      <ContextState
          contextName = "-[PlayerFreeViewController getAndDisplayFreeTrackMeta]:PlayerFreeViewController.m">
          <PersistentStrings>
             <PersistentString
                value = "nds[0]">
             </PersistentString>
          </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "+[PlayerFreeViewController startDownloadBook:chapter:]:PlayerFreeViewController.m">
       </ContextState>
       <ContextState
          contextName = "-[PlayerFreeViewController saveTrackProgress]:PlayerFreeViewController.m">
@@ -45,6 +40,25 @@
             </PersistentString>
             <PersistentString
                value = "sPlayer">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[StaticPlayer streamingPlayer:didUpdateProgress:]:PlayerFreeViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "bookId">
+            </PersistentString>
+            <PersistentString
+               value = "sPlayer.bookId">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[PlayerFreeViewController request:didReceiveBytes:]:PlayerFreeViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "sPlayer.chapter">
             </PersistentString>
          </PersistentStrings>
       </ContextState>

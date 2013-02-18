@@ -30,9 +30,193 @@
 #import "DDXMLDocument.h"
 #import "ChaptersViewController.h"
 
-@implementation PlayerFreeViewController
-@synthesize bookId;
+@interface StaticPlayer : NSObject <StreamingPlayerDelegate> {
+}
+@end
 
+static int bookId;
+NSInteger trackLength = 0, trackSize = 0;
+bool NeedToStartWithFistDownloadedBytes = false;
+static BOOL bindProgressVal;
+static __weak ChaptersViewController *chaptersControllerPtr;
+static __weak UIProgressView *progressViewPtr;
+static __weak UISlider *progressSliderPtr;
+
+@implementation StaticPlayer
+
+- (void) streamingPlayerIsWaiting:(StreamingPlayer *) anPlayer {
+    NSLog(@"++ player IsWaiting");
+}
+- (void) streamingPlayerDidStartPlaying:(StreamingPlayer *) anPlayer {
+    NSLog(@"++ player DidStartPlaying");
+}
+- (void) streamingPlayerDidStopPlaying:(StreamingPlayer *) anPlayer {
+    // checkIf chapter dowloaded correctly
+    [PlayerFreeViewController checkChapter:sPlayer.chapter];
+    
+    // reinit player
+    NSString* chid = sPlayer.chapter;
+    int bid = sPlayer.bookId;
+    [sPlayer myrelease];
+    if (progressSliderPtr) {
+        progressSliderPtr.value = 0.0;
+    }
+    [PlayerFreeViewController savedbTrackProgress];
+    sPlayer = [[StreamingPlayer alloc] initPlayerWithBook:bid  chapter:chid];
+    [PlayerFreeViewController setDelegates:[StaticPlayer sharedInstance]];
+}
+
+- (void) streamingPlayer:(StreamingPlayer *) anPlayer didUpdateProgress:(double) anProgress {
+    
+    if (bindProgressVal && progressSliderPtr && (bookId==sPlayer.bookId)) {
+        progressSliderPtr.value = anProgress;
+        float passedTime = anProgress;
+        float leftTime   = progressSliderPtr.maximumValue - anProgress;
+        [PlayerFreeViewController setPassedTime:passedTime leftTime:leftTime];
+        //NSLog(@"++ player DidUpdateProgress: %f", anProgress);
+    }
+}
+
+
+- (void)request:(ASIHTTPRequest *)request didReceiveResponseHeaders:(NSDictionary *)responseHeaders
+{
+    for (id key in responseHeaders) {
+        NSLog(@"key: %@, value: %@ \n", key, [responseHeaders objectForKey:key]);
+    }
+    // [[NSFileManager defaultManager] removeItemAtPath:currentTrack.audioFilePath error:nil];
+    //if(![[NSFileManager defaultManager] fileExistsAtPath:currentTrack.audioFilePath])
+}
+
+- (void) request:(ASIHTTPRequest *)request didReceiveBytes:(unsigned long long) bytes
+{
+    //    NSLog(@"++bytes received: %lld", bytes);
+    NSString* strURL = [PlayerFreeViewController chapterIdentityFromURL:[[request url] absoluteString]];
+    int bid = [gss() bidFromChapterIdentity:strURL];
+    NSString* chid = [gss() chidFromChapterIdentity:strURL];
+    
+    float progressVal = 0.0;
+    if(bookId==bid && [sPlayer.chapter isEqualToString:chid])
+    {
+        trackLength += bytes;
+        progressVal = (float)trackLength/(float)trackSize;
+        if (progressViewPtr) {
+            progressViewPtr.progress = progressVal;
+        }
+        if (NeedToStartWithFistDownloadedBytes)
+        {
+            NeedToStartWithFistDownloadedBytes = false;
+            if (sPlayer.streamer.state == AS_INITIALIZED) {
+                [PlayerFreeViewController startPlayer];
+            }
+            else
+                NSLog(@"**err: player is not initialized");
+        }
+    }
+    else
+    {
+        int sz = [PlayerFreeViewController actualSizeForChapter:bid chapter:chid];
+        int lnt = [PlayerFreeViewController metaSizeForChapter:bid chapter:chid];
+        progressVal = (float)sz/(float)lnt;
+    }
+    
+    if(chaptersControllerPtr)
+        [chaptersControllerPtr updateProgressForChapterIdentity:[PlayerFreeViewController chapterIdentityFromURL: [[request url] absoluteString] ] value:progressVal];
+    
+    
+    //    else
+    //        [sPlayer.streamer pause];
+    //
+    //    return;
+    
+    
+    
+    
+    //    NSFileHandle   *fileHandle =
+    //    [NSFileHandle fileHandleForUpdatingAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"tmp/m.mp3"]];
+    //    NSURL *bookURL = [NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:@"tmp/m.mp3"]];
+    //    if (sPlayer==nil) {
+    //        [self initPlayerWithUrl:bookURL];
+    //    }
+    
+    
+    //    if(fileHandle){
+    //        [fileHandle seekToFileOffset:11];
+    //        NSData *appendedData =
+    //        [@" modified " dataUsingEncoding:NSUTF8StringEncoding];
+    //[fileHandle writeData:appendedData];
+    //[fileHandle closeFile];
+    //    }
+}
+
+//- (void)request:(ASIHTTPRequest *)request didReceiveData:(NSData *)data
+//{
+
+// if (!ourData)
+//   ourData = [NSMutableData dataWithLength:kBufferSize*1000];
+
+//            [ourData appendData:data];
+//
+//            fileSize += data.length;
+
+//                [self.trackFile seekToEndOfFile];
+//                [self.trackFile writeData:data];
+//ourData = nil;
+//               book.isFreePartBeginDownload = YES;
+//               [dbManager InsUpdBookHeader:book];
+//}
+
+static StreamingPlayer *sPlayer = nil;
+
+- (void)requestFinished:(ASIHTTPRequest *)request
+{
+    NSLog(@"++Finished request !");
+    NSString* strURL = [PlayerFreeViewController chapterIdentityFromURL:[[request url] absoluteString]];
+    int bid = [gss() bidFromChapterIdentity:strURL];
+    NSString* chid = [gss() chidFromChapterIdentity:strURL];
+    NSString *path = [gss() pathForBookFinished:bid chapter:chid];
+    
+    NSFileManager *fm = [NSFileManager defaultManager];
+    bool fileCreationSuccess = [ fm createFileAtPath:path contents:nil  attributes:nil];
+    if(fileCreationSuccess == NO){ NSLog(@"Failed to create the finished! file"); }
+    
+    // set up requests queue
+    [PlayerFreeViewController downqNextAfter:[[request url] absoluteString]];
+}
+
+- (void)requestFailed:(ASIHTTPRequest *)request
+{
+    NSLog(@"**err: request failed description %@, url: %@", [request.error description], [request url]);
+    //[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    
+    // set up requests queue
+    [PlayerFreeViewController downqNextAfter:[[request url] absoluteString]];
+}
+
+
+
++ (StaticPlayer *)sharedInstance
+{
+    static StaticPlayer *sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [[StaticPlayer alloc] init];
+        // Do any other initialisation stuff here
+        
+    });
+    
+    
+    //...
+    return sharedInstance;
+}
+@end
+//******************** END StaticPlayer
+
+
+@implementation PlayerFreeViewController
+static __weak UILabel *lbTimePassedPtr;
+static __weak UILabel *lbTimeLeftPtr;
+static __weak UIBarButtonItem *btnPlayPtr;
+static Book *book;
 static ASIHTTPRequest* currentRequest;
 
 -(void) setPlayButton:(int)play
@@ -43,104 +227,19 @@ static ASIHTTPRequest* currentRequest;
         [btnPlay setImage:[UIImage imageNamed:@"player_button_play.png"]];
 }
 
-- (void) streamingPlayerIsWaiting:(StreamingPlayer *) anPlayer {
-    NSLog(@"++ player IsWaiting");
-}
-- (void) streamingPlayerDidStartPlaying:(StreamingPlayer *) anPlayer {
-    NSLog(@"++ player DidStartPlaying");
-}
-- (void) streamingPlayerDidStopPlaying:(StreamingPlayer *) anPlayer {
-    // checkIf chapter dowloaded correctly
-    [self checkChapter:sPlayer.chapter];
-    
-    // reinit player
-    NSString* chid = sPlayer.chapter;
-    int bid = sPlayer.bookId;
-    [sPlayer myrelease];
-    progressSlider.value = 0.0;
-    [self savedbTrackProgress];
-    sPlayer = [[StreamingPlayer alloc] initPlayerWithBook:bid  chapter:chid];
-    [self setDelegates:self];
-}
-
-- (void) streamingPlayer:(StreamingPlayer *) anPlayer didUpdateProgress:(double) anProgress {
-    
-    if (bindProgressVal) {
-        progressSlider.value = anProgress;
-        float passedTime = anProgress;
-        float leftTime   = progressSlider.maximumValue - anProgress;
-        [self setPassedTime:passedTime leftTime:leftTime];
-        //NSLog(@"++ player DidUpdateProgress: %f", anProgress);
-    }
-}
-
-
-- (void)request:(ASIHTTPRequest *)request didReceiveResponseHeaders:(NSDictionary *)responseHeaders
-{
-        for (id key in responseHeaders) {
-            NSLog(@"key: %@, value: %@ \n", key, [responseHeaders objectForKey:key]);
-        }
-               // [[NSFileManager defaultManager] removeItemAtPath:currentTrack.audioFilePath error:nil];
-            //if(![[NSFileManager defaultManager] fileExistsAtPath:currentTrack.audioFilePath])
-}
-
-//- (void)request:(ASIHTTPRequest *)request didReceiveData:(NSData *)data
-//{
-
-            // if (!ourData)
-            //   ourData = [NSMutableData dataWithLength:kBufferSize*1000];
-            
-//            [ourData appendData:data];
-//            
-//            fileSize += data.length;
-    
-//                [self.trackFile seekToEndOfFile];
-//                [self.trackFile writeData:data];
-                //ourData = nil;
-//               book.isFreePartBeginDownload = YES;
-//               [dbManager InsUpdBookHeader:book];
-//}
-
-static StreamingPlayer *sPlayer = nil;
-
-- (void)requestFinished:(ASIHTTPRequest *)request
-{
-    NSLog(@"++Finished request !");
-    NSString* strURL = [self chapterIdentityFromURL:[[request url] absoluteString]];
-    int bid = [gss() bidFromChapterIdentity:strURL];
-    NSString* chid = [gss() chidFromChapterIdentity:strURL];
-    NSString *path = [gss() pathForBookFinished:bid chapter:chid];
-    
-    NSFileManager *fm = [NSFileManager defaultManager];
-    bool fileCreationSuccess = [ fm createFileAtPath:path contents:nil  attributes:nil];
-    if(fileCreationSuccess == NO){ NSLog(@"Failed to create the finished! file"); }
-    
-    // set up requests queue
-    [self downqNextAfter:[[request url] absoluteString]];
-}
-
-- (void)requestFailed:(ASIHTTPRequest *)request
-{
-    NSLog(@"**err: request failed description %@, url: %@", [request.error description], [request url]);
-    //[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-    
-    // set up requests queue
-    [self downqNextAfter:[[request url] absoluteString]];
-}
-
--(NSString*)chapterIdentityFromURL:(NSString*)url
++(NSString*)chapterIdentityFromURL:(NSString*)url
 {
     NSString* resultString;
     
     //NSString *htmlString = @"http://192.168.0.100:80/books/3456/chaptersAudio/01_02_crypt.mp3";
     NSString *htmlString = url;
     @try {
-    NSRegularExpression *nameExpression = [NSRegularExpression regularExpressionWithPattern:@"/books/(\\w+)/chaptersAudio/(\\w+)_crypt.mp3" options:NSRegularExpressionSearch error:nil];
-    
-    NSArray *matches = [nameExpression matchesInString:htmlString
-                                               options:0
-                                                 range:NSMakeRange(0, [htmlString length])];
-    for (NSTextCheckingResult *match in matches) {
+        NSRegularExpression *nameExpression = [NSRegularExpression regularExpressionWithPattern:@"/books/(\\w+)/chaptersAudio/(\\w+)_crypt.mp3" options:NSRegularExpressionSearch error:nil];
+        
+        NSArray *matches = [nameExpression matchesInString:htmlString
+                                                   options:0
+                                                     range:NSMakeRange(0, [htmlString length])];
+        for (NSTextCheckingResult *match in matches) {
             //NSRange matchRange = [match range];
             NSRange matchRange = [match rangeAtIndex:1];
             NSString *matchString1 = [htmlString substringWithRange:matchRange];
@@ -159,14 +258,16 @@ static StreamingPlayer *sPlayer = nil;
 }
 
 // called only from finished or failed requests, so we should remove it from download queue
--(void)downqNextAfter:(NSString*)completedURL
++(void)downqNextAfter:(NSString*)completedURL
 {
     NSString* object = [self chapterIdentityFromURL:completedURL];
     
     //if([[gss() downq] count] > 1)
     [[gss() downq] removeObject:object];
     
-	[chaptersController chapterFinishDownload:object];
+    if (chaptersControllerPtr) {
+        [chaptersControllerPtr chapterFinishDownload:object];
+    }
     
     for (NSString* item in [gss() downq]) {
         NSString* curChId = [self chapterIdentityFromURL:[[currentRequest url] absoluteString]];
@@ -180,7 +281,7 @@ static StreamingPlayer *sPlayer = nil;
 }
 
 
--(void)startPlayer
++(void)startPlayer
 {
     float stps = [self getdbTrackProgress];
     if (stps == 0) {
@@ -199,67 +300,6 @@ static StreamingPlayer *sPlayer = nil;
     }
 }
 
-NSInteger trackLength = 0, trackSize = 0;
-bool NeedToStartWithFistDownloadedBytes = false;
-- (void) request:(ASIHTTPRequest *)request didReceiveBytes:(unsigned long long) bytes
-{
-//    NSLog(@"++bytes received: %lld", bytes);
-    NSString* strURL = [self chapterIdentityFromURL:[[request url] absoluteString]];
-    int bid = [gss() bidFromChapterIdentity:strURL];
-    NSString* chid = [gss() chidFromChapterIdentity:strURL];
-
-    float progressVal = 0.0;
-    if(bookId==bid && [sPlayer.chapter isEqualToString:chid])
-    {
-        trackLength += bytes;
-        progressVal = (float)trackLength/(float)trackSize;
-        progressView.progress = progressVal;
-        if (NeedToStartWithFistDownloadedBytes)
-        {
-            NeedToStartWithFistDownloadedBytes = false;
-            if (sPlayer.streamer.state == AS_INITIALIZED) {
-                [self startPlayer];
-            }
-            else
-                NSLog(@"**err: player is not initialized");
-        }
-    }
-    else
-    {
-        int sz = [self actualSizeForChapter:bid chapter:chid];
-        int lnt = [self metaSizeForChapter:bid chapter:chid];
-        progressVal = (float)sz/(float)lnt;
-    }
-    
-    
-    [chaptersController updateProgressForChapterIdentity:[self chapterIdentityFromURL: [[request url] absoluteString] ] value:progressVal];
-
-
-    //    else
-    //        [sPlayer.streamer pause];
-    //    
-    //    return;
-
-    
-    
-    
-//    NSFileHandle   *fileHandle =
-//    [NSFileHandle fileHandleForUpdatingAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"tmp/m.mp3"]];
-//    NSURL *bookURL = [NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:@"tmp/m.mp3"]];
-//    if (sPlayer==nil) {
-//        [self initPlayerWithUrl:bookURL];
-//    }
-
-    
-//    if(fileHandle){
-//        [fileHandle seekToFileOffset:11];
-//        NSData *appendedData =
-//        [@" modified " dataUsingEncoding:NSUTF8StringEncoding];
-        //[fileHandle writeData:appendedData];
-        //[fileHandle closeFile];
-//    }
-}
-
 //- (IBAction)btnPressFF:(UIBarButtonItem *)sender {
 //}
 
@@ -273,8 +313,12 @@ bool NeedToStartWithFistDownloadedBytes = false;
 //    returnCode = sqlite3_exec(db, "create unique index idx_t_tracks on t_tracks (abook_id, track_number)", 0, 0, 0);
 //    [gs assertNoError:returnCode==SQLITE_OK withMsg:[NSString stringWithFormat:@"**dberr %s: cannnot execute : %s", __func__, sqlite3_errmsg(db) ]];
 //}
++(int)myGetBookId
+{
+    return bookId;
+}
 
--(void)savedbTrackProgress
++(void)savedbTrackProgress
 {
     if (!sPlayer || ![sPlayer.chapter length] || sPlayer.bookId != bookId) {
         return;
@@ -282,48 +326,55 @@ bool NeedToStartWithFistDownloadedBytes = false;
     
     sqlite3* db;
     
-//    [self runOnce];
+    //    [self runOnce];
     
     // OPEN DB
     int returnCode = sqlite3_open([gs dbname], &db);
     [gs assertNoError:returnCode==SQLITE_OK withMsg:[NSString stringWithFormat:@"**dberr cannot open db: %s", sqlite3_errmsg(db) ]];
-
-        const char *sqlStatement = "INSERT OR REPLACE INTO t_tracks (abook_id, track_number, name, created_date, begin_time, end_time, free, in_progress, downloaded_length, size, length, bitrate, path, text_data_path, current_progress, isReachEnd) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        sqlite3_stmt *compiledStatement;
-        
-        returnCode = sqlite3_prepare_v2(db, sqlStatement, -1, &compiledStatement, NULL);
-        [gs assertNoError:returnCode==SQLITE_OK withMsg:[NSString stringWithFormat:@"**err db prepare2: %s", sqlite3_errmsg(db) ]];
-       
-        sqlite3_bind_int(compiledStatement, 1, book.abookId);
-        sqlite3_bind_text(compiledStatement, 2, [sPlayer.chapter UTF8String], -1, SQLITE_TRANSIENT);
-        sqlite3_bind_text(compiledStatement, 3, NULL, -1, SQLITE_TRANSIENT);
-        sqlite3_bind_text(compiledStatement, 4, NULL, -1, SQLITE_TRANSIENT);
-        sqlite3_bind_int(compiledStatement, 5, 0);
-        sqlite3_bind_int(compiledStatement, 6, 0);
-        sqlite3_bind_int(compiledStatement, 7, 0);
-        sqlite3_bind_int(compiledStatement, 8, 0);
-        sqlite3_bind_int(compiledStatement, 9, 0);
-        sqlite3_bind_int(compiledStatement, 10, 0);
-        sqlite3_bind_int(compiledStatement, 11, 0);
-        sqlite3_bind_int(compiledStatement, 12, 0);
-        sqlite3_bind_text(compiledStatement, 13, NULL, -1, SQLITE_TRANSIENT);
-        sqlite3_bind_text(compiledStatement, 14, NULL, -1, SQLITE_TRANSIENT);
-        
-        NSLog(@"Progress : %lf", progressSlider.value);
-        sqlite3_bind_double(compiledStatement, 15, progressSlider.value);
-        
-        sqlite3_bind_int(compiledStatement, 16, 0);
-        
+    
+    const char *sqlStatement = "INSERT OR REPLACE INTO t_tracks (abook_id, track_number, name, created_date, begin_time, end_time, free, in_progress, downloaded_length, size, length, bitrate, path, text_data_path, current_progress, isReachEnd) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    sqlite3_stmt *compiledStatement;
+    
+    returnCode = sqlite3_prepare_v2(db, sqlStatement, -1, &compiledStatement, NULL);
+    [gs assertNoError:returnCode==SQLITE_OK withMsg:[NSString stringWithFormat:@"**err db prepare2: %s", sqlite3_errmsg(db) ]];
+    
+    sqlite3_bind_int(compiledStatement, 1, book.abookId);
+    sqlite3_bind_text(compiledStatement, 2, [sPlayer.chapter UTF8String], -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(compiledStatement, 3, NULL, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(compiledStatement, 4, NULL, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_int(compiledStatement, 5, 0);
+    sqlite3_bind_int(compiledStatement, 6, 0);
+    sqlite3_bind_int(compiledStatement, 7, 0);
+    sqlite3_bind_int(compiledStatement, 8, 0);
+    sqlite3_bind_int(compiledStatement, 9, 0);
+    sqlite3_bind_int(compiledStatement, 10, 0);
+    sqlite3_bind_int(compiledStatement, 11, 0);
+    sqlite3_bind_int(compiledStatement, 12, 0);
+    sqlite3_bind_text(compiledStatement, 13, NULL, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(compiledStatement, 14, NULL, -1, SQLITE_TRANSIENT);
+    
+    if(progressSliderPtr)
+    {
+        NSLog(@"Progress : %lf", progressSliderPtr.value);
+        sqlite3_bind_double(compiledStatement, 15, progressSliderPtr.value);
+    }
+    else
+    {
+        sqlite3_bind_double(compiledStatement, 15, 0);
+    }
+    
+    sqlite3_bind_int(compiledStatement, 16, 0);
+    
     returnCode = sqlite3_step(compiledStatement);
     [gs assertNoError:returnCode==SQLITE_DONE withMsg:[NSString stringWithFormat:@"**dberr %s: cannot step  %s", __func__, sqlite3_errmsg(db) ]];
-        
-        returnCode = sqlite3_finalize(compiledStatement);
+    
+    returnCode = sqlite3_finalize(compiledStatement);
     [gs assertNoError:returnCode==SQLITE_OK withMsg:[NSString stringWithFormat:@"**dberr %s: cannot finalize : %s", __func__, sqlite3_errmsg(db) ]];
     returnCode = sqlite3_close(db);
     [gs assertNoError:returnCode==SQLITE_OK withMsg:[NSString stringWithFormat:@"**dberr %s: cannot close db : %s", __func__, sqlite3_errmsg(db) ]];
 }
 
--(float)getdbTrackProgress
++(float)getdbTrackProgress
 {
     if (!sPlayer || ![sPlayer.chapter length] || sPlayer.bookId != bookId) {
         return 0.0;
@@ -350,7 +401,7 @@ bool NeedToStartWithFistDownloadedBytes = false;
     
     
     // get result
-   float f = 0;
+    float f = 0;
     returnCode = sqlite3_step(statement);
     while(returnCode == SQLITE_ROW){
         f = (float)sqlite3_column_double(statement, 0);
@@ -364,14 +415,14 @@ bool NeedToStartWithFistDownloadedBytes = false;
     return f;
 }
 
--(void)checkChapter:(NSString*)chid
++(void)checkChapter:(NSString*)chid
 {
     NSFileManager *fileManager = [NSFileManager defaultManager];
     bool finished_exists = [fileManager fileExistsAtPath:[gss() pathForBookFinished:bookId chapter:chid]];
     NSInteger actualSize = [self actualSizeForChapter:bookId chapter:chid];
     NSInteger metaSize = [self metaSizeForChapter:bookId chapter:chid];
-     if((finished_exists && actualSize<metaSize) || (!finished_exists && actualSize<400))
-     {        
+    if((finished_exists && actualSize<metaSize) || (!finished_exists && actualSize<400))
+    {
         NSError *error;
         [fileManager removeItemAtPath:[gss() pathForBookFinished:bookId chapter:chid] error:&error];
         if (error) {
@@ -381,10 +432,10 @@ bool NeedToStartWithFistDownloadedBytes = false;
         if (error) {
             NSLog(@"--warning: cannot remove chapter for book: %d, chapter: %@, error: %@", bookId, chid, [error localizedDescription]);
         }
-     }
+    }
 }
 
--(NSInteger) metaSizeForChapter:(int)bid chapter:(NSString*) chid
++(NSInteger) metaSizeForChapter:(int)bid chapter:(NSString*) chid
 {
     NSInteger returnValue = 0;
     DDXMLDocument *xmldoc = [gss() docForFile:[gss() pathForBookMeta:bookId]];
@@ -401,7 +452,7 @@ bool NeedToStartWithFistDownloadedBytes = false;
     return returnValue;
 }
 
--(NSInteger) actualSizeForChapter:(int)bid chapter:(NSString*)chid
++(NSInteger) actualSizeForChapter:(int)bid chapter:(NSString*)chid
 {
     NSInteger returnValue = 0;
     // get actual file size and set progressView.progress
@@ -420,7 +471,7 @@ bool NeedToStartWithFistDownloadedBytes = false;
     return returnValue;
 }
 
--(float)calcDownProgressForChapter:(NSString*)chid
++(float)calcDownProgressForChapter:(NSString*)chid
 {
     trackSize = [self metaSizeForChapter:bookId chapter:chid];
     
@@ -431,7 +482,7 @@ bool NeedToStartWithFistDownloadedBytes = false;
     return downloadProgress;
 }
 
--(void)startChapter:(NSString *)chid
++(void)startChapter:(NSString *)chid
 {
     if (chid != [sPlayer chapter]) {
         [self checkChapter:chid];
@@ -440,19 +491,21 @@ bool NeedToStartWithFistDownloadedBytes = false;
             [self savedbTrackProgress];
         }
         
-        progressSlider.maximumValue = [self metaLengthForChapter:chid];
+        if(progressSliderPtr)
+            progressSliderPtr.maximumValue = [self metaLengthForChapter:chid];
         
         [sPlayer myrelease];
         sPlayer = [[StreamingPlayer alloc] initPlayerWithBook:bookId  chapter:chid];
-        sPlayer.delegate = self;
+        sPlayer.delegate = [StaticPlayer sharedInstance];
         [self handlePlayPause];
         
-        progressView.progress = [self calcDownProgressForChapter:chid];
+        if(progressViewPtr)
+            progressViewPtr.progress = [self calcDownProgressForChapter:chid];
     }
     // else - user come to the player at for the already playied book, so just do nothing
 }
 
--(void)appendChapterIdentityForDownloading:(NSString*)chapterIdentity
++(void)appendChapterIdentityForDownloading:(NSString*)chapterIdentity
 {
     [[gss() downq] addObject:chapterIdentity];
     int bid =  [gss() bidFromChapterIdentity:chapterIdentity];
@@ -464,7 +517,7 @@ bool NeedToStartWithFistDownloadedBytes = false;
 }
 
 
--(void)startDownloadBook:(int)bid chapter:(NSString*)chid
++(void)startDownloadBook:(int)bid chapter:(NSString*)chid
 {
     // if not doewnloaded yet, start downloading or partial downloading
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/chapter.php?bid=%d&ch=%@", AppConnectionHost, bid, chid ]];
@@ -502,15 +555,15 @@ bool NeedToStartWithFistDownloadedBytes = false;
     // This file has part of the download in it already
     [currentRequest setTemporaryFileDownloadPath:downloadPath];
     [currentRequest setAllowResumeForFileDownloads:YES];
-    [currentRequest setDelegate:self];
-    [currentRequest setDownloadProgressDelegate:self];
+    [currentRequest setDelegate:[StaticPlayer sharedInstance]];
+    [currentRequest setDownloadProgressDelegate:[StaticPlayer sharedInstance]];
     //    int alreadyDownloaded = 2354100;
     //    [request addRequestHeader:@"Range" value:[NSString stringWithFormat:@"bytes=%i-", alreadyDownloaded]];
     [currentRequest setMyDontRemoveFlag:true];
-    [currentRequest startAsynchronous];    
+    [currentRequest startAsynchronous];
 }
 
--(void) handlePlayPause
++(void) handlePlayPause
 {
     NSString* object = [NSString stringWithFormat:@"%d:%@", book.abookId, sPlayer.chapter ];
     NSString* curChId = [self chapterIdentityFromURL:[[currentRequest url] absoluteString]];
@@ -538,25 +591,26 @@ bool NeedToStartWithFistDownloadedBytes = false;
     }
     else
         [sPlayer.streamer pause];
-        
+    
 }
 
 - (id)initWithBook:(int)bid
-{    
+{
     if (self = [super init]) {
         // custom initialization
         if (bid > 0) {
+            
             trackSize = 0;
             book = [gs db_GetBookWithID:[NSString stringWithFormat:@"%d",bid]];
             bookId = bid;
             
-//            if (sPlayer) {
-//                if (bid == [sPlayer bookId]) {
-//                    return self;
-//                }
-
-                bindProgressVal = YES;
-//            }
+            //            if (sPlayer) {
+            //                if (bid == [sPlayer bookId]) {
+            //                    return self;
+            //                }
+            
+            bindProgressVal = YES;
+            //            }
         }
         else{
             NSLog(@"**err: invalid bid initialized in player!");
@@ -569,22 +623,26 @@ bool NeedToStartWithFistDownloadedBytes = false;
 //- (id)initWithMessage:(NSString *)theMessage andImage:(UIImage*) image {
 //	if (self = [super initWithNibName:nil bundle:nil]) {
 //		self.message = theMessage;
-//		self.tabBarItem.image  = image;	
-//	}	
+//		self.tabBarItem.image  = image;
+//	}
 //	return self;
 //}
 
 
-- (void)setPassedTime:(double)passedTime leftTime:(double)leftTime
++ (void)setPassedTime:(double)passedTime leftTime:(double)leftTime
 {
-	lbTimePassed.text = [NSString stringWithFormat:@"%d:%02d", (NSInteger)(passedTime / 60.0),
-                              (NSInteger)(passedTime) % 60];
-	lbTimeLeft.text   = [NSString stringWithFormat:@"%d:%02d", (NSInteger)((leftTime) / 60.0),
-                              (NSInteger)(leftTime) % 60];
+    if(lbTimeLeftPtr && lbTimePassedPtr)
+    {
+        lbTimePassedPtr.text = [NSString stringWithFormat:@"%d:%02d", (NSInteger)(passedTime / 60.0),
+                             (NSInteger)(passedTime) % 60];
+        lbTimeLeftPtr.text   = [NSString stringWithFormat:@"%d:%02d", (NSInteger)((leftTime) / 60.0),
+                             (NSInteger)(leftTime) % 60];
+    }
+    // else player is hidden no need to update ui, controls pointers are invalid
 }
 
 
-- (NSInteger) metaLengthForChapter:(NSString*)chid
++ (NSInteger) metaLengthForChapter:(NSString*)chid
 {
     NSInteger returnValue = 0;
     // set meta track length
@@ -603,17 +661,26 @@ bool NeedToStartWithFistDownloadedBytes = false;
 }
 
 - (void) viewDidLoad
-{    
-//    [labelHeader setText:book.title];
-//    [labelSmallHeader setText:book.title];
-        self.title = book.title;
-    
-        // TODO: doesn't work
-        // self.navigationItem.backBarButtonItem.title = @"в каталог";
+{
+    // init controls
+    lbTimePassedPtr = lbTimePassed;
+    lbTimeLeftPtr = lbTimeLeft;
+    progressSliderPtr = progressSlider;
+    progressViewPtr = progressView;
+    chaptersControllerPtr = chaptersController;
+    btnPlayPtr = btnPlay;
 
+    
+    //    [labelHeader setText:book.title];
+    //    [labelSmallHeader setText:book.title];
+    self.title = book.title;
+    
+    // TODO: doesn't work
+    // self.navigationItem.backBarButtonItem.title = @"в каталог";
+    
     // get free track meta
-    if (sPlayer) {
-        progressSlider.maximumValue = [self metaLengthForChapter:sPlayer.chapter];
+    if (sPlayer && progressSliderPtr) {
+        progressSliderPtr.maximumValue = [PlayerFreeViewController metaLengthForChapter:sPlayer.chapter];
     }
     
     chaptersTableView.delegate = chaptersController;
@@ -626,7 +693,7 @@ bool NeedToStartWithFistDownloadedBytes = false;
     // display in a view
 }
 
-//- (void)loadView {	
+//- (void)loadView {
 //	CGRect	rectFrame = [UIScreen mainScreen].applicationFrame;
 //	CDBUIView *theView   = [[CDBUIView alloc] initWithFrame:rectFrame];
 //	theView.backgroundColor = [UIColor whiteColor];
@@ -634,7 +701,7 @@ bool NeedToStartWithFistDownloadedBytes = false;
 //	theView.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
 //	self.view = theView;
 //}
--(int)getPossibleProgressVal
++(int)getPossibleProgressVal
 {
     int actual = [self actualSizeForChapter:sPlayer.bookId chapter:sPlayer.chapter];
     int meta = [self metaSizeForChapter:sPlayer.bookId chapter:sPlayer.chapter];
@@ -650,9 +717,9 @@ bool NeedToStartWithFistDownloadedBytes = false;
     
     if (sPlayer) {
         // preserve setting slider beyond downloaded part of audio file
-        int val = [self getPossibleProgressVal];
+        int val = [PlayerFreeViewController getPossibleProgressVal];
         if (progressSlider.value < val) {
-            [sPlayer.streamer startAtPos:progressSlider.value withFade:NO doPlay:YES];        
+            [sPlayer.streamer startAtPos:progressSlider.value withFade:NO doPlay:YES];
         }
         else
         {
@@ -675,22 +742,22 @@ bool NeedToStartWithFistDownloadedBytes = false;
     }
     else
     {
-        [self savedbTrackProgress];
-        [self handlePlayPause];
+        [PlayerFreeViewController savedbTrackProgress];
+        [PlayerFreeViewController handlePlayPause];
     }
 }
 
--(void)setDelegates:(id)obj
++(void)setDelegates:(id)obj
 {
     if (currentRequest) {
         [currentRequest setDownloadProgressDelegate:obj];
-        [currentRequest setDelegate:obj];        
+        [currentRequest setDelegate:obj];
     }
     
     if (sPlayer) {
         [sPlayer setDelegate:obj];
-        if (sPlayer.streamer.isPlaying) {
-            [btnPlay setImage:[UIImage imageNamed:@"player_button_pause.png"]];
+        if (sPlayer.streamer.isPlaying && btnPlayPtr) {
+            [btnPlayPtr setImage:[UIImage imageNamed:@"player_button_pause.png"]];
         }
     }
 }
@@ -699,8 +766,9 @@ bool NeedToStartWithFistDownloadedBytes = false;
 {
     if (sPlayer) {
         if (sPlayer.bookId == bookId) {
-            [self setDelegates:self];
-            progressView.progress = [self calcDownProgressForChapter:sPlayer.chapter];            
+            [PlayerFreeViewController setDelegates:[StaticPlayer sharedInstance]];
+            if(progressViewPtr)
+                progressViewPtr.progress = [PlayerFreeViewController calcDownProgressForChapter:sPlayer.chapter];
         }
         else{
             Book *b = [gs db_GetBookWithID:[NSString stringWithFormat:@"%d", sPlayer.bookId ]];
@@ -713,8 +781,8 @@ bool NeedToStartWithFistDownloadedBytes = false;
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    [self savedbTrackProgress];
-    [self setDelegates:nil];
+    [PlayerFreeViewController savedbTrackProgress];
+    [PlayerFreeViewController setDelegates:[StaticPlayer sharedInstance]];
     [super viewDidDisappear:animated];
 }
 
