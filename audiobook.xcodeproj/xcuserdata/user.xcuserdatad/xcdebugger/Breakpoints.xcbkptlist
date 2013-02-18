@@ -7,39 +7,78 @@
          shouldBeEnabled = "No"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "Classes/GenresTableViewController.m"
-         timestampString = "381158095.483623"
+         filePath = "Classes/PlayerFreeViewController.m"
+         timestampString = "382863836.515545"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "151"
-         endingLineNumber = "151"
-         landmarkName = "-tableView:didSelectRowAtIndexPath:"
+         startingLineNumber = "227"
+         endingLineNumber = "227"
+         landmarkName = "-request:didReceiveBytes:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "Classes/asih/ASIHTTPRequest.m"
-         timestampString = "382459250.131784"
+         filePath = "Classes/PlayerFreeViewController.m"
+         timestampString = "382863836.515545"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "334"
-         endingLineNumber = "334"
-         landmarkName = "-dealloc"
+         startingLineNumber = "213"
+         endingLineNumber = "213"
+         landmarkName = "-request:didReceiveBytes:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Classes/PlayerFreeViewController.m"
+         timestampString = "382863836.515545"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "128"
+         endingLineNumber = "128"
+         landmarkName = "-requestFailed:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Classes/PlayerFreeViewController.m"
+         timestampString = "382863801.284258"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "453"
+         endingLineNumber = "453"
+         landmarkName = "-appendChapterIdentityForDownloading:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "Classes/ChapterCellViewController.m"
-         timestampString = "382659398.95027"
+         filePath = "Classes/PlayerFreeViewController.m"
+         timestampString = "382864896.255541"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "40"
-         endingLineNumber = "40"
-         landmarkName = "-viewDidUnload"
+         startingLineNumber = "231"
+         endingLineNumber = "231"
+         landmarkName = "-request:didReceiveBytes:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Classes/ChaptersViewController.m"
+         timestampString = "382865246.891465"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "240"
+         endingLineNumber = "240"
+         landmarkName = "-findCellByChapter:"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

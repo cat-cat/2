@@ -1100,7 +1100,7 @@ cleanup:
         [self stop];
         
         BOOL isRun = NO;
-        //i=0;
+        i=0;
         while (!self.isPlaying )
         {
             NSLog(@"wait fo runing - loop # %d, state2:%d ...", i++, state);

@@ -225,7 +225,66 @@
 
 -(void)downClick:(UIButton*)sender
 {
+    Chapter* c = (Chapter*) [chapters objectAtIndex:[[sender titleForState:UIControlStateApplication]intValue]];
+    NSString* chapterIdentity = [NSString stringWithFormat:@"%d:%@", bookId, c.cId ];
+    [playerController appendChapterIdentityForDownloading:chapterIdentity];
     NSLog(@"++btn state: %@", [sender titleForState:UIControlStateApplication]);
+}
+
+-(UITableViewCell*)findCellByChapter:(NSString*)chid
+{
+    int i = 0;
+    for (Chapter* c in chapters) {
+        if ([c.cId isEqualToString:chid])
+            break;
+        ++i;
+    }
+    UITableViewCell* cell =(UITableViewCell*) [self.view viewWithTag:1000+i ];
+    return cell;
+}
+
+-(void)setProgressForChapter:(NSString*)chid value:(float)val
+{
+    UITableViewCell* cell = [self findCellByChapter:chid];
+    UIProgressView* progress = (UIProgressView*) [cell viewWithTag:3];
+    progress.progress = val;
+}
+
+-(void)setBtnTitleForChapter:(NSString*)chid title:(NSString*)title
+{
+    UITableViewCell* cell = [self findCellByChapter:chid];
+    UIButton* btn = (UIButton*)[cell viewWithTag:4];
+    [btn setTitle:@"Скачать" forState:UIControlStateNormal];
+}
+
+-(void)chapterFinishDownload:(NSString*)chapterIdentity
+{
+    int bid = [gss() bidFromChapterIdentity:chapterIdentity];
+    
+    if (bid != bookId) {
+        NSLog(@"++ Отображается оглавление не той книги!");
+        return;
+    }
+    
+    NSString* chid = [gss() chidFromChapterIdentity:chapterIdentity];
+    
+    float progress = [playerController calcDownProgressForChapter:chid];
+    [self setProgressForChapter:chid value: progress];
+    [self setBtnTitleForChapter:chid title:@"Скачать"];
+}
+
+-(void) updateProgressForChapterIdentity:(NSString*)chapterIdentity value:(float)val
+{
+    int bid = [gss() bidFromChapterIdentity:chapterIdentity];
+    
+    if (bid != bookId) {
+        NSLog(@"++ Отображается оглавление не той книги!");
+        return;
+    }
+    
+    NSString* chid = [gss() chidFromChapterIdentity:chapterIdentity];
+    
+    [self setProgressForChapter:chid value: val];    
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -245,7 +304,7 @@
     UILabel* lblSmall = (UILabel*)[cell viewWithTag:2];
     lblSmall.text = lc.name;
     UIProgressView* progress = (UIProgressView*) [cell viewWithTag:3];
-    progress.progress = 0.3;
+    progress.progress = [playerController calcDownProgressForChapter:lc.cId];
     UIButton* btn = (UIButton*)[cell viewWithTag:4];
     [btn setTitle:@"Скачать" forState:UIControlStateNormal];
     [btn setTitle:[NSString stringWithFormat:@"%d",indexPath.row ] forState:UIControlStateApplication];

@@ -50,6 +50,9 @@ static ASIHTTPRequest* currentRequest;
     NSLog(@"++ player DidStartPlaying");
 }
 - (void) streamingPlayerDidStopPlaying:(StreamingPlayer *) anPlayer {
+    // checkIf chapter dowloaded correctly
+    [self checkChapter:sPlayer.chapter];
+    
     // reinit player
     NSString* chid = sPlayer.chapter;
     int bid = sPlayer.bookId;
@@ -100,22 +103,78 @@ static ASIHTTPRequest* currentRequest;
 
 static StreamingPlayer *sPlayer = nil;
 
-- (void)requestFailed:(ASIHTTPRequest *)request
-{
-    NSLog(@"requestFailed:(ASIHTTPRequest *)request");
-    NSLog(@" error description%@", [request.error description]);
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-}
-
 - (void)requestFinished:(ASIHTTPRequest *)request
 {
     NSLog(@"++Finished request !");
-    NSString *path = [gss() pathForBookFinished:book.abookId chapter:[sPlayer chapter]];
+    NSString* strURL = [self chapterIdentityFromURL:[[request url] absoluteString]];
+    int bid = [gss() bidFromChapterIdentity:strURL];
+    NSString* chid = [gss() chidFromChapterIdentity:strURL];
+    NSString *path = [gss() pathForBookFinished:bid chapter:chid];
     
     NSFileManager *fm = [NSFileManager defaultManager];
     bool fileCreationSuccess = [ fm createFileAtPath:path contents:nil  attributes:nil];
     if(fileCreationSuccess == NO){ NSLog(@"Failed to create the finished! file"); }
+    
+    // set up requests queue
+    [self downqNextAfter:[[request url] absoluteString]];
 }
+
+- (void)requestFailed:(ASIHTTPRequest *)request
+{
+    NSLog(@"**err: request failed description %@, url: %@", [request.error description], [request url]);
+    //[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    
+    // set up requests queue
+    [self downqNextAfter:[[request url] absoluteString]];
+}
+
+-(NSString*)chapterIdentityFromURL:(NSString*)url
+{
+    NSString* resultString;
+    
+    //NSString *htmlString = @"http://192.168.0.100:80/books/3456/chaptersAudio/01_02_crypt.mp3";
+    NSString *htmlString = url;
+    @try {
+    NSRegularExpression *nameExpression = [NSRegularExpression regularExpressionWithPattern:@"/books/(\\w+)/chaptersAudio/(\\w+)_crypt.mp3" options:NSRegularExpressionSearch error:nil];
+    
+    NSArray *matches = [nameExpression matchesInString:htmlString
+                                               options:0
+                                                 range:NSMakeRange(0, [htmlString length])];
+    for (NSTextCheckingResult *match in matches) {
+            //NSRange matchRange = [match range];
+            NSRange matchRange = [match rangeAtIndex:1];
+            NSString *matchString1 = [htmlString substringWithRange:matchRange];
+            matchRange = [match rangeAtIndex:2];
+            NSString *matchString2 = [htmlString substringWithRange:matchRange];
+            //NSLog(@"%@:%@", matchString1, matchString2);
+            resultString = [NSString stringWithFormat:@"%@:%@", matchString1, matchString2 ];
+        }
+    }
+    
+    @catch (NSException *exception) {
+        NSLog(@"**err: error getting chapter's identity for url: %@", url);
+    }
+    
+    return resultString;
+}
+
+// called only from finished or failed requests, so we should remove it from download queue
+-(void)downqNextAfter:(NSString*)completedURL
+{
+    NSString* object = [self chapterIdentityFromURL:completedURL];
+    
+    //if([[gss() downq] count] > 1)
+    [[gss() downq] removeObject:object];
+    
+	[chaptersController chapterFinishDownload:object];
+    
+//	download(downQ.next());
+    if ([[gss() downq] count]) {
+        object = [[gss() downq] objectAtIndex:0];
+        [self startDownloadBook:[gss() bidFromChapterIdentity:object] chapter:[gss() chidFromChapterIdentity:object]];
+    }
+}
+
 
 -(void)startPlayer
 {
@@ -141,19 +200,36 @@ bool NeedToStartWithFistDownloadedBytes = false;
 - (void) request:(ASIHTTPRequest *)request didReceiveBytes:(unsigned long long) bytes
 {
 //    NSLog(@"++bytes received: %lld", bytes);
-    trackLength += bytes;        
-    progressView.progress = (float)trackLength/(float)trackSize;
+    NSString* strURL = [self chapterIdentityFromURL:[[request url] absoluteString]];
+    int bid = [gss() bidFromChapterIdentity:strURL];
+    NSString* chid = [gss() chidFromChapterIdentity:strURL];
 
-    
-    if (NeedToStartWithFistDownloadedBytes)
+    float progressVal = 0.0;
+    if(bookId==bid && [sPlayer.chapter isEqualToString:chid])
     {
-        NeedToStartWithFistDownloadedBytes = false;
-        if (sPlayer.streamer.state == AS_INITIALIZED) {
-            [self startPlayer];
+        trackLength += bytes;
+        progressVal = (float)trackLength/(float)trackSize;
+        progressView.progress = progressVal;
+        if (NeedToStartWithFistDownloadedBytes)
+        {
+            NeedToStartWithFistDownloadedBytes = false;
+            if (sPlayer.streamer.state == AS_INITIALIZED) {
+                [self startPlayer];
+            }
+            else
+                NSLog(@"**err: player is not initialized");
         }
-        else
-            NSLog(@"**err: player is not initialized");
     }
+    else
+    {
+        int sz = [self actualSizeForChapter:bid chapter:chid];
+        int lnt = [self metaSizeForChapter:bid chapter:chid];
+        progressVal = (float)sz/(float)lnt;
+    }
+    
+    
+    [chaptersController updateProgressForChapterIdentity:[self chapterIdentityFromURL: [[request url] absoluteString] ] value:progressVal];
+
 
     //    else
     //        [sPlayer.streamer pause];
@@ -288,8 +364,8 @@ bool NeedToStartWithFistDownloadedBytes = false;
 {
     NSFileManager *fileManager = [NSFileManager defaultManager];
     bool finished_exists = [fileManager fileExistsAtPath:[gss() pathForBookFinished:bookId chapter:chid]];
-    NSInteger actualSize = [self actualSizeForChapter:chid];
-    NSInteger metaSize = [self metaSizeForChapter:chid];
+    NSInteger actualSize = [self actualSizeForChapter:bookId chapter:chid];
+    NSInteger metaSize = [self metaSizeForChapter:bookId chapter:chid];
      if((finished_exists && actualSize<metaSize) || (!finished_exists && actualSize<400))
      {        
         NSError *error;
@@ -304,7 +380,7 @@ bool NeedToStartWithFistDownloadedBytes = false;
      }
 }
 
--(NSInteger) metaSizeForChapter:(NSString*) chid
+-(NSInteger) metaSizeForChapter:(int)bid chapter:(NSString*) chid
 {
     NSInteger returnValue = 0;
     DDXMLDocument *xmldoc = [gss() docForFile:[gss() pathForBookMeta:bookId]];
@@ -321,7 +397,7 @@ bool NeedToStartWithFistDownloadedBytes = false;
     return returnValue;
 }
 
--(NSInteger) actualSizeForChapter:(NSString*)chid
+-(NSInteger) actualSizeForChapter:(int)bid chapter:(NSString*)chid
 {
     NSInteger returnValue = 0;
     // get actual file size and set progressView.progress
@@ -342,9 +418,9 @@ bool NeedToStartWithFistDownloadedBytes = false;
 
 -(float)calcDownProgressForChapter:(NSString*)chid
 {
-    trackSize = [self metaSizeForChapter:chid];
+    trackSize = [self metaSizeForChapter:bookId chapter:chid];
     
-    trackLength = [self actualSizeForChapter:chid];
+    trackLength = [self actualSizeForChapter:bookId chapter:chid];
     
     float downloadProgress = (float)trackLength / (float)trackSize;
     
@@ -372,50 +448,75 @@ bool NeedToStartWithFistDownloadedBytes = false;
     // else - user come to the player at for the already playied book, so just do nothing
 }
 
+-(void)appendChapterIdentityForDownloading:(NSString*)chapterIdentity
+{
+    [[gss() downq] addObject:chapterIdentity];
+    int bid =  [gss() bidFromChapterIdentity:chapterIdentity];
+    NSString* chid = [gss() chidFromChapterIdentity:chapterIdentity];
+    
+    if ([[gss() downq] count] == 1) {
+        [self startDownloadBook:bid chapter:chid];
+    }
+}
+
+
+-(void)startDownloadBook:(int)bid chapter:(NSString*)chid
+{
+    // if not doewnloaded yet, start downloading or partial downloading
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/chapter.php?bid=%d&ch=%@", AppConnectionHost, bid, chid ]];
+    ASIHTTPRequest *req1 = [ASIHTTPRequest requestWithURL:url];
+    [req1 startSynchronous];
+    NSError *error;
+    error = [req1 error];
+    [[gs sharedInstance] handleError:error];
+    NSString *response = [req1 responseString];
+    [[gs sharedInstance] handleSrvError:response];
+    DDXMLDocument* doc = [[DDXMLDocument  alloc] initWithXMLString:response options:0 error:&error];
+    NSArray* arr = [gss() arrayForDoc:doc xpath:@"//chapter_path"];
+    if (![arr count]) {
+        NSLog(@"**err: chapter_path eror");
+        // TODO: message to user about not found chapter
+        return;
+    }
+    
+    if (currentRequest) { // cancel previous request before starting new
+        [currentRequest cancel];
+    }
+    // don't do that - crash in requestFinished due to nil in [request originalURL]
+    //currentRequest = nil;
+    
+    currentRequest = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:[arr objectAtIndex:0] ]];
+    NSString *downloadPath = [gss() pathForBook:bid andChapter:chid ] ;
+    
+    // create empty file for player could start streaming
+    //        if(![[NSFileManager defaultManager]  fileExistsAtPath:downloadPath])
+    //            [[NSFileManager defaultManager] createFileAtPath:downloadPath contents:nil attributes:nil];
+    
+    // The full file will be moved here if and when the request completes successfully
+    [currentRequest setDownloadDestinationPath:downloadPath];
+    
+    // This file has part of the download in it already
+    [currentRequest setTemporaryFileDownloadPath:downloadPath];
+    [currentRequest setAllowResumeForFileDownloads:YES];
+    [currentRequest setDelegate:self];
+    [currentRequest setDownloadProgressDelegate:self];
+    //    int alreadyDownloaded = 2354100;
+    //    [request addRequestHeader:@"Range" value:[NSString stringWithFormat:@"bytes=%i-", alreadyDownloaded]];
+    [currentRequest setMyDontRemoveFlag:true];
+    [currentRequest startAsynchronous];    
+}
+
 -(void) handlePlayPause
 {
     if(![[NSFileManager defaultManager]  fileExistsAtPath:[gss() pathForBookFinished:book.abookId chapter:[sPlayer chapter] ]])
     {
-        // if not doewnloaded yet, start downloading or partial downloading
-        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/chapter.php?bid=%d&ch=%@", AppConnectionHost, book.abookId, sPlayer.chapter ]];
-        ASIHTTPRequest *req1 = [ASIHTTPRequest requestWithURL:url];
-        [req1 startSynchronous];
-        NSError *error;
-        error = [req1 error];
-        [[gs sharedInstance] handleError:error];
-        NSString *response = [req1 responseString];
-        [[gs sharedInstance] handleSrvError:response];
-        DDXMLDocument* doc = [[DDXMLDocument  alloc] initWithXMLString:response options:0 error:&error];
-        NSArray* arr = [gss() arrayForDoc:doc xpath:@"//chapter_path"];
-        if (![arr count]) {
-            NSLog(@"**err: chapter_path eror");
-            // TODO: message to user about not found chapter
-            return;
-        }
+        NSString* object = [NSString stringWithFormat:@"%d:%@", book.abookId, sPlayer.chapter ];
         
-        if (currentRequest) { // cancel previous request before starting new
-            [currentRequest cancel];
-        }
+        // set downloaded object to the top of array
+        [[gss() downq] removeObject:object];
+        [[gss() downq] insertObject:object atIndex:0];
         
-        currentRequest = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:[arr objectAtIndex:0] ]];
-        NSString *downloadPath = [gss() pathForBook:book.abookId andChapter:[sPlayer chapter] ] ;
-        
-        // create empty file for player could start streaming
-        //        if(![[NSFileManager defaultManager]  fileExistsAtPath:downloadPath])
-        //            [[NSFileManager defaultManager] createFileAtPath:downloadPath contents:nil attributes:nil];
-        
-        // The full file will be moved here if and when the request completes successfully
-        [currentRequest setDownloadDestinationPath:downloadPath];
-        
-        // This file has part of the download in it already
-        [currentRequest setTemporaryFileDownloadPath:downloadPath];
-        [currentRequest setAllowResumeForFileDownloads:YES];
-        [currentRequest setDelegate:self];
-        [currentRequest setDownloadProgressDelegate:self];
-        //    int alreadyDownloaded = 2354100;
-        //    [request addRequestHeader:@"Range" value:[NSString stringWithFormat:@"bytes=%i-", alreadyDownloaded]];
-        [currentRequest setMyDontRemoveFlag:true];
-        [currentRequest startAsynchronous];
+        [self startDownloadBook:book.abookId chapter:sPlayer.chapter];
     }
     
     
@@ -529,8 +630,8 @@ bool NeedToStartWithFistDownloadedBytes = false;
 //}
 -(int)getPossibleProgressVal
 {
-    int actual = [self actualSizeForChapter:sPlayer.chapter];
-    int meta = [self metaSizeForChapter:sPlayer.chapter];
+    int actual = [self actualSizeForChapter:sPlayer.bookId chapter:sPlayer.chapter];
+    int meta = [self metaSizeForChapter:sPlayer.bookId chapter:sPlayer.chapter];
     float procSize = ((float)actual / (float)meta) * 100;
     int length = [self metaLengthForChapter:sPlayer.chapter];
     int val = (procSize / 100) * length;

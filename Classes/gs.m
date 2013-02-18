@@ -21,7 +21,7 @@
 
 @implementation gs
 @synthesize navigationController = _navigationController;
-@synthesize queue = _queue;
+//@synthesize queue = _queue;
 static int connectionType;
 static Reachability* hostReachable;
 //static CatalogViewController* delegate;
@@ -910,6 +910,39 @@ static NSString* databaseName;
     return ((int)c >= (int)'a' && (int)c <= 'z') || ((int)c >= 'A' && (int)c <= (int)'Z');
 }
 
+-(void)downqInsert:(NSString*)item atIndex:(int)idx
+{
+    @synchronized(self){
+        
+    }
+}
+
+-(void)downqRemove:(NSString*)item atIndex:(int)idx
+{
+    @synchronized(self)
+    {
+        
+    }
+}
+
+-(int)bidFromChapterIdentity:(NSString*)ci
+{
+    @synchronized(self)
+    {
+    NSArray *array = [ci componentsSeparatedByString:@":"]; // format bookid:chapternum
+    return [[array objectAtIndex:0] intValue];
+    }
+}
+
+-(NSString*)chidFromChapterIdentity:(NSString*)ci
+{
+    @synchronized(self)
+    {
+    NSArray *array = [ci componentsSeparatedByString:@":"]; // format bookid:chapternum
+    return [array objectAtIndex:1];
+    }
+}
+
 //#include <netinet/in.h>
 #include <arpa/inet.h>
 + (gs *)sharedInstance
@@ -920,9 +953,9 @@ static NSString* databaseName;
         sharedInstance = [[gs alloc] init];
         // Do any other initialisation stuff here
         
-        //****************** init network operation queue
-        [sharedInstance setQueue:[[ASINetworkQueue alloc] init]];        
-        
+        //****************** init requests queue
+        //[sharedInstance setQueue:[[ASINetworkQueue alloc] init]];
+        [sharedInstance setDownq:[[NSMutableArray alloc] init] ];
         
         
         

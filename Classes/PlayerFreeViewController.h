@@ -39,6 +39,9 @@
 }
 
 @property (nonatomic, assign) int bookId;
+-(void)appendChapterIdentityForDownloading:(NSString*)chapterIdentity;
+-(float)calcDownProgressForChapter:(NSString*)chid;
+
 -(void)startChapter:(NSString*)chid;
 - (IBAction)onSliderUpInside:(UISlider *)sender;
 
