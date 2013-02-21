@@ -24,6 +24,8 @@
 
 @interface StaticPlayer : NSObject <StreamingPlayerDelegate> {
 }
++(StaticPlayer*) sharedInstance;
+- (void) removeDownqObject:(NSString *)object;
 @property (nonatomic, strong) NSMutableArray* downq; // queue for downloading
 @end
 
@@ -51,7 +53,7 @@
 +(NSString*)chapterIdentityFromURL:(NSString*)url;
 +(int)myGetBookId;
 +(void)appendChapterIdentityForDownloading:(NSString*)chapterIdentity;
-+(float)calcDownProgressForChapter:(NSString*)chid;
++(float)calcDownProgressForBook:(int)bid chapter:(NSString*)chid;
 
 +(void)startChapter:(NSString*)chid;
 - (IBAction)onSliderUpInside:(UISlider *)sender;

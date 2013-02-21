@@ -239,6 +239,7 @@ void ASReadStreamCallBack
 		url = [aURL retain];
 		readedBytes = 0;
         keyDevId = @"1qazXSW@3ed";//[[Utils returnMD5Hash:[[UIDevice currentDevice] uniqueIdentifier]] retain];
+        self.aqChangedUnexpected = NO;
 	}
 	return self;
 }
@@ -1066,68 +1067,84 @@ cleanup:
 
 -(void)startAtPos:(double)newSeekTime withFade:(BOOL)fade doPlay:(BOOL)play
 {
-    //[self setVolume:0.0f];
     
     NSLog(@"%s, fileLength = %d, progress = %f, newSeekTime = %f, Player state is - %@", __func__,fileLength, self.progress, newSeekTime, self.isPlaying? @"isPlaying": self.isPaused? @"Paused": self.isIdle? @"isIdle":@"wait");
     
-    if (ceil(newSeekTime) == fileLength && fileLength > 0)
-    {
-        [self stop];
+    if ([self isPlaying]) {
+        [self seekToTime:newSeekTime];
     }
-    else if ((newSeekTime  == self.progress) && newSeekTime > 0)
+    else
     {
-        if (play)
-            [self start];
-    }
-    else if (newSeekTime  == 0 && self.progress == 0)
-    {   
-        if(self.isPlaying)
-            [self stop];  
-        if (play)
-          [self start]; 
-    }
-    else if (newSeekTime >= 0.0)
-    {
-        [self start];
-        int i = 0;
-        while (!self.isPlaying && state != AS_INITIALIZED)
-        {
-            NSLog(@"wait fo runing1 - loop # %d, state:%d ...", i++, state);
+        //[self start];
+        [self playWithFade:0.8];
+        while (![self isPlaying] && state != AS_INITIALIZED) {
             [NSThread sleepForTimeInterval:0.2];
         }
-        
-        [self pause];
-        [self stop];
-        
-        BOOL isRun = NO;
-        i=0;
-        while (!self.isPlaying )
-        {
-            NSLog(@"wait fo runing - loop # %d, state2:%d ...", i++, state);
-           if (!isRun)
-            {
-                [self seekToTime:newSeekTime];
-                [self start];
-                isRun = YES;
-            }    
-            [NSThread sleepForTimeInterval:0.2];
-            // TODO: blind exit, need investigation
-            if (state == AS_INITIALIZED) {
-                break;
-            }
+        if ([self isPlaying]) {
+            [self seekToTime:newSeekTime];
         }
-        
-        if (!play)
-            [self pause]; 
-        /*
-        i = 0;
-        while (!self.isPlaying || i <= 200 || !play)
-        {    
-            NSLog(@"wait fo runing2 - loop # %d ...", i);
-            i++;
-        }
-        */ 
-    }    
+        else
+            NSLog(@"** err: error starting at newSeekTime");
+    }
+    
+//    if (ceil(newSeekTime) == fileLength && fileLength > 0)
+//    {
+//        [self stop];
+//    }
+//    else if ((newSeekTime  == self.progress) && newSeekTime > 0)
+//    {
+//        if (play)
+//            [self start];
+//    }
+//    else if (newSeekTime  == 0 && self.progress == 0)
+//    {   
+//        if(self.isPlaying)
+//            [self stop];  
+//        if (play)
+//          [self start]; 
+//    }
+//    else if (newSeekTime >= 0.0)
+//    {
+//        [self start];
+//        int i = 0;
+//        while (!self.isPlaying && state != AS_INITIALIZED)
+//        {
+//            NSLog(@"wait fo runing1 - loop # %d, state:%d ...", i++, state);
+//            [NSThread sleepForTimeInterval:0.2];
+//        }
+//        
+//        [self pause];
+//        [self stop];
+//        
+//        BOOL isRun = NO;
+//        i=0;
+//        while (!self.isPlaying )
+//        {
+//            NSLog(@"wait fo runing - loop # %d, state2:%d ...", i++, state);
+//           if (!isRun)
+//            {
+//                [self seekToTime:newSeekTime];
+//                [self start];
+//                isRun = YES;
+//            }    
+//            [NSThread sleepForTimeInterval:0.2];
+//            // TODO: blind exit, need investigation
+//            if (state == AS_INITIALIZED) {
+//                break;
+//            }
+//        }
+//        
+//        if (!play)
+//            [self pause]; 
+//        /*
+//        i = 0;
+//        while (!self.isPlaying || i <= 200 || !play)
+//        {    
+//            NSLog(@"wait fo runing2 - loop # %d ...", i);
+//            i++;
+//        }
+//        */ 
+//    }    
     /*
     if (fade)
         [self doVolumeFadeIn];
@@ -1145,15 +1162,16 @@ cleanup:
     
     if (errorMsg) {
         NSLog(@"AudioQueueSetParameter returned %ld when setting the volume.", errorMsg);
+        Level = 0.0;
     }
     
     if (Level > 0.1) {
-        [self setVolume:(Level - 0.1)];
-        [self performSelector:@selector(doVolumeFadeOut) withObject:nil afterDelay:0.8];           
+        [self setVolume:(Level - 0.2)];
+        [self performSelector:@selector(doVolumeFadeOut) withObject:nil afterDelay:0.1];
     } else {
         // Stop and get the sound ready for playing again
-        [self pause];
-        [self setVolume:1.0];
+        //[self pause];
+        //[self setVolume:1.0];
     }
 }
 
@@ -1165,11 +1183,12 @@ cleanup:
     
     if (errorMsg) {
         NSLog(@"AudioQueueSetParameter returned %ld when setting the volume.", errorMsg);
+        Level = 1.0;
     }
     
     if (Level < 1.0) {
-        [self setVolume:(Level + 0.1)];
-        [self performSelector:@selector(doVolumeFadeIn) withObject:nil afterDelay:0.8];           
+        [self setVolume:(Level + 0.2)];
+        [self performSelector:@selector(doVolumeFadeIn) withObject:nil afterDelay:0.1];
     } else {
         // Stop and get the sound ready for playing again
         //[self pause];
@@ -1182,11 +1201,12 @@ cleanup:
 {
     [self setVolume:0.0f];
     [self start];    
-    for (int i = 0; i < time; i++) 
-    {
-       [self performSelector:@selector(setVolume:) withObject:[NSNumber numberWithFloat:1.0f/time] afterDelay:0.1]; 
-    }
+//    for (int i = 0; i < time; i++) 
+//    {
+//       [self performSelector:@selector(setVolume:) withObject:[NSNumber numberWithFloat:1.0f/time] afterDelay:0.1]; 
+//    }
 
+    [self doVolumeFadeIn];
 }
 
 - (void)setVolume:(float)Level
@@ -2234,6 +2254,7 @@ cleanup:
 			else
 			{
 				NSLog(@"AudioQueue changed state in unexpected way.");
+                self.aqChangedUnexpected = YES;
 			}
 		}
 	}

@@ -104,7 +104,10 @@
     if( delegate && [delegate respondsToSelector:@selector(setPlayButton:)] )
     {
         if ([streamer isPlaying])
+        {
+            //[streamer setVolume:1.0f];
 			[delegate setPlayButton:1];
+        }
         else
             [delegate setPlayButton:0];
     }

@@ -8,6 +8,7 @@
 
 #import "DownloadsViewController.h"
 #import "PlayerFreeViewController.h"
+#import "gs.h"
 
 @interface DownloadsViewController ()
 
@@ -59,16 +60,33 @@
     return [self.downq count];
 }
 
+-(NSArray*)titlesForChapterIdentity:(NSString*)chid
+{
+    NSArray* arr = [chid componentsSeparatedByString:@":"];
+    int bid = [[arr objectAtIndex:0] intValue];
+    NSString* chapterId = [arr objectAtIndex:1];
+    DDXMLDocument* doc = [gss() docForFile:[gss() pathForBookMeta:bid]];
+    NSArray *titleArr = [gss() arrayForDoc:doc xpath:[NSString stringWithFormat:@"/abooks/abook[@id='%d']/title",bid ]];
+    NSAssert1([titleArr count], @"**err: titleArr is empty: %s", __func__);
+    NSArray* chapterNameArr = [gss() arrayForDoc:doc xpath:[NSString stringWithFormat:@"/abooks/abook[@id='%d']//track[@number='%@']/name",bid,chapterId ]];
+    NSAssert1([chapterNameArr count], @"**err: chapterNameArr is empty: %s", __func__);
+    
+    return @[[titleArr objectAtIndex:0], [chapterNameArr objectAtIndex:0]];
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
     
     // Configure the cell...
-    cell.textLabel.text = [self.downq objectAtIndex:indexPath.row];
+    // get titles for book and chapter
+    NSArray* titles = [NSArray arrayWithArray: [self titlesForChapterIdentity:[self.downq objectAtIndex:indexPath.row]]];
+    cell.textLabel.text = [titles objectAtIndex:1];
+    cell.detailTextLabel.text = [titles objectAtIndex:0];
     return cell;
 }
 
@@ -87,6 +105,7 @@
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source
+        [self.delegate removeDownqObject:[self.downq objectAtIndex:indexPath.row ]];
         [self.downq removeObjectAtIndex:indexPath.row];
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }   

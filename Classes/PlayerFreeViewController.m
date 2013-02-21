@@ -31,7 +31,7 @@
 #import "ChaptersViewController.h"
 #import "DownloadsViewController.h"
 
-
+static ASIHTTPRequest* currentRequest;
 static int bookId;
 NSInteger trackLength = 0, trackSize = 0;
 bool NeedToStartWithFistDownloadedBytes = false;
@@ -39,14 +39,41 @@ static BOOL bindProgressVal;
 static __weak ChaptersViewController *chaptersControllerPtr;
 static __weak UIProgressView *progressViewPtr;
 static __weak UISlider *progressSliderPtr;
+static __weak UIBarButtonItem *btnPlayPtr;
 
 @implementation StaticPlayer
+- (void) removeDownqObject:(NSString *)object
+{
+    NSString* strURL = [PlayerFreeViewController chapterIdentityFromURL:[[currentRequest url] absoluteString]];
+
+    if ([strURL isEqualToString:object]) {
+        [currentRequest cancel]; // will remove request from downq in onRequestFailed
+    }
+    else
+    {
+        [self.downq removeObject:object];
+    }
+}
+
+-(void) setPlayButton:(int)play
+{
+    if (play)
+        [btnPlayPtr setImage:[UIImage imageNamed:@"player_button_pause.png"]];
+    else
+        [btnPlayPtr setImage:[UIImage imageNamed:@"player_button_play.png"]];
+}
 
 - (void) streamingPlayerIsWaiting:(StreamingPlayer *) anPlayer {
     NSLog(@"++ player IsWaiting");
 }
 - (void) streamingPlayerDidStartPlaying:(StreamingPlayer *) anPlayer {
     NSLog(@"++ player DidStartPlaying");
+    if (sPlayer.streamer.aqChangedUnexpected == YES) {
+
+        sPlayer.streamer.aqChangedUnexpected = NO;
+        bindProgressVal = YES;
+    }
+    [sPlayer.streamer doVolumeFadeIn];
 }
 - (void) streamingPlayerDidStopPlaying:(StreamingPlayer *) anPlayer {
     // checkIf chapter dowloaded correctly
@@ -61,7 +88,9 @@ static __weak UISlider *progressSliderPtr;
     }
     [PlayerFreeViewController savedbTrackProgress];
     sPlayer = [[StreamingPlayer alloc] initPlayerWithBook:bid  chapter:chid];
+    [sPlayer setDelegate:[StaticPlayer sharedInstance]];
     [PlayerFreeViewController setDelegates:[StaticPlayer sharedInstance]];
+    bindProgressVal = YES;
 }
 
 - (void) streamingPlayer:(StreamingPlayer *) anPlayer didUpdateProgress:(double) anProgress {
@@ -214,17 +243,7 @@ static StreamingPlayer *sPlayer = nil;
 @implementation PlayerFreeViewController
 static __weak UILabel *lbTimePassedPtr;
 static __weak UILabel *lbTimeLeftPtr;
-static __weak UIBarButtonItem *btnPlayPtr;
 static Book *book;
-static ASIHTTPRequest* currentRequest;
-
--(void) setPlayButton:(int)play
-{
-    if (play)
-        [btnPlay setImage:[UIImage imageNamed:@"player_button_pause.png"]];
-    else
-        [btnPlay setImage:[UIImage imageNamed:@"player_button_play.png"]];
-}
 
 +(NSString*)chapterIdentityFromURL:(NSString*)url
 {
@@ -357,8 +376,9 @@ static ASIHTTPRequest* currentRequest;
     
     if(progressSliderPtr)
     {
-        NSLog(@"Progress : %lf", progressSliderPtr.value);
-        sqlite3_bind_double(compiledStatement, 15, progressSliderPtr.value);
+        float valToSave = (progressSliderPtr.value - 4.0) > 0 ? progressSliderPtr.value - 4.0 : progressSliderPtr.value;
+        NSLog(@"Progress : %lf", valToSave);
+        sqlite3_bind_double(compiledStatement, 15, valToSave);
     }
     else
     {
@@ -473,15 +493,18 @@ static ASIHTTPRequest* currentRequest;
     return returnValue;
 }
 
-+(float)calcDownProgressForChapter:(NSString*)chid
++(float)calcDownProgressForBook:(int)bid chapter:(NSString*)chid
 {
-    trackSize = [self metaSizeForChapter:bookId chapter:chid];
-    
-    trackLength = [self actualSizeForChapter:bookId chapter:chid];
-    
-    float downloadProgress = (float)trackLength / (float)trackSize;
-    
-    return downloadProgress;
+    @synchronized(self)
+    {
+        trackSize = [self metaSizeForChapter:bid chapter:chid];
+        
+        trackLength = [self actualSizeForChapter:bid chapter:chid];
+        
+        float downloadProgress = (float)trackLength / (float)trackSize;
+        
+        return downloadProgress;
+    }
 }
 
 +(void)startChapter:(NSString *)chid
@@ -502,7 +525,7 @@ static ASIHTTPRequest* currentRequest;
         [self handlePlayPause];
         
         if(progressViewPtr)
-            progressViewPtr.progress = [self calcDownProgressForChapter:chid];
+            progressViewPtr.progress = [self calcDownProgressForBook:bookId chapter:chid];
     }
     // else - user come to the player at for the already playied book, so just do nothing
 }
@@ -729,8 +752,6 @@ static ASIHTTPRequest* currentRequest;
             [sPlayer.streamer startAtPos:progressSlider.value withFade:NO doPlay:YES];
         }
     }
-    
-    bindProgressVal = YES;
 }
 
 - (IBAction)btnOpenDownloadQueueClick:(UIBarButtonItem *)sender {
@@ -744,6 +765,9 @@ static ASIHTTPRequest* currentRequest;
 }
 
 - (IBAction)onSliderDown:(UISlider *)sender {
+    if (sPlayer)
+        [sPlayer.streamer doVolumeFadeOut];
+    
     bindProgressVal = NO;
 }
 
@@ -780,7 +804,7 @@ static ASIHTTPRequest* currentRequest;
         if (sPlayer.bookId == bookId) {
             [PlayerFreeViewController setDelegates:[StaticPlayer sharedInstance]];
             if(progressViewPtr)
-                progressViewPtr.progress = [PlayerFreeViewController calcDownProgressForChapter:sPlayer.chapter];
+                progressViewPtr.progress = [PlayerFreeViewController calcDownProgressForBook:bookId chapter:sPlayer.chapter];
         }
         else{
             Book *b = [gs db_GetBookWithID:[NSString stringWithFormat:@"%d", sPlayer.bookId ]];

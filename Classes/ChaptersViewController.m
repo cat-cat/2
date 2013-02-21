@@ -44,6 +44,11 @@
 
 @end
 
+static NSString* BTN_READY = @"Готово";
+static NSString* BTN_DOWNLOAD = @"Скачать";
+static NSString* BTN_CANCEL = @"отменить";
+
+
 @interface Chapter : NSObject
 @property (nonatomic, strong) NSString* cId;
 @property (nonatomic, strong) NSString* name;
@@ -227,7 +232,19 @@
 {
     Chapter* c = (Chapter*) [chapters objectAtIndex:[[sender titleForState:UIControlStateApplication]intValue]];
     NSString* chapterIdentity = [NSString stringWithFormat:@"%d:%@", bookId, c.cId ];
-    [PlayerFreeViewController appendChapterIdentityForDownloading:chapterIdentity];
+    NSString* btnState = [sender titleForState:UIControlStateNormal];
+    if ([btnState isEqualToString:BTN_CANCEL]) {
+        [[StaticPlayer sharedInstance] removeDownqObject:chapterIdentity];
+        [sender setTitle:BTN_DOWNLOAD forState:UIControlStateNormal];
+    }
+    else if([btnState isEqualToString:BTN_DOWNLOAD])
+    {
+        [PlayerFreeViewController appendChapterIdentityForDownloading:chapterIdentity];
+        [sender setTitle:BTN_CANCEL forState:UIControlStateNormal];
+    }
+    // else BTN_READY - nothing to do
+    
+    
     NSLog(@"++btn state: %@", [sender titleForState:UIControlStateApplication]);
 }
 
@@ -247,14 +264,25 @@
 {
     UITableViewCell* cell = [self findCellByChapter:chid];
     UIProgressView* progress = (UIProgressView*) [cell viewWithTag:3];
-    progress.progress = val;
+    if (val < 1.0) {
+        progress.progress = val;        
+    }
+    else {
+        progress.hidden = YES;
+    }
 }
 
 -(void)setBtnTitleForChapter:(NSString*)chid title:(NSString*)title
 {
     UITableViewCell* cell = [self findCellByChapter:chid];
     UIButton* btn = (UIButton*)[cell viewWithTag:4];
-    [btn setTitle:@"Скачать" forState:UIControlStateNormal];
+    
+    // manage button
+    if([title isEqualToString:BTN_READY])
+        btn.hidden = YES;
+    else
+        [btn setTitle:title forState:UIControlStateNormal];
+    
 }
 
 -(void)chapterFinishDownload:(NSString*)chapterIdentity
@@ -262,15 +290,21 @@
     int bid = [gss() bidFromChapterIdentity:chapterIdentity];
     
     if (bid != bookId) {
-        NSLog(@"++ Отображается оглавление не той книги!");
+        NSLog(@"++ Финиш загрузки для другой книги!");
         return;
     }
     
     NSString* chid = [gss() chidFromChapterIdentity:chapterIdentity];
     
-    float progress = [PlayerFreeViewController calcDownProgressForChapter:chid];
+    float progress = [PlayerFreeViewController calcDownProgressForBook:[PlayerFreeViewController myGetBookId] chapter:chid];
     [self setProgressForChapter:chid value: progress];
-    [self setBtnTitleForChapter:chid title:@"Скачать"];
+    
+    if (progress < 1.0) {
+        [self setBtnTitleForChapter:chid title:BTN_DOWNLOAD];
+    }
+    else {
+        [self setBtnTitleForChapter:chid title:BTN_READY];
+    }
 }
 
 -(void) updateProgressForChapterIdentity:(NSString*)chapterIdentity value:(float)val
@@ -278,7 +312,7 @@
     int bid = [gss() bidFromChapterIdentity:chapterIdentity];
     
     if (bid != bookId) {
-        NSLog(@"++ Отображается оглавление не той книги!");
+        NSLog(@"++ Отображается оглавление другой книги!");
         return;
     }
     
@@ -304,12 +338,23 @@
     UILabel* lblSmall = (UILabel*)[cell viewWithTag:2];
     lblSmall.text = lc.name;
     UIProgressView* progress = (UIProgressView*) [cell viewWithTag:3];
-    progress.progress = [PlayerFreeViewController calcDownProgressForChapter:lc.cId];
+    progress.progress = [PlayerFreeViewController calcDownProgressForBook:[PlayerFreeViewController myGetBookId] chapter:lc.cId];
     UIButton* btn = (UIButton*)[cell viewWithTag:4];
-    [btn setTitle:@"Скачать" forState:UIControlStateNormal];
+    
+    if (progress.progress < 1.0) {
+        [btn setTitle:BTN_DOWNLOAD forState:UIControlStateNormal];
+        btn.hidden = NO;
+        progress.hidden = NO;
+    }
+    else {
+        [btn setTitle:BTN_READY forState:UIControlStateNormal];
+        btn.hidden = YES;
+        progress.hidden = YES;
+    }
+    
     [btn setTitle:[NSString stringWithFormat:@"%d",indexPath.row ] forState:UIControlStateApplication];
     [btn addTarget:self action:@selector(downClick:) forControlEvents:UIControlEventTouchUpInside];
-
+    
     return cell;
     
     

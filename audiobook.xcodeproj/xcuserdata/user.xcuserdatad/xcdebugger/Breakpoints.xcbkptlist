@@ -8,12 +8,25 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Classes/ChaptersViewController.m"
-         timestampString = "382865246.891465"
+         timestampString = "383140703.486212"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "240"
-         endingLineNumber = "240"
+         startingLineNumber = "257"
+         endingLineNumber = "257"
          landmarkName = "-findCellByChapter:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Classes/AudioStreamer/AudioStreamer.m"
+         timestampString = "383154700.286358"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "1074"
+         endingLineNumber = "1074"
+         landmarkName = "-startAtPos:withFade:doPlay:"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>
