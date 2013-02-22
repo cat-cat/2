@@ -376,7 +376,8 @@ static Book *book;
     
     if(progressSliderPtr)
     {
-        float valToSave = (progressSliderPtr.value - 4.0) > 0 ? progressSliderPtr.value - 4.0 : progressSliderPtr.value;
+        float testVal = progressSliderPtr.value - 8.0;
+        float valToSave = testVal > 0.0 ? testVal : 0.0;
         NSLog(@"Progress : %lf", valToSave);
         sqlite3_bind_double(compiledStatement, 15, valToSave);
     }
@@ -808,7 +809,7 @@ static Book *book;
         }
         else{
             Book *b = [gs db_GetBookWithID:[NSString stringWithFormat:@"%d", sPlayer.bookId ]];
-            [self showAlertAtTimer:b.title delay:2.0];
+            [self showAlertAtTimer:b.title delay:1.0];
         }
     }
     
