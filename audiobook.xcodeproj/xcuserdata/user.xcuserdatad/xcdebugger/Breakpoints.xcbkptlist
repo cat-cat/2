@@ -8,11 +8,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Classes/ChaptersViewController.m"
-         timestampString = "383140703.486212"
+         timestampString = "383216348.006243"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "257"
-         endingLineNumber = "257"
+         startingLineNumber = "277"
+         endingLineNumber = "277"
          landmarkName = "-findCellByChapter:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -27,6 +27,32 @@
          startingLineNumber = "1074"
          endingLineNumber = "1074"
          landmarkName = "-startAtPos:withFade:doPlay:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Classes/PlayerFreeViewController.m"
+         timestampString = "383220338.175253"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "755"
+         endingLineNumber = "755"
+         landmarkName = "-viewDidLoad"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Classes/PlayerFreeViewController.m"
+         timestampString = "383220338.175253"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "130"
+         endingLineNumber = "130"
+         landmarkName = "-streamingPlayer:didUpdateProgress:"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

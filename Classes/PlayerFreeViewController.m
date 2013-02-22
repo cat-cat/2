@@ -30,8 +30,11 @@
 #import "DDXMLDocument.h"
 #import "ChaptersViewController.h"
 #import "DownloadsViewController.h"
+#import "BuyOption1.h"
 
+UIView* playerView = nil;
 static ASIHTTPRequest* currentRequest;
+BOOL isBought = NO;
 static int bookId;
 NSInteger trackLength = 0, trackSize = 0;
 bool NeedToStartWithFistDownloadedBytes = false;
@@ -42,6 +45,16 @@ static __weak UISlider *progressSliderPtr;
 static __weak UIBarButtonItem *btnPlayPtr;
 
 @implementation StaticPlayer
+
++(void) buyBook
+{
+    isBought = YES;
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Покупка книги"
+                                                    message:@"Книга куплена, поздравляем!"
+                                                   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+    [alert show];
+}
+
 - (void) removeDownqObject:(NSString *)object
 {
     NSString* strURL = [PlayerFreeViewController chapterIdentityFromURL:[[currentRequest url] absoluteString]];
@@ -68,12 +81,14 @@ static __weak UIBarButtonItem *btnPlayPtr;
 }
 - (void) streamingPlayerDidStartPlaying:(StreamingPlayer *) anPlayer {
     NSLog(@"++ player DidStartPlaying");
+    
+    // TODO: unreliable logic
     if (sPlayer.streamer.aqChangedUnexpected == YES) {
 
         sPlayer.streamer.aqChangedUnexpected = NO;
         bindProgressVal = YES;
     }
-    [sPlayer.streamer doVolumeFadeIn];
+    [sPlayer.streamer performSelector:@selector(doVolumeFadeIn) withObject:nil afterDelay:1.0];
 }
 - (void) streamingPlayerDidStopPlaying:(StreamingPlayer *) anPlayer {
     // checkIf chapter dowloaded correctly
@@ -93,7 +108,46 @@ static __weak UIBarButtonItem *btnPlayPtr;
     bindProgressVal = YES;
 }
 
+BOOL buyQueryStarted = NO;
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    NSLog(@"++actionsheet item clicked at index %d", buttonIndex);
+    buyQueryStarted = NO;
+}
+
+//- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+//{
+//    NSLog(@"++actionsheet item clicked at index %d", buttonIndex);
+//    buyQueryStarted = NO;
+//}
+
 - (void) streamingPlayer:(StreamingPlayer *) anPlayer didUpdateProgress:(double) anProgress {
+
+//    if (buyQueryStarted) {
+//        return;
+//    }
+    
+    if (!isBought) {
+        float actual = anProgress;
+        float max = progressSliderPtr.maximumValue;
+        float procSize = (actual / max) * 100;
+        if (procSize > 70.0) {
+            buyQueryStarted = YES;
+            if ([sPlayer.streamer isPlaying]) {
+                [sPlayer.streamer stop];   
+            }
+            
+            // show action sheet
+            UIActionSheet *
+            actionSheet = [[UIActionSheet alloc]
+                           initWithTitle:@"Ограничение прослушивания книги" delegate:self cancelButtonTitle:@"Отмена" destructiveButtonTitle:@"Купить" otherButtonTitles: @"Получить бесплатно", nil];
+            [actionSheet showInView:playerView];
+        }
+//        int length = [self metaLengthForChapter:sPlayer.chapter];
+//        int val = (procSize / 100) * length;
+//        return val;
+
+    }
     
     if (bindProgressVal && progressSliderPtr && (bookId==sPlayer.bookId)) {
         progressSliderPtr.value = anProgress;
@@ -458,6 +512,11 @@ static Book *book;
     }
 }
 
+- (IBAction)btnBuyBookClick:(UIBarButtonItem *)sender {
+    BOOL started = [[BuyOption1 sharedInstance] startWithBook:bookId];
+    NSAssert1(started, @"**err: cannot start buy process: %s", __func__);
+}
+
 +(NSInteger) metaSizeForChapter:(int)bid chapter:(NSString*) chid
 {
     NSInteger returnValue = 0;
@@ -688,6 +747,19 @@ static Book *book;
 
 - (void) viewDidLoad
 {
+    playerView = self.view;
+    
+    NSError* error;
+    NSString* buy = [NSString stringWithContentsOfURL:[NSURL fileURLWithPath:[gss() pathForBuy:bookId] ] encoding:NSUTF8StringEncoding error:&error];
+    [gss() handleError:error];
+    if (buy && [buy rangeOfString:@"yes"].location != NSNotFound) {
+        isBought = YES;
+    }
+    else
+    {
+        isBought = NO;
+    }
+    
     // init controls
     lbTimePassedPtr = lbTimePassed;
     lbTimeLeftPtr = lbTimeLeft;

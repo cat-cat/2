@@ -22,9 +22,10 @@
  ******************************************************************************/
 #import "StreamingPlayer.h"
 
-@interface StaticPlayer : NSObject <StreamingPlayerDelegate> {
+@interface StaticPlayer : NSObject <StreamingPlayerDelegate, UIActionSheetDelegate> {
 }
 +(StaticPlayer*) sharedInstance;
++ (void) buyBook;
 - (void) removeDownqObject:(NSString *)object;
 @property (nonatomic, strong) NSMutableArray* downq; // queue for downloading
 @end
@@ -41,6 +42,8 @@
     //    __weak IBOutlet UILabel *labelSmallHeader;
     //    __weak IBOutlet UILabel *labelHeader;
 }
+
+- (IBAction)btnBuyBookClick:(UIBarButtonItem *)sender;
 +(NSInteger) metaSizeForChapter:(int)bid chapter:(NSString*) chid;
 +(NSInteger) actualSizeForChapter:(int)bid chapter:(NSString*)chid;
 +(void)startPlayer;

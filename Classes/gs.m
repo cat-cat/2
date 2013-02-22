@@ -18,8 +18,10 @@
 #import "AuthorSettings.h"
 #import "StandardPaths.h"
 #import "ASINetworkQueue.h"
+#import <CommonCrypto/CommonDigest.h>
 
 @implementation gs
+
 @synthesize navigationController = _navigationController;
 //@synthesize queue = _queue;
 static int connectionType;
@@ -57,6 +59,12 @@ static NSString* databaseName;
         }
         return [arr copy];
     }
+}
+
+-(NSString*) pathForBuy:(int)bid
+{
+    NSString* path = [NSString stringWithFormat:@"%@/%@", [gss() dirsForBook:bid ], @"buy"];
+    return path;
 }
 
 -(NSString*) pathForBookMeta:(int)bid
@@ -1001,6 +1009,23 @@ static NSString* databaseName;
     
     //...
     return sharedInstance;
+}
+
++ (NSString*)md5:(NSString*)object
+{
+    const char *object_str = [object UTF8String];
+    unsigned char result[CC_MD5_DIGEST_LENGTH];
+	
+    CC_MD5(object_str, strlen(object_str), result);
+	
+    NSMutableString *hash = [NSMutableString string];
+	
+    for (int i = 0; i < CC_MD5_DIGEST_LENGTH; i++)
+	{
+        [hash appendFormat:@"%02X", result[i]];
+	}
+	
+    return [hash lowercaseString];
 }
 
 @end

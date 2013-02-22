@@ -66,8 +66,8 @@ static NSString* BTN_CANCEL = @"отменить";
 //@synthesize bookId;
 - (void)requestBookMeta:(int)bid
 {
-    
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/bookmeta.php?bid=%d", AppConnectionHost, bid]];
+     NSString *devhash = [gs md5: [[[UIDevice currentDevice] identifierForVendor] UUIDString]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/bookmeta.php?bid=%d&dev=%@", AppConnectionHost, bid, devhash]];
     //NSURL *url = [NSURL URLWithString:@"http://dl.dropbox.com/u/4115029/bookMeta.xml"];
     ASIHTTPRequest* request = [ASIHTTPRequest requestWithURL:url];
     [request setDelegate:self];
@@ -111,6 +111,26 @@ static NSString* BTN_CANCEL = @"отменить";
     
     // reload table view
     [(UITableView*)[self view] reloadData];
+}
+
+- (void)request:(ASIHTTPRequest *)request didReceiveResponseHeaders:(NSDictionary *)responseHeaders
+{
+    for (id key in responseHeaders) {
+        NSLog(@"key: %@, value: %@ \n", key, [responseHeaders objectForKey:key]);
+    }
+    
+    NSString* isbought = [NSString stringWithFormat:@"<r><bt>%@</bt></r>", [responseHeaders valueForKey:@"Bought" ]];
+//    if ([isbought isEqualToString:@"yes"]) {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSString *fileName = [gss() pathForBuy:bookId];
+    NSData *data = [isbought dataUsingEncoding:NSUTF8StringEncoding];
+    BOOL fileCreationSuccess =
+    [fileManager createFileAtPath:fileName contents:data attributes:nil];
+    NSAssert1(fileCreationSuccess, @"**err: Failed to create the buy file: %s", __func__);
+
+//    }
+    // [[NSFileManager defaultManager] removeItemAtPath:currentTrack.audioFilePath error:nil];
+    //if(![[NSFileManager defaultManager] fileExistsAtPath:currentTrack.audioFilePath])
 }
 
 - (void)requestFinished:(ASIHTTPRequest *)request
