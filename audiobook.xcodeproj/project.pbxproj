@@ -165,6 +165,8 @@
 		CEEEE43916CC4C1F0049A4B2 /* shop_popup_n.png in Resources */ = {isa = PBXBuildFile; fileRef = CEEEE3EB16CC4C1F0049A4B2 /* shop_popup_n.png */; };
 		CEEEE43A16CC4C1F0049A4B2 /* top_back.png in Resources */ = {isa = PBXBuildFile; fileRef = CEEEE3EC16CC4C1F0049A4B2 /* top_back.png */; };
 		CEEEE43B16CC4C1F0049A4B2 /* top_back_smaller.png in Resources */ = {isa = PBXBuildFile; fileRef = CEEEE3ED16CC4C1F0049A4B2 /* top_back_smaller.png */; };
+		CEF837B416D78BDC00603C6E /* Free1ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF837B216D78BDC00603C6E /* Free1ViewController.m */; };
+		CEF837B516D78BDC00603C6E /* Free1ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEF837B316D78BDC00603C6E /* Free1ViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -370,6 +372,9 @@
 		CEEEE3EB16CC4C1F0049A4B2 /* shop_popup_n.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shop_popup_n.png; sourceTree = "<group>"; };
 		CEEEE3EC16CC4C1F0049A4B2 /* top_back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = top_back.png; sourceTree = "<group>"; };
 		CEEEE3ED16CC4C1F0049A4B2 /* top_back_smaller.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = top_back_smaller.png; sourceTree = "<group>"; };
+		CEF837B116D78BDC00603C6E /* Free1ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Free1ViewController.h; path = Classes/Free1ViewController.h; sourceTree = "<group>"; };
+		CEF837B216D78BDC00603C6E /* Free1ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Free1ViewController.m; path = Classes/Free1ViewController.m; sourceTree = "<group>"; };
+		CEF837B316D78BDC00603C6E /* Free1ViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Free1ViewController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -441,6 +446,8 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				CEF837B116D78BDC00603C6E /* Free1ViewController.h */,
+				CEF837B216D78BDC00603C6E /* Free1ViewController.m */,
 				CED2D90216D734F800054E13 /* BuyOption1.h */,
 				CED2D90316D734F800054E13 /* BuyOption1.m */,
 				CE82EA6916BA6D8400F33698 /* xibs */,
@@ -601,6 +608,7 @@
 		CE82EA6916BA6D8400F33698 /* xibs */ = {
 			isa = PBXGroup;
 			children = (
+				CEF837B316D78BDC00603C6E /* Free1ViewController.xib */,
 				CED363E716D2D89500F2337F /* DownloadsView.xib */,
 				CE220C5F16CED53D008E4A29 /* ChapterCellView.xib */,
 				8E52FF1716B6DCED000AD339 /* BookView.xib */,
@@ -894,6 +902,7 @@
 				CEEEE43B16CC4C1F0049A4B2 /* top_back_smaller.png in Resources */,
 				CE220C6116CED53D008E4A29 /* ChapterCellView.xib in Resources */,
 				CED363E916D2D89500F2337F /* DownloadsView.xib in Resources */,
+				CEF837B516D78BDC00603C6E /* Free1ViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -940,6 +949,7 @@
 				CE220C6016CED53D008E4A29 /* ChapterCellViewController.m in Sources */,
 				CED363E816D2D89500F2337F /* DownloadsViewController.m in Sources */,
 				CED2D90416D734F800054E13 /* BuyOption1.m in Sources */,
+				CEF837B416D78BDC00603C6E /* Free1ViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -22,7 +22,8 @@
  ******************************************************************************/
 
 int main(int argc, char *argv[]) {
-    
+    // TODO: book_id convert type to string everywhere
+   // TODO: fold in try block and send to google analytics call stack upon exception
     @autoreleasepool {
 	  	  int retVal = UIApplicationMain(argc, argv, nil, @"AppDelegate");
     return retVal;

@@ -31,8 +31,9 @@
 #import "ChaptersViewController.h"
 #import "DownloadsViewController.h"
 #import "BuyOption1.h"
+#import "Free1ViewController.h"
 
-UIView* playerView = nil;
+PlayerFreeViewController* PlayerFreeViewControllerPtr = nil;
 static ASIHTTPRequest* currentRequest;
 BOOL isBought = NO;
 static int bookId;
@@ -45,6 +46,7 @@ static __weak UISlider *progressSliderPtr;
 static __weak UIBarButtonItem *btnPlayPtr;
 
 @implementation StaticPlayer
+enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
 
 +(void) buyBook
 {
@@ -90,6 +92,7 @@ static __weak UIBarButtonItem *btnPlayPtr;
     }
     [sPlayer.streamer performSelector:@selector(doVolumeFadeIn) withObject:nil afterDelay:1.0];
 }
+
 - (void) streamingPlayerDidStopPlaying:(StreamingPlayer *) anPlayer {
     // checkIf chapter dowloaded correctly
     [PlayerFreeViewController checkChapter:sPlayer.chapter];
@@ -108,11 +111,65 @@ static __weak UIBarButtonItem *btnPlayPtr;
     bindProgressVal = YES;
 }
 
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    NSLog(@"++alertView button clicked at index %d", buttonIndex);
+    if (buttonIndex == 1) { // yes
+        [[BuyOption1 sharedInstance] startWithBook:bookId isfree:YES];
+    }
+}
+
 BOOL buyQueryStarted = NO;
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
     NSLog(@"++actionsheet item clicked at index %d", buttonIndex);
     buyQueryStarted = NO;
+    switch (buttonIndex) {
+        case BB_GETFREE:
+        {
+            // TODO: check inet, then loading screen
+            NSString *devhash = [gs md5: [[[UIDevice currentDevice] identifierForVendor] UUIDString]];
+            NSArray *arr = [gs srvArrForUrl:[NSString stringWithFormat:@"http://%@/free1checkcode.php?dev=%@", AppConnectionHost, devhash] xpath:@"//freeflag" message:[NSString stringWithFormat:@"unable to get freeflag: %s", __func__ ]];
+            int freeflag = [[arr objectAtIndex:0] intValue];
+
+            switch (freeflag) {
+                case 1: // can use free book
+                    // you'we got free book
+                {
+                Book* b = [gs db_GetBookWithID:[NSString stringWithFormat:@"%d",bookId ]];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Получение бесплатной книги"
+                                                                message:[NSString stringWithFormat:@"Хотите получить бесплатно книгу %@?", b.title] delegate:self cancelButtonTitle:@"Нет" otherButtonTitles:@"Да", nil];
+                [alert show];
+                    break;
+                }
+                case 0: // should register email and promocode first
+                {
+                    Free1ViewController* vc = [[Free1ViewController alloc] init];
+                    [[gss() navigationController] pushViewController:vc animated:YES];
+                    break;
+                }
+                case 2: // already used
+                {
+                    [PlayerFreeViewController showAlertAtTimer:@"Бесплатная книга уже получена" delay:1];
+                    break;
+                }
+                    
+                default:
+                    break;
+            }
+            
+            break;
+        }
+        case BB_BUY:
+        {
+            [[BuyOption1 sharedInstance] startWithBook:bookId isfree:NO];
+            break;
+        }
+        
+            
+        default:
+            break;
+    }
 }
 
 //- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
@@ -127,11 +184,11 @@ BOOL buyQueryStarted = NO;
 //        return;
 //    }
     
-    if (!isBought) {
+    if (!isBought && bookId == sPlayer.bookId) {
         float actual = anProgress;
         float max = progressSliderPtr.maximumValue;
         float procSize = (actual / max) * 100;
-        if (procSize > 70.0) {
+        if (procSize > 70.0 && anProgress > 350.0 && [sPlayer.streamer isPlaying] && !buyQueryStarted) {
             buyQueryStarted = YES;
             if ([sPlayer.streamer isPlaying]) {
                 [sPlayer.streamer stop];   
@@ -141,7 +198,7 @@ BOOL buyQueryStarted = NO;
             UIActionSheet *
             actionSheet = [[UIActionSheet alloc]
                            initWithTitle:@"Ограничение прослушивания книги" delegate:self cancelButtonTitle:@"Отмена" destructiveButtonTitle:@"Купить" otherButtonTitles: @"Получить бесплатно", nil];
-            [actionSheet showInView:playerView];
+            [actionSheet showInView:PlayerFreeViewControllerPtr.view];
         }
 //        int length = [self metaLengthForChapter:sPlayer.chapter];
 //        int val = (procSize / 100) * length;
@@ -513,7 +570,7 @@ static Book *book;
 }
 
 - (IBAction)btnBuyBookClick:(UIBarButtonItem *)sender {
-    BOOL started = [[BuyOption1 sharedInstance] startWithBook:bookId];
+    BOOL started = [[BuyOption1 sharedInstance] startWithBook:bookId isfree:NO];
     NSAssert1(started, @"**err: cannot start buy process: %s", __func__);
 }
 
@@ -747,7 +804,8 @@ static Book *book;
 
 - (void) viewDidLoad
 {
-    playerView = self.view;
+    
+    PlayerFreeViewControllerPtr = self;
     
     NSError* error;
     NSString* buy = [NSString stringWithContentsOfURL:[NSURL fileURLWithPath:[gss() pathForBuy:bookId] ] encoding:NSUTF8StringEncoding error:&error];
@@ -881,7 +939,7 @@ static Book *book;
         }
         else{
             Book *b = [gs db_GetBookWithID:[NSString stringWithFormat:@"%d", sPlayer.bookId ]];
-            [self showAlertAtTimer:b.title delay:1.0];
+            [PlayerFreeViewController showAlertAtTimer:b.title delay:1.0];
         }
     }
     
@@ -917,9 +975,9 @@ static Book *book;
     return chid;
 }
 
-- (void) showAlertAtTimer:(NSString*)msg delay:(int)delayInSeconds
++ (void) showAlertAtTimer:(NSString*)msg delay:(int)delayInSeconds
 {
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"проигрывается"
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Информация"
                                                         message:msg
                                                        delegate:self
                                               cancelButtonTitle:nil

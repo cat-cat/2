@@ -20,6 +20,8 @@
 #import "ASINetworkQueue.h"
 #import <CommonCrypto/CommonDigest.h>
 
+
+// TODO: make all functions synchronized
 @implementation gs
 
 @synthesize navigationController = _navigationController;
@@ -294,6 +296,8 @@ static NSString* databaseName;
 {
     @synchronized(self)
     {
+        //NSAssert1(!e, @"**err: %@", [e localizedDescription]);
+
         bool res = NO;
         if (e) {
             NSLog(@"***Error: %@", [e localizedDescription]);
@@ -1026,6 +1030,34 @@ static NSString* databaseName;
 	}
 	
     return [hash lowercaseString];
+}
+
+//+(NSArray*)srvArrForUrl:(NSString*)strWithFormat args:(NSArray*)arguments xpath:(NSString*)xp message:(NSString*)msg
++(NSArray*)srvArrForUrl:(NSString*)strUrl xpath:(NSString*)xp message:(NSString*)msg
+{
+    @synchronized(gss())
+    {
+        // first format string url
+//        NSArray *fixedArguments = arguments;        
+//        NSRange range = NSMakeRange(0, [fixedArguments count]);        
+//        NSMutableData* data = [NSMutableData dataWithLength: sizeof(id) * [fixedArguments count]];        
+//        [fixedArguments getObjects: (__unsafe_unretained id *)data.mutableBytes range:range];        
+//        NSString* content = [[NSString alloc] initWithFormat: strWithFormat  arguments: data.mutableBytes];
+//        
+//        NSLog(@"%@", content);
+        
+        // create url and make request
+        NSError* error;
+        NSURL* url = [NSURL URLWithString:strUrl];
+        NSString* response = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:&error];
+        [gss() handleError:error];
+        DDXMLDocument* doc = [[DDXMLDocument alloc] initWithXMLString:response options:0 error:&error];
+        [gss() handleError:error];
+        NSAssert1(doc, @"**err: cannot create ddxmldoc: %@", msg);
+        NSArray* arr = [gss() arrayForDoc:doc xpath:xp];
+        NSAssert1([arr count], @"**err: %@", msg);
+        return [arr copy];
+    }
 }
 
 @end

@@ -42,7 +42,7 @@
     //    __weak IBOutlet UILabel *labelSmallHeader;
     //    __weak IBOutlet UILabel *labelHeader;
 }
-
++ (void) showAlertAtTimer:(NSString*)msg delay:(int)delayInSeconds;
 - (IBAction)btnBuyBookClick:(UIBarButtonItem *)sender;
 +(NSInteger) metaSizeForChapter:(int)bid chapter:(NSString*) chid;
 +(NSInteger) actualSizeForChapter:(int)bid chapter:(NSString*)chid;

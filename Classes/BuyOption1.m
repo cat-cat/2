@@ -43,7 +43,21 @@ static ASIHTTPRequest* currentRequest = nil;
     NSLog(@"++Finished buy option1: %@", response);
     NSRange r = [response rangeOfString:@"yes"];
     if ((response && r.location != NSNotFound) && request.responseStatusCode == 200)
+    {
+       int isfree = [[request.userInfo valueForKey:@"isfree"] intValue];
+        if (isfree) {
+             NSString *devhash = [gs md5: [[[UIDevice currentDevice] identifierForVendor] UUIDString]];
+             NSArray *arr = [gs srvArrForUrl:[NSString stringWithFormat:@"http://%@/free1closecode.php?dev=%@&bookid=%@", AppConnectionHost, devhash,[request.userInfo objectForKey:@"bid" ]] xpath:@"//canuse" message:[NSString stringWithFormat:@"**err:unable to request success to close code: %s", __func__ ]];
+            NSString* canuse = [arr objectAtIndex:0];
+            NSLog(@"++close code: %@", canuse);
+//            if (![canuse isEqualToString:@"yes"]) {
+//                ,
+//            }
+        }
+
         [StaticPlayer buyBook];
+        
+    }
     else
     {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Покупка книги"
@@ -59,7 +73,7 @@ static ASIHTTPRequest* currentRequest = nil;
 }
 
 
--(BOOL)startWithBook:(int)bid
+-(BOOL)startWithBook:(int)bid isfree:(BOOL)free
 {
     if (currentRequest && !currentRequest.complete) {
         return NO;
@@ -87,8 +101,9 @@ static ASIHTTPRequest* currentRequest = nil;
     //    [request addRequestHeader:@"Range" value:[NSString stringWithFormat:@"bytes=%i-", alreadyDownloaded]];
     //[currentRequest setMyDontRemoveFlag:true];
     NSNumber* nBid = [NSNumber numberWithInt: bid];
+    NSNumber* bookfree = [NSNumber numberWithInt: free];
     [currentRequest setUserInfo:[NSDictionary dictionaryWithObjectsAndKeys:
-                                nBid, @"bid",  nil]];
+                                nBid, @"bid", bookfree, @"isfree",  nil]];
     [currentRequest startAsynchronous];
     
     

@@ -22,7 +22,8 @@ static NSString* AppConnectionHost = @"192.168.0.100:8080";
 //    ASINetworkQueue* queue;
 }
 @property(nonatomic, strong) UINavigationController *navigationController;
-
+//+(NSArray*)srvArrForUrl:(NSString*)strWithFormat args:(NSArray*)arguments xpath:(NSString*)xp message:(NSString*)msg;
++(NSArray*)srvArrForUrl:(NSString*)strUrl xpath:(NSString*)xp message:(NSString*)msg;
 -(NSString*)pathForBuy:(int)bid;
 +(NSString*)md5:(NSString*)object;
 -(int)bidFromChapterIdentity:(NSString*)ci;
