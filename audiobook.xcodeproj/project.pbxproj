@@ -80,6 +80,9 @@
 		CE82EA8B16BA7CA400F33698 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE82EA8A16BA7CA400F33698 /* CFNetwork.framework */; };
 		CE82EA8D16BA7CD600F33698 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE82EA8C16BA7CD600F33698 /* MobileCoreServices.framework */; };
 		CE82EA8F16BA7D2D00F33698 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE82EA8E16BA7D2D00F33698 /* libz.dylib */; };
+		CE9AC37216DA2CB60014095C /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9AC37016DA2CB60014095C /* SearchViewController.m */; };
+		CE9AC37316DA2CB60014095C /* SearchView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE9AC37116DA2CB60014095C /* SearchView.xib */; };
+		CE9AC37B16DA30DF0014095C /* SearchTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9AC37A16DA30DF0014095C /* SearchTableViewController.m */; };
 		CEC6416416BC0B4800AC325F /* AudioStreamer.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC6416116BC0B4800AC325F /* AudioStreamer.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		CEC6416516BC0B4800AC325F /* StreamingPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC6416316BC0B4800AC325F /* StreamingPlayer.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		CEC6416A16BC0D6200AC325F /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC6416916BC0D6200AC325F /* AudioToolbox.framework */; };
@@ -282,6 +285,11 @@
 		CE82EA8A16BA7CA400F33698 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		CE82EA8C16BA7CD600F33698 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		CE82EA8E16BA7D2D00F33698 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		CE9AC36F16DA2CB60014095C /* SearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchViewController.h; path = Classes/SearchViewController.h; sourceTree = "<group>"; };
+		CE9AC37016DA2CB60014095C /* SearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SearchViewController.m; path = Classes/SearchViewController.m; sourceTree = "<group>"; };
+		CE9AC37116DA2CB60014095C /* SearchView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SearchView.xib; sourceTree = "<group>"; };
+		CE9AC37916DA30DF0014095C /* SearchTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchTableViewController.h; path = Classes/SearchTableViewController.h; sourceTree = "<group>"; };
+		CE9AC37A16DA30DF0014095C /* SearchTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SearchTableViewController.m; path = Classes/SearchTableViewController.m; sourceTree = "<group>"; };
 		CEC6416016BC0B4800AC325F /* AudioStreamer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioStreamer.h; sourceTree = "<group>"; };
 		CEC6416116BC0B4800AC325F /* AudioStreamer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioStreamer.m; sourceTree = "<group>"; };
 		CEC6416216BC0B4800AC325F /* StreamingPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamingPlayer.h; sourceTree = "<group>"; };
@@ -446,6 +454,10 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				CE9AC37916DA30DF0014095C /* SearchTableViewController.h */,
+				CE9AC37A16DA30DF0014095C /* SearchTableViewController.m */,
+				CE9AC36F16DA2CB60014095C /* SearchViewController.h */,
+				CE9AC37016DA2CB60014095C /* SearchViewController.m */,
 				CEF837B116D78BDC00603C6E /* Free1ViewController.h */,
 				CEF837B216D78BDC00603C6E /* Free1ViewController.m */,
 				CED2D90216D734F800054E13 /* BuyOption1.h */,
@@ -608,6 +620,7 @@
 		CE82EA6916BA6D8400F33698 /* xibs */ = {
 			isa = PBXGroup;
 			children = (
+				CE9AC37116DA2CB60014095C /* SearchView.xib */,
 				CEF837B316D78BDC00603C6E /* Free1ViewController.xib */,
 				CED363E716D2D89500F2337F /* DownloadsView.xib */,
 				CE220C5F16CED53D008E4A29 /* ChapterCellView.xib */,
@@ -903,6 +916,7 @@
 				CE220C6116CED53D008E4A29 /* ChapterCellView.xib in Resources */,
 				CED363E916D2D89500F2337F /* DownloadsView.xib in Resources */,
 				CEF837B516D78BDC00603C6E /* Free1ViewController.xib in Resources */,
+				CE9AC37316DA2CB60014095C /* SearchView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -950,6 +964,8 @@
 				CED363E816D2D89500F2337F /* DownloadsViewController.m in Sources */,
 				CED2D90416D734F800054E13 /* BuyOption1.m in Sources */,
 				CEF837B416D78BDC00603C6E /* Free1ViewController.m in Sources */,
+				CE9AC37216DA2CB60014095C /* SearchViewController.m in Sources */,
+				CE9AC37B16DA30DF0014095C /* SearchTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

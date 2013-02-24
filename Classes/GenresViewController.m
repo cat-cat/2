@@ -26,6 +26,7 @@
 #import "Genre.h"
 #import "gs.h"
 #import "Book.h"
+#import "SearchViewController.h"
 
 @implementation GenresViewController
 
@@ -140,7 +141,7 @@
             GenresViewController *subGenresController = [[GenresViewController alloc] initWithStyle:UITableViewStylePlain andParentGenre:g.ID];
             [[gs sharedInstance].navigationController pushViewController:subGenresController animated:YES];
         }
-        else // expected @"2" - book
+        else if([g.type isEqualToString:@"2"]) // @"2" - book
         {
             
             PlayerFreeViewController *plConroller = [[PlayerFreeViewController alloc] initWithBook:[g.ID intValue]];
@@ -148,6 +149,12 @@
             // Pass the selected object to the new view controller.
             [gss().navigationController pushViewController:plConroller animated:YES];    
         }
+        else // expected @"0" - first item at the top level of hierarchy to search books
+        {
+            SearchViewController* sv = [[SearchViewController alloc] init];
+            [gss().navigationController pushViewController:sv animated:YES];
+        }
+    
 //    ShowCharactersTableViewController *showCharactersController = [[ShowCharactersTableViewController alloc] initWithStyle:UITableViewStylePlain];
 //    showCharactersController.delegate = delegate;
 //    [[delegate navigationController] pushViewController:showCharactersController animated:YES];
@@ -210,9 +217,43 @@
 
 - (NSMutableArray *)db_GetGenresAndBooksWithParent:(NSString*) parentItem andOffset:(int) offset andLimit:(int) limit
 {
+    char* sqlStatement = 0;
     
+    if ([parentItem isEqualToString:@"-1"]) { // top level - genres without parents, add Search item at the top
+        
+        
+        sqlStatement = sqlite3_mprintf("SELECT 0 id, 'Поиск' name, 0 subgenres, 0 type UNION"
+                                       
+                                            " SELECT t_abooks.abook_id AS id, title AS name, -1 AS subgenres, 2 AS type FROM t_abooks"
+                                             
+                                             " JOIN t_abooks_genres ON t_abooks.abook_id = t_abooks_genres.abook_id"
+                                             
+                                             " WHERE t_abooks_genres.genre_id = %s"
+                                             
+                                             
+                                             
+                                             " UNION"
+                                             
+                                             
+                                             
+                                             " SELECT t_genres.genre_id AS id, name, COUNT(t_abooks_genres.genre_id) AS subgenres, 1 AS type FROM t_genres"
+                                             
+                                             " LEFT JOIN"
+                                             
+                                             " t_abooks_genres"
+                                             
+                                             " WHERE t_genres.genre_parent_id = %s AND t_genres.genre_id = t_abooks_genres.genre_id"
+                                             
+                                             " GROUP BY name"
+                                             
+                                             
+                                             
+                                             " ORDER BY  type, name  LIMIT %d, %d", [parentItem UTF8String], [parentItem UTF8String], offset, limit);
+        
+    }
+    else{
     
-    char* sqlStatement = sqlite3_mprintf("SELECT t_abooks.abook_id AS id, title AS name, -1 AS subgenres, 2 AS type FROM t_abooks"
+    sqlStatement = sqlite3_mprintf("SELECT t_abooks.abook_id AS id, title AS name, -1 AS subgenres, 2 AS type FROM t_abooks"
                                    
                                    " JOIN t_abooks_genres ON t_abooks.abook_id = t_abooks_genres.abook_id"
                                    
@@ -237,6 +278,7 @@
                                    
                                    
                                    " ORDER BY  type, name  LIMIT %d, %d", [parentItem UTF8String], [parentItem UTF8String], offset, limit);
+    }
     
    
     
