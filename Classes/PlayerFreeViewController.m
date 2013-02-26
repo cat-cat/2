@@ -85,11 +85,11 @@ enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
     NSLog(@"++ player DidStartPlaying");
     
     // TODO: unreliable logic
-    if (sPlayer.streamer.aqChangedUnexpected == YES) {
-
-        sPlayer.streamer.aqChangedUnexpected = NO;
-        bindProgressVal = YES;
-    }
+//    if (sPlayer.streamer.aqChangedUnexpected == YES) {
+//
+//        sPlayer.streamer.aqChangedUnexpected = NO;
+//    }
+    bindProgressVal = YES;
     [sPlayer.streamer performSelector:@selector(doVolumeFadeIn) withObject:nil afterDelay:1.0];
 }
 

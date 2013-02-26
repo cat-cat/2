@@ -239,7 +239,7 @@ void ASReadStreamCallBack
 		url = [aURL retain];
 		readedBytes = 0;
         keyDevId = @"1qazXSW@3ed";//[[Utils returnMD5Hash:[[UIDevice currentDevice] uniqueIdentifier]] retain];
-        self.aqChangedUnexpected = NO;
+        //self.aqChangedUnexpected = NO;
 	}
 	return self;
 }
@@ -2254,7 +2254,7 @@ cleanup:
 			else
 			{
 				NSLog(@"AudioQueue changed state in unexpected way.");
-                self.aqChangedUnexpected = YES;
+                //self.aqChangedUnexpected = YES;
 			}
 		}
 	}

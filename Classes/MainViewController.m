@@ -8,7 +8,7 @@
 
 #import "MainViewController.h"
 #import "GenresViewController.h"
-#import "Genre.h"
+#import "CatalogItem.h"
 #import "gs.h"
 
 @implementation MainViewController

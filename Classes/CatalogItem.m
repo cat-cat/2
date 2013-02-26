@@ -6,10 +6,10 @@
 //
 //
 
-#import "Genre.h"
+#import "CatalogItem.h"
 
-@implementation Genre
-
+@implementation CatalogItem
+@synthesize authors;
 @synthesize ID;
 @synthesize name;
 @synthesize subgenresCount;

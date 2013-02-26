@@ -8,12 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
-@interface Genre : NSObject {
+@interface CatalogItem : NSObject {
+    NSString *authors;
     NSString *ID;
     NSString *name;
     NSString *subgenresCount;
     NSString *type;
 }
+@property(copy) NSString *authors;
 @property(copy) NSString *ID;
 @property(copy) NSString *name;
 @property(copy) NSString *subgenresCount;

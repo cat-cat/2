@@ -23,7 +23,7 @@
 #import "GenresViewController.h"
 #import "PlayerFreeViewController.h"
 #import "MainViewController.h"
-#import "Genre.h"
+#import "CatalogItem.h"
 #import "gs.h"
 #import "Book.h"
 #import "SearchViewController.h"
@@ -100,7 +100,7 @@
                  reuseIdentifier:MyIdentifier];
         }
     //	TVAppDelegate *delegate = [[UIApplication sharedApplication] delegate];
-        Genre *g = [genres objectAtIndex:indexPath.row];
+        CatalogItem *g = [genres objectAtIndex:indexPath.row];
         cell.textLabel.text =  g.name;
     
     if ([g.type isEqualToString:@"1"])
@@ -135,7 +135,7 @@
 //    }
 //    else
 //    {
-        Genre* g = [genres objectAtIndex:indexPath.row];
+        CatalogItem* g = [genres objectAtIndex:indexPath.row];
         if([g.type isEqualToString:@"1"]) // category
         {
             GenresViewController *subGenresController = [[GenresViewController alloc] initWithStyle:UITableViewStylePlain andParentGenre:g.ID];
@@ -151,7 +151,13 @@
         }
         else // expected @"0" - first item at the top level of hierarchy to search books
         {
-            SearchViewController* sv = [[SearchViewController alloc] init];
+            // Create and configure the main view controller.
+            static SearchViewController* sv = nil; // TODO: hack to avoid crash search bar released by system one more time then needed when view is unloaded
+            if (sv) {
+                sv = nil;
+            }
+            sv = [[SearchViewController alloc] initWithNibName:@"SearchView" bundle:nil];
+            //searchViewController.listContent = genres;
             [gss().navigationController pushViewController:sv animated:YES];
         }
     
@@ -300,7 +306,7 @@
     // get result
     returnCode = sqlite3_step(statement);
     while(returnCode == SQLITE_ROW){
-        Genre *genre = [[Genre alloc] init];
+        CatalogItem *genre = [[CatalogItem alloc] init];
         ;
         genre.ID = [NSString stringWithCString:sqlite3_column_text(statement, 0) == nil ? "" : (char *)sqlite3_column_text(statement, 0) encoding:NSUTF8StringEncoding];
         genre.name = [NSString stringWithCString:sqlite3_column_text(statement, 1) == nil ? "" : (char *)sqlite3_column_text(statement, 1) encoding:NSUTF8StringEncoding];
