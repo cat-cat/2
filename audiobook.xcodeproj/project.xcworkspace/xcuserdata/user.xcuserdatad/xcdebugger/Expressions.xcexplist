@@ -11,10 +11,10 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "-[PlayerFreeViewController handlePlayPause]:PlayerFreeViewController.m">
+         contextName = "-[PlayerFreeViewController request:didReceiveBytes:]:PlayerFreeViewController.m">
          <PersistentStrings>
             <PersistentString
-               value = "[gss() downq]">
+               value = "sPlayer.chapter">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -27,15 +27,15 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
+         contextName = "-[PlayerFreeViewController downqNext]:PlayerFreeViewController.m">
+      </ContextState>
+      <ContextState
          contextName = "+[PlayerFreeViewController downqNextAfter:]:PlayerFreeViewController.m">
          <PersistentStrings>
             <PersistentString
                value = "[StaticPlayer sharedInstance].downq">
             </PersistentString>
          </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "-[PlayerFreeViewController downqNext]:PlayerFreeViewController.m">
       </ContextState>
       <ContextState
          contextName = "+[PlayerFreeViewController startDownloadBook:chapter:]:PlayerFreeViewController.m">
@@ -45,6 +45,14 @@
          <PersistentStrings>
             <PersistentString
                value = "nds[0]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[CatalogViewController db_GetGenresAndBooksWithParent:andOffset:andLimit:]:CatalogViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "sqlStatement">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -71,10 +79,10 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "-[PlayerFreeViewController request:didReceiveBytes:]:PlayerFreeViewController.m">
+         contextName = "-[PlayerFreeViewController handlePlayPause]:PlayerFreeViewController.m">
          <PersistentStrings>
             <PersistentString
-               value = "sPlayer.chapter">
+               value = "[gss() downq]">
             </PersistentString>
          </PersistentStrings>
       </ContextState>

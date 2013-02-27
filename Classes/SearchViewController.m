@@ -48,7 +48,7 @@
 #import "SearchViewController.h"
 #import "CatalogItem.h"
 #import "gs.h"
-#import "PlayerFreeViewController.h"
+#import "PlayerViewController.h"
 
 @implementation SearchViewController
 
@@ -240,7 +240,7 @@
         genre = [self.listContent objectAtIndex:indexPath.row];
     }
 	//detailsViewController.title = genre.name;
-    PlayerFreeViewController *pc = [[PlayerFreeViewController alloc] initWithBook:[genre.ID intValue]];
+    PlayerViewController *pc = [[PlayerViewController alloc] initWithBook:[genre.ID intValue]];
 
 //    [[self navigationController] pushViewController:detailsViewController animated:YES];
     [[self navigationController] pushViewController:pc animated:YES];

@@ -20,19 +20,6 @@
          shouldBeEnabled = "No"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "Classes/PlayerFreeViewController.m"
-         timestampString = "383382640.573869"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "135"
-         endingLineNumber = "135"
-         landmarkName = "-actionSheet:didDismissWithButtonIndex:"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
          filePath = "Classes/SearchViewController.m"
          timestampString = "383576853.674861"
          startingColumnNumber = "9223372036854775807"

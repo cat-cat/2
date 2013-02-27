@@ -21,7 +21,7 @@
  * DEALINGS IN THE SOFTWARE.
  ******************************************************************************/
 
-@class PlayerFreeViewController;
+@class PlayerViewController;
 @class MainViewController;
 @class CDBViewController;
 
@@ -34,7 +34,7 @@
     
     CDBViewController *viewController2, *viewController3,
    *viewController5, *viewController6;
-    PlayerFreeViewController *viewController4;
+    PlayerViewController *viewController4;
 	UITabBarController  *tabBarController;
 }
 

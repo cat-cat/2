@@ -7,10 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-@class PlayerFreeViewController;
+@class PlayerViewController;
 @interface ChaptersViewController : UITableViewController
 {
-    __weak IBOutlet PlayerFreeViewController *playerController;
+    __weak IBOutlet PlayerViewController *playerController;
     NSMutableArray* chapters;
     int bookId;
 }

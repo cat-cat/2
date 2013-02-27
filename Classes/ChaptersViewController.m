@@ -10,8 +10,8 @@
 #import "gs.h"
 #import "ASIHTTPRequest.h"
 #import "DDXMLDocument.h"
-#import "PlayerFreeViewController.h"
-#import "PlayerFreeViewController.h"
+#import "PlayerViewController.h"
+#import "PlayerViewController.h"
 #import "Book.h"
 #import "ChapterCellViewController.h"
 
@@ -182,7 +182,7 @@ static NSString* BTN_CANCEL = @"отменить";
         
     // Uncomment the following line to preserve selection between presentations.
      self.clearsSelectionOnViewWillAppear = NO;
-    bookId = [PlayerFreeViewController myGetBookId];
+    bookId = [PlayerViewController myGetBookId];
     chapters = [[NSMutableArray alloc] init];
     
     NSString* fMetaPath = [NSString stringWithFormat:@"%@/%@",[[gs sharedInstance] dirsForBook:bookId ],  @"bookMeta.xml"];
@@ -259,7 +259,7 @@ static NSString* BTN_CANCEL = @"отменить";
     }
     else if([btnState isEqualToString:BTN_DOWNLOAD])
     {
-        [PlayerFreeViewController appendChapterIdentityForDownloading:chapterIdentity];
+        [PlayerViewController appendChapterIdentityForDownloading:chapterIdentity];
         [sender setTitle:BTN_CANCEL forState:UIControlStateNormal];
     }
     // else BTN_READY - nothing to do
@@ -316,7 +316,7 @@ static NSString* BTN_CANCEL = @"отменить";
     
     NSString* chid = [gss() chidFromChapterIdentity:chapterIdentity];
     
-    float progress = [PlayerFreeViewController calcDownProgressForBook:[PlayerFreeViewController myGetBookId] chapter:chid];
+    float progress = [PlayerViewController calcDownProgressForBook:[PlayerViewController myGetBookId] chapter:chid];
     [self setProgressForChapter:chid value: progress];
     
     if (progress < 1.0) {
@@ -358,7 +358,7 @@ static NSString* BTN_CANCEL = @"отменить";
     UILabel* lblSmall = (UILabel*)[cell viewWithTag:2];
     lblSmall.text = lc.name;
     UIProgressView* progress = (UIProgressView*) [cell viewWithTag:3];
-    progress.progress = [PlayerFreeViewController calcDownProgressForBook:[PlayerFreeViewController myGetBookId] chapter:lc.cId];
+    progress.progress = [PlayerViewController calcDownProgressForBook:[PlayerViewController myGetBookId] chapter:lc.cId];
     UIButton* btn = (UIButton*)[cell viewWithTag:4];
     
     if (progress.progress < 1.0) {
@@ -459,7 +459,7 @@ static int rowIdx = -1;
         [(UITableView*)[self view] selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionBottom];
     }
     
-    [PlayerFreeViewController startChapter:chid];
+    [PlayerViewController startChapter:chid];
     
 //
 //     PlayerFreeViewController *plConroller = [[PlayerFreeViewController alloc] initWithBook:bookId andChapter:chid];

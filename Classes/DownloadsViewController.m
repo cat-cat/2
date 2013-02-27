@@ -7,7 +7,7 @@
 //
 
 #import "DownloadsViewController.h"
-#import "PlayerFreeViewController.h"
+#import "PlayerViewController.h"
 #import "gs.h"
 
 @interface DownloadsViewController ()

@@ -25,7 +25,7 @@
 #import "CDBViewController.h"
 #import "MainViewController.h"
 #import "gs.h"
-#import "PlayerFreeViewController.h"
+#import "PlayerViewController.h"
 
 @implementation AppDelegate
 
@@ -53,7 +53,7 @@
                      initWithMessage:@"Ellipse"
                      andImage:[UIImage imageNamed:@"ellipse.png"]];
 	viewController3.title =  @"Elli";
-	viewController4 = [[PlayerFreeViewController alloc] initWithNibName:@"PlayerFreeView" bundle:nil];
+	viewController4 = [[PlayerViewController alloc] initWithNibName:@"PlayerFreeView" bundle:nil];
 	viewController4.title =  @"Слушать";
 	viewController5 = [[CDBViewController alloc] 
                      initWithMessage:@"Играть книгу"

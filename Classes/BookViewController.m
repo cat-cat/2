@@ -26,7 +26,7 @@
 #import "Book.h"
 #import "AppDelegate.h"
 #import "gs.h"
-#import "PlayerFreeViewController.h"
+#import "PlayerViewController.h"
 #import "ChaptersViewController.h"
 
 @implementation BookViewController

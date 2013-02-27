@@ -30,7 +30,7 @@
 		8E52FF1816B6DCED000AD339 /* BookView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8E52FF1716B6DCED000AD339 /* BookView.xib */; };
 		8E71F3DF1600BEAC00639B4D /* Book.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E71F3DE1600BEAC00639B4D /* Book.m */; };
 		8EC60C4D15F623A600D34892 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8EC60C4C15F623A600D34892 /* MainViewController.m */; };
-		8EC60C5115F62A3400D34892 /* GenresViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8EC60C5015F62A3400D34892 /* GenresViewController.m */; };
+		8EC60C5115F62A3400D34892 /* CatalogViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8EC60C5015F62A3400D34892 /* CatalogViewController.m */; };
 		8EC60C5315F633FC00D34892 /* hurley.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 8EC60C5215F633FC00D34892 /* hurley.jpg */; };
 		8EC60C5815F64E4100D34892 /* BookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8EC60C5515F64E4100D34892 /* BookViewController.m */; };
 		8ED3BCA715F798E800326459 /* database.db in Resources */ = {isa = PBXBuildFile; fileRef = 8ED3BCA615F798E800326459 /* database.db */; };
@@ -67,8 +67,8 @@
 		CE220C6016CED53D008E4A29 /* ChapterCellViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE220C5E16CED53D008E4A29 /* ChapterCellViewController.m */; };
 		CE220C6116CED53D008E4A29 /* ChapterCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE220C5F16CED53D008E4A29 /* ChapterCellView.xib */; };
 		CE3098A716B7C48D00D39AC7 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE3098A616B7C48D00D39AC7 /* libsqlite3.dylib */; };
-		CE7FD5EC16B9397C00748E29 /* PlayerFreeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7FD5EB16B9397C00748E29 /* PlayerFreeViewController.m */; };
-		CE7FD5EE16B93DEA00748E29 /* PlayerFreeView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE7FD5ED16B93DEA00748E29 /* PlayerFreeView.xib */; };
+		CE7FD5EC16B9397C00748E29 /* PlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7FD5EB16B9397C00748E29 /* PlayerViewController.m */; };
+		CE7FD5EE16B93DEA00748E29 /* PlayerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE7FD5ED16B93DEA00748E29 /* PlayerView.xib */; };
 		CE82EA8116BA7ABB00F33698 /* ASIAuthenticationDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = CE82EA6E16BA7ABB00F33698 /* ASIAuthenticationDialog.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		CE82EA8216BA7ABB00F33698 /* ASIDataCompressor.m in Sources */ = {isa = PBXBuildFile; fileRef = CE82EA7116BA7ABB00F33698 /* ASIDataCompressor.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		CE82EA8316BA7ABB00F33698 /* ASIDataDecompressor.m in Sources */ = {isa = PBXBuildFile; fileRef = CE82EA7316BA7ABB00F33698 /* ASIDataDecompressor.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -88,6 +88,8 @@
 		CED2D90416D734F800054E13 /* BuyOption1.m in Sources */ = {isa = PBXBuildFile; fileRef = CED2D90316D734F800054E13 /* BuyOption1.m */; };
 		CED363E816D2D89500F2337F /* DownloadsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CED363E616D2D89500F2337F /* DownloadsViewController.m */; };
 		CED363E916D2D89500F2337F /* DownloadsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CED363E716D2D89500F2337F /* DownloadsView.xib */; };
+		CEDD9C6116DDDFCB00AD83EB /* MyBooksView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEDD9C5F16DDDFCB00AD83EB /* MyBooksView.m */; };
+		CEDD9C6216DDDFCB00AD83EB /* MyBooksView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEDD9C6016DDDFCB00AD83EB /* MyBooksView.xib */; };
 		CEDFAAAD16BFA9DD008601F6 /* ChaptersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEDFAAAB16BFA9DD008601F6 /* ChaptersViewController.m */; };
 		CEEEE3EE16CC4C1F0049A4B2 /* back_with_mark.png in Resources */ = {isa = PBXBuildFile; fileRef = CEEEE3A016CC4C1F0049A4B2 /* back_with_mark.png */; };
 		CEEEE3EF16CC4C1F0049A4B2 /* back_wo_mark.png in Resources */ = {isa = PBXBuildFile; fileRef = CEEEE3A116CC4C1F0049A4B2 /* back_wo_mark.png */; };
@@ -211,8 +213,8 @@
 		8E71F3DE1600BEAC00639B4D /* Book.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Book.m; sourceTree = "<group>"; };
 		8EC60C4B15F623A600D34892 /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		8EC60C4C15F623A600D34892 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
-		8EC60C4F15F62A3400D34892 /* GenresViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GenresViewController.h; sourceTree = "<group>"; };
-		8EC60C5015F62A3400D34892 /* GenresViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GenresViewController.m; sourceTree = "<group>"; };
+		8EC60C4F15F62A3400D34892 /* CatalogViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CatalogViewController.h; sourceTree = "<group>"; };
+		8EC60C5015F62A3400D34892 /* CatalogViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CatalogViewController.m; sourceTree = "<group>"; };
 		8EC60C5215F633FC00D34892 /* hurley.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = hurley.jpg; sourceTree = "<group>"; };
 		8EC60C5415F64E4100D34892 /* BookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookViewController.h; sourceTree = "<group>"; };
 		8EC60C5515F64E4100D34892 /* BookViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookViewController.m; sourceTree = "<group>"; };
@@ -258,9 +260,9 @@
 		CE220C5E16CED53D008E4A29 /* ChapterCellViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChapterCellViewController.m; sourceTree = "<group>"; };
 		CE220C5F16CED53D008E4A29 /* ChapterCellView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChapterCellView.xib; sourceTree = "<group>"; };
 		CE3098A616B7C48D00D39AC7 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
-		CE7FD5EA16B9397C00748E29 /* PlayerFreeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerFreeViewController.h; sourceTree = "<group>"; };
-		CE7FD5EB16B9397C00748E29 /* PlayerFreeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayerFreeViewController.m; sourceTree = "<group>"; };
-		CE7FD5ED16B93DEA00748E29 /* PlayerFreeView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlayerFreeView.xib; sourceTree = "<group>"; };
+		CE7FD5EA16B9397C00748E29 /* PlayerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerViewController.h; sourceTree = "<group>"; };
+		CE7FD5EB16B9397C00748E29 /* PlayerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayerViewController.m; sourceTree = "<group>"; };
+		CE7FD5ED16B93DEA00748E29 /* PlayerView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlayerView.xib; sourceTree = "<group>"; };
 		CE82EA6D16BA7ABB00F33698 /* ASIAuthenticationDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASIAuthenticationDialog.h; sourceTree = "<group>"; };
 		CE82EA6E16BA7ABB00F33698 /* ASIAuthenticationDialog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASIAuthenticationDialog.m; sourceTree = "<group>"; };
 		CE82EA6F16BA7ABB00F33698 /* ASICacheDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASICacheDelegate.h; sourceTree = "<group>"; };
@@ -297,6 +299,9 @@
 		CED363E516D2D89500F2337F /* DownloadsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownloadsViewController.h; sourceTree = "<group>"; };
 		CED363E616D2D89500F2337F /* DownloadsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DownloadsViewController.m; sourceTree = "<group>"; };
 		CED363E716D2D89500F2337F /* DownloadsView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DownloadsView.xib; sourceTree = "<group>"; };
+		CEDD9C5E16DDDFCB00AD83EB /* MyBooksView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyBooksView.h; path = Classes/MyBooksView.h; sourceTree = "<group>"; };
+		CEDD9C5F16DDDFCB00AD83EB /* MyBooksView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MyBooksView.m; path = Classes/MyBooksView.m; sourceTree = "<group>"; };
+		CEDD9C6016DDDFCB00AD83EB /* MyBooksView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MyBooksView.xib; sourceTree = "<group>"; };
 		CEDFAAAA16BFA9DD008601F6 /* ChaptersViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChaptersViewController.h; sourceTree = "<group>"; };
 		CEDFAAAB16BFA9DD008601F6 /* ChaptersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChaptersViewController.m; sourceTree = "<group>"; };
 		CEEEE3A016CC4C1F0049A4B2 /* back_with_mark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = back_with_mark.png; sourceTree = "<group>"; };
@@ -432,12 +437,12 @@
 				41B6F5A50FABB9750047CC2A /* CDBViewController.m */,
 				8EE9B1CE16B0149C00C46C60 /* GenreSettings.h */,
 				8EE9B1CF16B0149C00C46C60 /* GenreSettings.m */,
-				8EC60C4F15F62A3400D34892 /* GenresViewController.h */,
-				8EC60C5015F62A3400D34892 /* GenresViewController.m */,
+				8EC60C4F15F62A3400D34892 /* CatalogViewController.h */,
+				8EC60C5015F62A3400D34892 /* CatalogViewController.m */,
 				8E4D7B0716A9AA1B00CC2BEC /* gs.h */,
 				8E4D7B0816A9AA1B00CC2BEC /* gs.m */,
-				CE7FD5EA16B9397C00748E29 /* PlayerFreeViewController.h */,
-				CE7FD5EB16B9397C00748E29 /* PlayerFreeViewController.m */,
+				CE7FD5EA16B9397C00748E29 /* PlayerViewController.h */,
+				CE7FD5EB16B9397C00748E29 /* PlayerViewController.m */,
 				8EE9B1D016B0149C00C46C60 /* PublisherSettings.h */,
 				8EE9B1D116B0149C00C46C60 /* PublisherSettings.m */,
 				8EE9B1D216B0149C00C46C60 /* ReaderSettings.h */,
@@ -457,6 +462,8 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				CEDD9C5E16DDDFCB00AD83EB /* MyBooksView.h */,
+				CEDD9C5F16DDDFCB00AD83EB /* MyBooksView.m */,
 				CE82EA6916BA6D8400F33698 /* xibs */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
@@ -615,12 +622,13 @@
 		CE82EA6916BA6D8400F33698 /* xibs */ = {
 			isa = PBXGroup;
 			children = (
+				CEDD9C6016DDDFCB00AD83EB /* MyBooksView.xib */,
 				CE9AC37116DA2CB60014095C /* SearchView.xib */,
 				CEF837B316D78BDC00603C6E /* Free1ViewController.xib */,
 				CED363E716D2D89500F2337F /* DownloadsView.xib */,
 				CE220C5F16CED53D008E4A29 /* ChapterCellView.xib */,
 				8E52FF1716B6DCED000AD339 /* BookView.xib */,
-				CE7FD5ED16B93DEA00748E29 /* PlayerFreeView.xib */,
+				CE7FD5ED16B93DEA00748E29 /* PlayerView.xib */,
 			);
 			name = xibs;
 			path = Classes;
@@ -810,7 +818,7 @@
 				8ED3BCC715FA4C3C00326459 /* icon57.png in Resources */,
 				8ED3BCC915FA4C9300326459 /* icon114.png in Resources */,
 				8E52FF1816B6DCED000AD339 /* BookView.xib in Resources */,
-				CE7FD5EE16B93DEA00748E29 /* PlayerFreeView.xib in Resources */,
+				CE7FD5EE16B93DEA00748E29 /* PlayerView.xib in Resources */,
 				CE17B29E16C279F500D0FB36 /* player_bar_button@2x.png in Resources */,
 				CE17B29F16C279F500D0FB36 /* player_bookmark_off@2x.png in Resources */,
 				CE17B2A016C279F500D0FB36 /* player_bookmark_on@2x.png in Resources */,
@@ -912,6 +920,7 @@
 				CED363E916D2D89500F2337F /* DownloadsView.xib in Resources */,
 				CEF837B516D78BDC00603C6E /* Free1ViewController.xib in Resources */,
 				CE9AC37316DA2CB60014095C /* SearchView.xib in Resources */,
+				CEDD9C6216DDDFCB00AD83EB /* MyBooksView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -927,7 +936,7 @@
 				41B6F5A60FABB9750047CC2A /* CDAUIView.m in Sources */,
 				41B6F5A70FABB9750047CC2A /* CDBViewController.m in Sources */,
 				8EC60C4D15F623A600D34892 /* MainViewController.m in Sources */,
-				8EC60C5115F62A3400D34892 /* GenresViewController.m in Sources */,
+				8EC60C5115F62A3400D34892 /* CatalogViewController.m in Sources */,
 				8EC60C5815F64E4100D34892 /* BookViewController.m in Sources */,
 				8ED3BCB815F7A5E300326459 /* StandardPaths.m in Sources */,
 				8ED3BCBF15F8E9C100326459 /* CatalogItem.m in Sources */,
@@ -943,7 +952,7 @@
 				8EE9B1D516B0149C00C46C60 /* GenreSettings.m in Sources */,
 				8EE9B1D616B0149C00C46C60 /* PublisherSettings.m in Sources */,
 				8EE9B1D716B0149C00C46C60 /* ReaderSettings.m in Sources */,
-				CE7FD5EC16B9397C00748E29 /* PlayerFreeViewController.m in Sources */,
+				CE7FD5EC16B9397C00748E29 /* PlayerViewController.m in Sources */,
 				CE82EA8116BA7ABB00F33698 /* ASIAuthenticationDialog.m in Sources */,
 				CE82EA8216BA7ABB00F33698 /* ASIDataCompressor.m in Sources */,
 				CE82EA8316BA7ABB00F33698 /* ASIDataDecompressor.m in Sources */,
@@ -960,6 +969,7 @@
 				CED2D90416D734F800054E13 /* BuyOption1.m in Sources */,
 				CEF837B416D78BDC00603C6E /* Free1ViewController.m in Sources */,
 				CE9AC37216DA2CB60014095C /* SearchViewController.m in Sources */,
+				CEDD9C6116DDDFCB00AD83EB /* MyBooksView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

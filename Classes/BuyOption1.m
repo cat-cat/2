@@ -9,7 +9,7 @@
 #import "BuyOption1.h"
 #import "ASIHTTPRequest.h"
 #import "gs.h"
-#import "PlayerFreeViewController.h"
+#import "PlayerViewController.h"
 
 @implementation BuyOption1
 

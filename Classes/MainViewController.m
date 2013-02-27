@@ -7,7 +7,7 @@
 //
 
 #import "MainViewController.h"
-#import "GenresViewController.h"
+#import "CatalogViewController.h"
 #import "CatalogItem.h"
 #import "gs.h"
 
@@ -24,7 +24,7 @@
 //        selectedGenreIndex = -1;
         [self prepareDataModel];
         //	window = [[UIWindow alloc] initWithFrame:[[UIScreen  mainScreen] bounds]] ;
-        GenresViewController *genresViewController = [[GenresViewController alloc] initWithStyle:UITableViewStylePlain andParentGenre:@"-1"];
+        CatalogViewController *genresViewController = [[CatalogViewController alloc] initWithStyle:UITableViewStylePlain andParentGenre:@"-1"];
         gss().navigationController = [[UINavigationController alloc] initWithRootViewController:genresViewController];
 
         [self.view addSubview:[gss().navigationController view]];
