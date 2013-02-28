@@ -19,7 +19,7 @@
 #import "StandardPaths.h"
 #import "ASINetworkQueue.h"
 #import <CommonCrypto/CommonDigest.h>
-
+#import "PlayerViewController.h"
 
 // TODO: make all functions synchronized
 @implementation gs
@@ -1022,6 +1022,13 @@ static NSString* databaseName;
     }
 }
 
+-(void)playerButtonClick:(id)sender
+{
+//    NSLog(@"++ player button click");
+    PlayerViewController* playerView = [[PlayerViewController alloc] initWithBook:0];
+    [self.navigationController pushViewController:playerView animated:YES];
+}
+
 //#include <netinet/in.h>
 #include <arpa/inet.h>
 + (gs *)sharedInstance
@@ -1033,7 +1040,18 @@ static NSString* databaseName;
         // Do any other initialisation stuff here
         
         //****************** init requests queue
-        //[sharedInstance setQueue:[[ASINetworkQueue alloc] init]];
+        CGRect	rectFrame = CGRectMake(220.0, 440.0, 100, 20);
+		// create a UIButton (UIButtonTypeRoundedRect)
+		sharedInstance.playerButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+		sharedInstance.playerButton.frame = rectFrame;
+		[sharedInstance.playerButton setTitle:@"Плеер" forState:UIControlStateNormal];
+		sharedInstance.playerButton.backgroundColor = [UIColor clearColor];		
+		sharedInstance.playerButton.tag = 2;
+        [sharedInstance.playerButton addTarget:sharedInstance action:@selector(playerButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+        [sharedInstance.playerButton setHidden:YES];
+        //[sharedInstance.navigationController.view addSubview:sharedInstance.playerButton];
+
+        //theView.myController = self;
         
         
         

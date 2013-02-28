@@ -28,6 +28,7 @@
 +(void) deleteBook:(NSString*)bid;
 + (void) buyBook;
 - (void) removeDownqObject:(NSString *)object;
+@property (nonatomic, assign) int bookID;
 @property (nonatomic, strong) NSMutableArray* downq; // queue for downloading
 @end
 
@@ -56,7 +57,6 @@
 +(void)savedbTrackProgress;
 +(void)checkChapter:(NSString*)chid;
 +(NSString*)chapterIdentityFromURL:(NSString*)url;
-+(int)myGetBookId;
 +(void)appendChapterIdentityForDownloading:(NSString*)chapterIdentity;
 +(float)calcDownProgressForBook:(int)bid chapter:(NSString*)chid;
 

@@ -30,14 +30,7 @@
         [self.view addSubview:[gss().navigationController view]];
         //    [window addSubview:[navigationController view]];
         //	[window makeKeyAndVisible];
-
-        //	CGRect	rectFrame = [UIScreen mainScreen].applicationFrame;
-        //	CDBUIView *theView   = [[CDBUIView alloc] initWithFrame:rectFrame];
-        //	theView.backgroundColor = [UIColor whiteColor];
-        //	theView.myController = self;
-        //	theView.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
-        //	self.view = theView;
-        //	[theView release];
+        [self.view addSubview:gss().playerButton];
         
 		self.message = theMessage;
 		self.tabBarItem.image  = image;

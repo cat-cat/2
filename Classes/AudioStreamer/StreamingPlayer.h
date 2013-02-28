@@ -25,12 +25,7 @@
 @class AudioStreamer;
 
 @interface StreamingPlayer : NSObject
-{
-    int bookId;
-    NSString* chapter;
-    
-@private
-	
+{	
 	//
 	// Delegating:
 	id<StreamingPlayerDelegate> delegate;
@@ -41,8 +36,8 @@
 	NSTimer *progressUpdateTimer;
 }
 
-@property (nonatomic, assign) int bookId;
-@property (nonatomic, retain) NSString * chapter;
+@property (readonly, nonatomic, assign) int bookId;
+@property (readonly, nonatomic, retain) NSString * chapter;
 @property (nonatomic, readwrite, assign) id<StreamingPlayerDelegate> delegate;
 @property (nonatomic, retain) AudioStreamer *streamer;
 

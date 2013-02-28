@@ -3,7 +3,7 @@
    version = "1.0">
    <ContextStates>
       <ContextState
-         contextName = "-[PlayerFreeViewController appendChapterIdentityForDownloading:]:PlayerFreeViewController.m">
+         contextName = "-[PlayerFreeViewController handlePlayPause]:PlayerFreeViewController.m">
          <PersistentStrings>
             <PersistentString
                value = "[gss() downq]">
@@ -11,34 +11,7 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "-[PlayerFreeViewController request:didReceiveBytes:]:PlayerFreeViewController.m">
-         <PersistentStrings>
-            <PersistentString
-               value = "sPlayer.chapter">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "-[SearchViewController db_GetBooksWithScope:searchPhrase:]:SearchViewController.m">
-         <PersistentStrings>
-            <PersistentString
-               value = "query">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
          contextName = "-[PlayerFreeViewController downqNext]:PlayerFreeViewController.m">
-      </ContextState>
-      <ContextState
-         contextName = "+[PlayerFreeViewController downqNextAfter:]:PlayerFreeViewController.m">
-         <PersistentStrings>
-            <PersistentString
-               value = "[StaticPlayer sharedInstance].downq">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "+[PlayerFreeViewController startDownloadBook:chapter:]:PlayerFreeViewController.m">
       </ContextState>
       <ContextState
          contextName = "-[PlayerFreeViewController getAndDisplayFreeTrackMeta]:PlayerFreeViewController.m">
@@ -49,21 +22,45 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "-[CatalogViewController db_GetGenresAndBooksWithParent:andOffset:andLimit:]:CatalogViewController.m">
+         contextName = "-[StaticPlayer bookID]:PlayerViewController.h">
          <PersistentStrings>
             <PersistentString
-               value = "sqlStatement">
+               value = "sPlayer">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "-[PlayerFreeViewController saveTrackProgress]:PlayerFreeViewController.m">
+         contextName = "+[PlayerFreeViewController startDownloadBook:chapter:]:PlayerFreeViewController.m">
+      </ContextState>
+      <ContextState
+         contextName = "-[SearchViewController db_GetBooksWithScope:searchPhrase:]:SearchViewController.m">
          <PersistentStrings>
             <PersistentString
-               value = "book">
+               value = "query">
             </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "+[PlayerFreeViewController downqNextAfter:]:PlayerFreeViewController.m">
+         <PersistentStrings>
             <PersistentString
-               value = "sPlayer">
+               value = "[StaticPlayer sharedInstance].downq">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "__20+[gs sharedInstance]_block_invoke_0:gs.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "sharedInstance">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[CatalogViewController db_GetGenresAndBooksWithParent:andOffset:andLimit:]:CatalogViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "sqlStatement">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -79,10 +76,29 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "-[PlayerFreeViewController handlePlayPause]:PlayerFreeViewController.m">
+         contextName = "-[PlayerFreeViewController request:didReceiveBytes:]:PlayerFreeViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "sPlayer.chapter">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[PlayerFreeViewController appendChapterIdentityForDownloading:]:PlayerFreeViewController.m">
          <PersistentStrings>
             <PersistentString
                value = "[gss() downq]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[PlayerFreeViewController saveTrackProgress]:PlayerFreeViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "book">
+            </PersistentString>
+            <PersistentString
+               value = "sPlayer">
             </PersistentString>
          </PersistentStrings>
       </ContextState>

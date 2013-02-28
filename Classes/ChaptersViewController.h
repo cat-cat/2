@@ -12,7 +12,7 @@
 {
     __weak IBOutlet PlayerViewController *playerController;
     NSMutableArray* chapters;
-    int bookId;
+//    int bookId;
 }
 //@property (nonatomic, assign) int bookId;
 -(void) updateProgressForChapterIdentity:(NSString*)chapterIdentity value:(float)val;

@@ -66,15 +66,18 @@
 //	tabBarController = [[UITabBarController alloc] init];
 //	tabBarController.viewControllers = [NSArray arrayWithObjects:
 //                                      mainViewController,
-//                                      viewController2,
-//                                      viewController3,
-//                                      viewController4,
-//                                      viewController5,
-//                                      viewController6,
 //                                      nil];
+    //	tabBarController.viewControllers = [NSArray arrayWithObjects:
+    //                                      mainViewController,
+    //                                      viewController2,
+    //                                      viewController3,
+    //                                      viewController4,
+    //                                      viewController5,
+    //                                      viewController6,
+    //                                      nil];
 
 	//[window addSubview:tabBarController.view]; // warning: Application windows are expected to have a root view controller at the end of application launch
-    
+    //[tabBarController setHidesBottomBarWhenPushed:YES];
     //window.rootViewController = tabBarController;
     window.rootViewController = mainViewController;
     

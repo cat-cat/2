@@ -21,6 +21,7 @@ static NSString* AppConnectionHost = @"192.168.0.100:8080";
     UINavigationController *navigationController;
 //    ASINetworkQueue* queue;
 }
+@property(nonatomic, strong) UIButton* playerButton;
 @property(nonatomic, strong) UINavigationController *navigationController;
 +(void)db_MybooksRemove:(NSString*)bid;
 +(NSArray*)db_GetMybooks;

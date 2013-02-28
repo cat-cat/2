@@ -122,7 +122,7 @@ static NSString* BTN_CANCEL = @"отменить";
     NSString* isbought = [NSString stringWithFormat:@"<r><bt>%@</bt></r>", [responseHeaders valueForKey:@"Bought" ]];
 //    if ([isbought isEqualToString:@"yes"]) {
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSString *fileName = [gss() pathForBuy:bookId];
+    NSString *fileName = [gss() pathForBuy:[StaticPlayer sharedInstance].bookID];
     NSData *data = [isbought dataUsingEncoding:NSUTF8StringEncoding];
     BOOL fileCreationSuccess =
     [fileManager createFileAtPath:fileName contents:data attributes:nil];
@@ -146,7 +146,7 @@ static NSString* BTN_CANCEL = @"отменить";
     NSFileManager *fm = [NSFileManager defaultManager];
     // save to home directory
     //    NSString *pathToBookDirectory =[ NSHomeDirectory() stringByAppendingPathComponent: [NSString stringWithFormat:@"tmp/books/%d/BookMeta.xml", bookId ]];
-    NSString *pathToBookDirectory =[ [[gs sharedInstance] dirsForBook:bookId] stringByAppendingPathComponent:@"bookMeta.xml"];
+    NSString *pathToBookDirectory =[ [[gs sharedInstance] dirsForBook:[StaticPlayer sharedInstance].bookID] stringByAppendingPathComponent:@"bookMeta.xml"];
     [NSURL fileURLWithPath:pathToBookDirectory ];
     bool fileCreationSuccess = [ fm createFileAtPath:pathToBookDirectory contents:[request responseData ]  attributes:nil];
     if(fileCreationSuccess == NO){ NSLog(@"Failed to create the BookMeta file"); }
@@ -182,14 +182,14 @@ static NSString* BTN_CANCEL = @"отменить";
         
     // Uncomment the following line to preserve selection between presentations.
      self.clearsSelectionOnViewWillAppear = NO;
-    bookId = [PlayerViewController myGetBookId];
+//    bookId = [PlayerViewController myGetBookId];
     chapters = [[NSMutableArray alloc] init];
     
-    NSString* fMetaPath = [NSString stringWithFormat:@"%@/%@",[[gs sharedInstance] dirsForBook:bookId ],  @"bookMeta.xml"];
+    NSString* fMetaPath = [NSString stringWithFormat:@"%@/%@",[[gs sharedInstance] dirsForBook:[StaticPlayer sharedInstance].bookID ],  @"bookMeta.xml"];
     // start request to get chapters, handle answer in handlers
     if(![[NSFileManager defaultManager]  fileExistsAtPath:fMetaPath ])
     {
-        [self requestBookMeta:bookId];
+        [self requestBookMeta:[StaticPlayer sharedInstance].bookID];
     }
     else
     {
@@ -251,7 +251,7 @@ static NSString* BTN_CANCEL = @"отменить";
 -(void)downClick:(UIButton*)sender
 {
     Chapter* c = (Chapter*) [chapters objectAtIndex:[[sender titleForState:UIControlStateApplication]intValue]];
-    NSString* chapterIdentity = [NSString stringWithFormat:@"%d:%@", bookId, c.cId ];
+    NSString* chapterIdentity = [NSString stringWithFormat:@"%d:%@", [StaticPlayer sharedInstance].bookID, c.cId ];
     NSString* btnState = [sender titleForState:UIControlStateNormal];
     if ([btnState isEqualToString:BTN_CANCEL]) {
         [[StaticPlayer sharedInstance] removeDownqObject:chapterIdentity];
@@ -309,14 +309,14 @@ static NSString* BTN_CANCEL = @"отменить";
 {
     int bid = [gss() bidFromChapterIdentity:chapterIdentity];
     
-    if (bid != bookId) {
+    if (bid != [StaticPlayer sharedInstance].bookID) {
         NSLog(@"++ Финиш загрузки для другой книги!");
         return;
     }
     
     NSString* chid = [gss() chidFromChapterIdentity:chapterIdentity];
     
-    float progress = [PlayerViewController calcDownProgressForBook:[PlayerViewController myGetBookId] chapter:chid];
+    float progress = [PlayerViewController calcDownProgressForBook:[StaticPlayer sharedInstance].bookID chapter:chid];
     [self setProgressForChapter:chid value: progress];
     
     if (progress < 1.0) {
@@ -331,7 +331,7 @@ static NSString* BTN_CANCEL = @"отменить";
 {
     int bid = [gss() bidFromChapterIdentity:chapterIdentity];
     
-    if (bid != bookId) {
+    if (bid != [StaticPlayer sharedInstance].bookID) {
         NSLog(@"++ Отображается оглавление другой книги!");
         return;
     }
@@ -358,7 +358,7 @@ static NSString* BTN_CANCEL = @"отменить";
     UILabel* lblSmall = (UILabel*)[cell viewWithTag:2];
     lblSmall.text = lc.name;
     UIProgressView* progress = (UIProgressView*) [cell viewWithTag:3];
-    progress.progress = [PlayerViewController calcDownProgressForBook:[PlayerViewController myGetBookId] chapter:lc.cId];
+    progress.progress = [PlayerViewController calcDownProgressForBook:[StaticPlayer sharedInstance].bookID chapter:lc.cId];
     UIButton* btn = (UIButton*)[cell viewWithTag:4];
     
     if (progress.progress < 1.0) {
@@ -440,8 +440,8 @@ static int rowIdx = -1;
     // get chapter id from index and find that chapter id in bookMeta.xml
     rowIdx = indexPath.row;
     // create xml from string
-    DDXMLDocument *xmldoc = [gss() docForFile:[gss() pathForBookMeta:bookId]];
-    NSArray* arr = [gss() arrayForDoc:xmldoc xpath:[NSString stringWithFormat:@"//abook[@id='%d']/content/track[%d]/@number", bookId, rowIdx+1]];
+    DDXMLDocument *xmldoc = [gss() docForFile:[gss() pathForBookMeta:[StaticPlayer sharedInstance].bookID]];
+    NSArray* arr = [gss() arrayForDoc:xmldoc xpath:[NSString stringWithFormat:@"//abook[@id='%d']/content/track[%d]/@number", [StaticPlayer sharedInstance].bookID, rowIdx+1]];
     if ([arr count] != 1) {
         NSLog(@"**err: invalid tracks array");
         if (rowIdx>0) {
