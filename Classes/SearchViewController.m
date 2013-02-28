@@ -195,14 +195,6 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	static NSString *kCellID = @"cellID";
-	
-	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellID];
-	if (cell == nil)
-	{
-		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:kCellID];
-		cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-	}
 	
 	/*
 	 If the requesting table view is the search display controller's table view, configure the cell using the filtered content, otherwise use the main list.
@@ -216,9 +208,10 @@
 	{
         genre = [self.listContent objectAtIndex:indexPath.row];
     }
-	
-	cell.textLabel.text = genre.name;
-    cell.detailTextLabel.text = genre.authors;
+    
+    UITableViewCell* cell = [gs catalogCellForBook:genre.ID tableView:tableView title:genre.name];
+    UILabel* l2 = (UILabel*)[cell viewWithTag:2];
+    l2.text = genre.authors;
 	return cell;
 }
 

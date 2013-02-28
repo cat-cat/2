@@ -20,6 +20,8 @@
 #import "ASINetworkQueue.h"
 #import <CommonCrypto/CommonDigest.h>
 #import "PlayerViewController.h"
+#import "CatalogCellController.h"
+#import "AsyncImageView.h"
 
 // TODO: make all functions synchronized
 @implementation gs
@@ -1145,6 +1147,23 @@ static NSString* databaseName;
     }
 }
 
+// TODO: should not be called from diffrent threads simultanously
++(UITableViewCell*)catalogCellForBook:(NSString *)bid tableView:(UITableView *)tableView title:(NSString*)title
+{
+    static NSString *MyIdentifier = @"CatalogBookCell";
+    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
+    if (cell == nil) {
+        CatalogCellController* c = [[CatalogCellController alloc] init];
+        cell = (UITableViewCell *) [c view];
+    }
+    cell.accessoryType = UITableViewCellAccessoryNone;
+    UILabel* l = (UILabel*)[cell viewWithTag:1];
+    l.text =  title;
+    AsyncImageView* iv = (AsyncImageView*) [cell viewWithTag:3];
+    [iv setImage:nil];
+    iv.imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/image.php?bid=%@", AppConnectionHost, bid]];
+    return cell;
+}
 @end
 
 gs* gss()

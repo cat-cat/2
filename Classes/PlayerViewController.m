@@ -980,7 +980,11 @@ static Book *book;
     }
 }
 
+BOOL shouldShowPlayerButton = YES;
 - (IBAction)btnOpenDownloadQueueClick:(UIBarButtonItem *)sender {
+    shouldShowPlayerButton = NO;
+
+    
     DownloadsViewController *dController = [[DownloadsViewController alloc] initWithStyle:UITableViewStylePlain andDelegate:[StaticPlayer sharedInstance ]];
     [[gs sharedInstance].navigationController pushViewController:dController animated:YES];
 //    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:dController];
@@ -1046,10 +1050,11 @@ static Book *book;
     [PlayerViewController savedbTrackProgress];
     [PlayerViewController setDelegates:[StaticPlayer sharedInstance]];
     
-    if (sPlayer) {
+    if (sPlayer && shouldShowPlayerButton) {
         [gss().playerButton setHidden:NO];
     }
-    
+    shouldShowPlayerButton = YES; // set it to initial state
+
     [super viewDidDisappear:animated];
 }
 

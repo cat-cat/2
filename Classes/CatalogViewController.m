@@ -45,20 +45,21 @@
 		self.title = @"Каталог";
         //self.navigationItem.backBarButtonItem.title = @"назад";
         
+        dbOffset = 0; // will be 0 with first call to db
+        
+        // output by "dbLimit" records at a time (for a query)
+        // TODO: I hope this is enough
+        dbLimit = 20000;
+        
         parentGenre = [[NSString alloc] initWithString:parentParam];
         
         genres = [[NSMutableArray alloc] init];
         
-        dbOffset = -7; // will be 0 with first call to db
-        
-        // output by "dbLimit" records at a time (for a query)
-        dbLimit = 7;
-        
-        [self nextGenres];
+        [genres addObjectsFromArray:[self db_GetGenresAndBooksWithParent:parentGenre andOffset:dbOffset andLimit:dbLimit]];        
+        //[self nextGenres];
         
         
-        // add message handlers
-        
+        // add message handlers        
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(onRefreshCatalog)
                                                      name:@"ntf_onRefreshCatalog"
@@ -79,40 +80,28 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell;
     
-//    if(indexPath.row == [delegate genresCount])
-//    {
-//        static NSString *MyIdentifier = @"ButtonMore";
-//        cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
-//        if (cell == nil) {
-//            cell = [[UITableViewCell alloc]
-//                    initWithStyle:UITableViewCellStyleDefault
-//                    reuseIdentifier:MyIdentifier];
-//        }
-//        cell.textLabel.text =  @"Еще...";
-//        cell.accessoryType = UITableViewCellAccessoryNone;
-//    }
-//    else
-//    {
-        static NSString *MyIdentifier = @"Show";
+    
+    CatalogItem *g = [genres objectAtIndex:indexPath.row];
+    NSLog(@"++ g.type: %@", g.type);
+    
+    if (![g.type isEqualToString:@"2"]) // all but book cells - book cells need image
+    {
+        static NSString *MyIdentifier = @"CatalogItemCell";
         cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
         if (cell == nil) {
-            cell = [[UITableViewCell alloc] 
-                 initWithStyle:UITableViewCellStyleDefault
-                 reuseIdentifier:MyIdentifier];
+        cell = [[UITableViewCell alloc]
+             initWithStyle:UITableViewCellStyleDefault
+             reuseIdentifier:MyIdentifier];
         }
-    //	TVAppDelegate *delegate = [[UIApplication sharedApplication] delegate];
-        CatalogItem *g = [genres objectAtIndex:indexPath.row];
-        cell.textLabel.text =  g.name;
-    
-    if ([g.type isEqualToString:@"1"])
-    {
+        cell.textLabel.text = g.name;
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
-    else
+    else // only for book cells
     {
-        cell.accessoryType = UITableViewCellAccessoryNone;
+        cell = [gs catalogCellForBook:g.ID tableView:tableView title:g.name];
     }
-//    }
+    
+
 	return cell;
 }
 
@@ -201,32 +190,32 @@
 //    }
 //}
 
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
-{
-    CGFloat height = scrollView.frame.size.height;
-    
-    CGFloat contentYoffset = scrollView.contentOffset.y;
-    
-    CGFloat distanceFromBottom = scrollView.contentSize.height - contentYoffset;
-    
-    if(distanceFromBottom < height)
-    {
-        int rowsToInsert = [self nextGenres];
-        
-        if(rowsToInsert == 0) // no results from db, all data is shown
-            return;
-        
-        NSMutableArray *a = [[NSMutableArray alloc] init];
-        int startIndex = [genres count] - rowsToInsert;
-        for (int i = 0; i<rowsToInsert; i++) {
-            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:(startIndex++) inSection:0];
-            [a addObject:indexPath];
-        }
-        
-        [[self tableView] insertRowsAtIndexPaths:a withRowAnimation:UITableViewRowAnimationLeft];
-    }
-    
-}
+//- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+//{
+//    CGFloat height = scrollView.frame.size.height;
+//    
+//    CGFloat contentYoffset = scrollView.contentOffset.y;
+//    
+//    CGFloat distanceFromBottom = scrollView.contentSize.height - contentYoffset;
+//    
+//    if(distanceFromBottom < height)
+//    {
+//        int rowsToInsert = [self nextGenres];
+//        
+//        if(rowsToInsert == 0) // no results from db, all data is shown
+//            return;
+//        
+//        NSMutableArray *a = [[NSMutableArray alloc] init];
+//        int startIndex = [genres count] - rowsToInsert;
+//        for (int i = 0; i<rowsToInsert; i++) {
+//            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:(startIndex++) inSection:0];
+//            [a addObject:indexPath];
+//        }
+//        
+//        [[self tableView] insertRowsAtIndexPaths:a withRowAnimation:UITableViewRowAnimationLeft];
+//    }
+//    
+//}
 
 
 - (NSMutableArray *)db_GetGenresAndBooksWithParent:(NSString*) parentItem andOffset:(int) offset andLimit:(int) limit
@@ -237,10 +226,10 @@
         
         NSArray* arr = [gs db_GetMybooks];
         if ([arr count]) {
-            sqlStatement = @"SELECT 0 id, 'Скаченные' name, 0 subgenres, 0 type UNION ";
+            sqlStatement = @"SELECT 0 id, 'Недавно открытые' name, 0 subgenres, 0 type UNION ";
         }
         
-        sqlStatement = [sqlStatement stringByAppendingString:[NSString stringWithFormat:@" SELECT 0 id, 'Поиск' name, 0 subgenres, -2 type UNION"
+        sqlStatement = [sqlStatement stringByAppendingString:[NSString stringWithFormat:@" SELECT 0 id, 'Найти книгу' name, 0 subgenres, -2 type UNION"
                     " SELECT t_abooks.abook_id AS id, title AS name, -1 AS subgenres, 2 AS type FROM t_abooks"
                      " JOIN t_abooks_genres ON t_abooks.abook_id = t_abooks_genres.abook_id"
                      " WHERE t_abooks_genres.genre_id = %s"
@@ -334,18 +323,18 @@
     // else probably should do nothing - didn't check
 }
 
--(int) nextGenres
-{
-    int oldGenres = [genres count];
-    dbOffset += dbLimit;
-    [genres addObjectsFromArray:[self db_GetGenresAndBooksWithParent:parentGenre andOffset:dbOffset andLimit:dbLimit]];
-    
-    
-    
-    //    fprintf(stderr, "\n** genres.count: %i", [genres count]);
-    
-    return [genres count] - oldGenres;
-}
+//-(int) nextGenres
+//{
+//    int oldGenres = [genres count];
+//    dbOffset += dbLimit;
+//    [genres addObjectsFromArray:[self db_GetGenresAndBooksWithParent:parentGenre andOffset:dbOffset andLimit:dbLimit]];
+//    
+//    
+//    
+//    //    fprintf(stderr, "\n** genres.count: %i", [genres count]);
+//    
+//    return [genres count] - oldGenres;
+//}
 
 @end
 
