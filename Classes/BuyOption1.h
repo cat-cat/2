@@ -8,6 +8,6 @@
 #import <Foundation/Foundation.h>
 
 @interface BuyOption1 : NSObject
--(BOOL)startWithBook:(int)bid isfree:(BOOL)free;
+-(BOOL)startWithBook:(NSString*)bid isfree:(BOOL)free;
 +(BuyOption1*) sharedInstance;
 @end

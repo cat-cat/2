@@ -13,11 +13,11 @@
 @synthesize bookId, chapter;
 @synthesize delegate;
 @synthesize streamer;
-- (id)initPlayerWithBook:(int)bid chapter:(NSString*)ch
+- (id)initPlayerWithBook:(NSString*)bid chapter:(NSString*)ch
 {
 	if ((self = [super init]))
 	{
-        bookId = bid;
+        bookId = [[NSString alloc] initWithString: bid];
         chapter = [[NSString alloc] initWithString: ch];
         NSURL* anURL = [NSURL fileURLWithPath: [[gs sharedInstance] pathForBook:bid andChapter:ch]];
 		streamer = [[AudioStreamer alloc] initWithURL:anURL] ;
@@ -82,6 +82,7 @@
 	self.delegate = nil;
 	[progressUpdateTimer invalidate];
 	progressUpdateTimer = nil;
+    [bookId release];
 	[chapter release];
     
 	[super dealloc];

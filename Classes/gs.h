@@ -28,18 +28,18 @@ static NSString* AppConnectionHost = @"192.168.0.100:8080";
 +(NSArray*)db_GetMybooks;
 //+(NSArray*)srvArrForUrl:(NSString*)strWithFormat args:(NSArray*)arguments xpath:(NSString*)xp message:(NSString*)msg;
 +(NSArray*)srvArrForUrl:(NSString*)strUrl xpath:(NSString*)xp message:(NSString*)msg;
--(NSString*)pathForBuy:(int)bid;
-+(NSString*)md5:(NSString*)object;
--(int)bidFromChapterIdentity:(NSString*)ci;
+-(NSString*)pathForBuy:(NSString*)bid;
+//+(NSString*)md5:(NSString*)object;
+-(NSString*)bidFromChapterIdentity:(NSString*)ci;
 
 -(NSString*)chidFromChapterIdentity:(NSString*)ci;
 
 -(DDXMLDocument*) docForFile:(NSString*)path;
--(NSString*) pathForBookMeta:(int)bid;
--(NSString*) pathForBookFinished:(int)bid chapter:(NSString*) ch;
--(NSString*) pathForBook:(int)bid andChapter:(NSString*) ch;
+-(NSString*) pathForBookMeta:(NSString*)bid;
+-(NSString*) pathForBookFinished:(NSString*)bid chapter:(NSString*) ch;
+-(NSString*) pathForBook:(NSString*)bid andChapter:(NSString*) ch;
 -(NSArray*) arrayForDoc:(DDXMLDocument *)doc xpath:(NSString*) xpath;
-- (NSString*)dirsForBook:(int)bid;
+- (NSString*)dirsForBook:(NSString*)bid;
 - (bool) handleError:(NSError*)err;
 - (int) handleSrvError:(NSString*)err;
 + (Book*)db_GetBookWithID:(NSString*) bid;

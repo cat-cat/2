@@ -114,8 +114,8 @@ static ASIHTTPRequest* currentRequest = nil;
     }
     
     // create main request
-    NSString *devhash = [gs md5: [[[UIDevice currentDevice] identifierForVendor] UUIDString]];
-    NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/free1getcode.php?dev=%@&email=%@", AppConnectionHost, devhash, txtEmail.text]];
+    NSString *devid =  [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+    NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/free1getcode.php?dev=%@&email=%@", AppConnectionHost, devid, txtEmail.text]];
     currentRequest = [ASIHTTPRequest requestWithURL:url];
     [currentRequest setDelegate:self];
     [currentRequest setDownloadProgressDelegate:self];
@@ -132,8 +132,8 @@ static ASIHTTPRequest* currentRequest = nil;
     }
     
     // create main request
-    NSString *devhash = [gs md5: [[[UIDevice currentDevice] identifierForVendor] UUIDString]];
-    NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/free1setcode.php?dev=%@&email=%@&code5=%@", AppConnectionHost, devhash, txtEmail.text, txtCode.text]];
+    NSString *devid = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+    NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/free1setcode.php?dev=%@&email=%@&code5=%@", AppConnectionHost, devid, txtEmail.text, txtCode.text]];
     currentRequest = [ASIHTTPRequest requestWithURL:url];
     [currentRequest setDelegate:self];
     [currentRequest setDownloadProgressDelegate:self];

@@ -67,6 +67,7 @@
 		CE220C6016CED53D008E4A29 /* ChapterCellViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE220C5E16CED53D008E4A29 /* ChapterCellViewController.m */; };
 		CE220C6116CED53D008E4A29 /* ChapterCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE220C5F16CED53D008E4A29 /* ChapterCellView.xib */; };
 		CE3098A716B7C48D00D39AC7 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE3098A616B7C48D00D39AC7 /* libsqlite3.dylib */; };
+		CE309AA216E0F9FF00EC5F0C /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE309AA116E0F9FF00EC5F0C /* libicucore.dylib */; };
 		CE7FD5EC16B9397C00748E29 /* PlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7FD5EB16B9397C00748E29 /* PlayerViewController.m */; };
 		CE7FD5EE16B93DEA00748E29 /* PlayerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE7FD5ED16B93DEA00748E29 /* PlayerView.xib */; };
 		CE82EA8116BA7ABB00F33698 /* ASIAuthenticationDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = CE82EA6E16BA7ABB00F33698 /* ASIAuthenticationDialog.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -264,6 +265,7 @@
 		CE220C5E16CED53D008E4A29 /* ChapterCellViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChapterCellViewController.m; sourceTree = "<group>"; };
 		CE220C5F16CED53D008E4A29 /* ChapterCellView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChapterCellView.xib; sourceTree = "<group>"; };
 		CE3098A616B7C48D00D39AC7 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		CE309AA116E0F9FF00EC5F0C /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
 		CE7FD5EA16B9397C00748E29 /* PlayerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerViewController.h; sourceTree = "<group>"; };
 		CE7FD5EB16B9397C00748E29 /* PlayerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayerViewController.m; sourceTree = "<group>"; };
 		CE7FD5ED16B93DEA00748E29 /* PlayerView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlayerView.xib; sourceTree = "<group>"; };
@@ -402,6 +404,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE309AA216E0F9FF00EC5F0C /* libicucore.dylib in Frameworks */,
 				CEC6416A16BC0D6200AC325F /* AudioToolbox.framework in Frameworks */,
 				CE82EA8F16BA7D2D00F33698 /* libz.dylib in Frameworks */,
 				CE82EA8D16BA7CD600F33698 /* MobileCoreServices.framework in Frameworks */,
@@ -529,6 +532,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CE309AA116E0F9FF00EC5F0C /* libicucore.dylib */,
 				CEC6416916BC0D6200AC325F /* AudioToolbox.framework */,
 				CE82EA8E16BA7D2D00F33698 /* libz.dylib */,
 				CE82EA8C16BA7CD600F33698 /* MobileCoreServices.framework */,

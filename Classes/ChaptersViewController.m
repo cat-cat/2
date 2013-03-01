@@ -64,10 +64,10 @@ static NSString* BTN_CANCEL = @"отменить";
 
 @implementation ChaptersViewController
 //@synthesize bookId;
-- (void)requestBookMeta:(int)bid
+- (void)requestBookMeta:(NSString*)bid
 {
-     NSString *devhash = [gs md5: [[[UIDevice currentDevice] identifierForVendor] UUIDString]];
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/bookmeta.php?bid=%d&dev=%@", AppConnectionHost, bid, devhash]];
+     NSString *devid = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/bookmeta.php?bid=%@&dev=%@", AppConnectionHost, bid, devid]];
     //NSURL *url = [NSURL URLWithString:@"http://dl.dropbox.com/u/4115029/bookMeta.xml"];
     ASIHTTPRequest* request = [ASIHTTPRequest requestWithURL:url];
     [request setDelegate:self];
@@ -251,7 +251,7 @@ static NSString* BTN_CANCEL = @"отменить";
 -(void)downClick:(UIButton*)sender
 {
     Chapter* c = (Chapter*) [chapters objectAtIndex:[[sender titleForState:UIControlStateApplication]intValue]];
-    NSString* chapterIdentity = [NSString stringWithFormat:@"%d:%@", [StaticPlayer sharedInstance].bookID, c.cId ];
+    NSString* chapterIdentity = [NSString stringWithFormat:@"%@:%@", [StaticPlayer sharedInstance].bookID, c.cId ];
     NSString* btnState = [sender titleForState:UIControlStateNormal];
     if ([btnState isEqualToString:BTN_CANCEL]) {
         [[StaticPlayer sharedInstance] removeDownqObject:chapterIdentity];
@@ -307,9 +307,9 @@ static NSString* BTN_CANCEL = @"отменить";
 
 -(void)chapterFinishDownload:(NSString*)chapterIdentity
 {
-    int bid = [gss() bidFromChapterIdentity:chapterIdentity];
+    NSString* bid = [gss() bidFromChapterIdentity:chapterIdentity];
     
-    if (bid != [StaticPlayer sharedInstance].bookID) {
+    if (![bid isEqualToString: [StaticPlayer sharedInstance].bookID]) {
         NSLog(@"++ Финиш загрузки для другой книги!");
         return;
     }
@@ -329,9 +329,9 @@ static NSString* BTN_CANCEL = @"отменить";
 
 -(void) updateProgressForChapterIdentity:(NSString*)chapterIdentity value:(float)val
 {
-    int bid = [gss() bidFromChapterIdentity:chapterIdentity];
+    NSString* bid = [gss() bidFromChapterIdentity:chapterIdentity];
     
-    if (bid != [StaticPlayer sharedInstance].bookID) {
+    if (![bid isEqualToString: [StaticPlayer sharedInstance].bookID]) {
         NSLog(@"++ Отображается оглавление другой книги!");
         return;
     }
@@ -441,7 +441,7 @@ static int rowIdx = -1;
     rowIdx = indexPath.row;
     // create xml from string
     DDXMLDocument *xmldoc = [gss() docForFile:[gss() pathForBookMeta:[StaticPlayer sharedInstance].bookID]];
-    NSArray* arr = [gss() arrayForDoc:xmldoc xpath:[NSString stringWithFormat:@"//abook[@id='%d']/content/track[%d]/@number", [StaticPlayer sharedInstance].bookID, rowIdx+1]];
+    NSArray* arr = [gss() arrayForDoc:xmldoc xpath:[NSString stringWithFormat:@"//abook[@id='%@']/content/track[%d]/@number", [StaticPlayer sharedInstance].bookID, rowIdx+1]];
     if ([arr count] != 1) {
         NSLog(@"**err: invalid tracks array");
         if (rowIdx>0) {

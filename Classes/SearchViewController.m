@@ -233,7 +233,7 @@
         genre = [self.listContent objectAtIndex:indexPath.row];
     }
 	//detailsViewController.title = genre.name;
-    PlayerViewController *pc = [[PlayerViewController alloc] initWithBook:[genre.ID intValue]];
+    PlayerViewController *pc = [[PlayerViewController alloc] initWithBook:genre.ID];
 
 //    [[self navigationController] pushViewController:detailsViewController animated:YES];
     [[self navigationController] pushViewController:pc animated:YES];

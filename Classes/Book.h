@@ -10,7 +10,7 @@
 @class TrackSettings;
 @interface Book : NSObject 
 // from abook service:
-@property (assign) int abookId;
+@property (nonatomic, retain) NSString* abookId;
 @property (nonatomic, retain) NSString *title;
 @property (nonatomic, retain) NSMutableArray *authors;
 @property (nonatomic, retain) NSMutableArray *readers;

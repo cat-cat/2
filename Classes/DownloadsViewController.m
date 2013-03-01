@@ -63,12 +63,12 @@
 -(NSArray*)titlesForChapterIdentity:(NSString*)chid
 {
     NSArray* arr = [chid componentsSeparatedByString:@":"];
-    int bid = [[arr objectAtIndex:0] intValue];
+    NSString* bid = [arr objectAtIndex:0];
     NSString* chapterId = [arr objectAtIndex:1];
     DDXMLDocument* doc = [gss() docForFile:[gss() pathForBookMeta:bid]];
-    NSArray *titleArr = [gss() arrayForDoc:doc xpath:[NSString stringWithFormat:@"/abooks/abook[@id='%d']/title",bid ]];
+    NSArray *titleArr = [gss() arrayForDoc:doc xpath:[NSString stringWithFormat:@"/abooks/abook[@id='%@']/title",bid ]];
     NSAssert1([titleArr count], @"**err: titleArr is empty: %s", __func__);
-    NSArray* chapterNameArr = [gss() arrayForDoc:doc xpath:[NSString stringWithFormat:@"/abooks/abook[@id='%d']//track[@number='%@']/name",bid,chapterId ]];
+    NSArray* chapterNameArr = [gss() arrayForDoc:doc xpath:[NSString stringWithFormat:@"/abooks/abook[@id='%@']//track[@number='%@']/name",bid,chapterId ]];
     NSAssert1([chapterNameArr count], @"**err: chapterNameArr is empty: %s", __func__);
     
     return @[[titleArr objectAtIndex:0], [chapterNameArr objectAtIndex:0]];

@@ -28,7 +28,7 @@
 +(void) deleteBook:(NSString*)bid;
 + (void) buyBook;
 - (void) removeDownqObject:(NSString *)object;
-@property (nonatomic, assign) int bookID;
+@property (nonatomic, assign) NSString* bookID;
 @property (nonatomic, strong) NSMutableArray* downq; // queue for downloading
 @end
 
@@ -47,18 +47,18 @@
 +(void)db_InsertMybook:(NSString*)bid;
 + (void) showAlertAtTimer:(NSString*)msg delay:(int)delayInSeconds;
 - (IBAction)btnBuyBookClick:(UIBarButtonItem *)sender;
-+(NSInteger) metaSizeForChapter:(int)bid chapter:(NSString*) chid;
-+(NSInteger) actualSizeForChapter:(int)bid chapter:(NSString*)chid;
++(NSInteger) metaSizeForChapter:(NSString*)bid chapter:(NSString*) chid;
++(NSInteger) actualSizeForChapter:(NSString*)bid chapter:(NSString*)chid;
 +(void)startPlayer;
 +(void)startChapter:(NSString *)chid;
 +(void)downqNextAfter:(NSString*)completedURL;
 + (void)setPassedTime:(double)passedTime leftTime:(double)leftTime;
 +(void)setDelegates:(id)obj;
-+(void)savedbTrackProgress;
++(void)db_SaveTrackProgress;
 +(void)checkChapter:(NSString*)chid;
 +(NSString*)chapterIdentityFromURL:(NSString*)url;
 +(void)appendChapterIdentityForDownloading:(NSString*)chapterIdentity;
-+(float)calcDownProgressForBook:(int)bid chapter:(NSString*)chid;
++(float)calcDownProgressForBook:(NSString*)bid chapter:(NSString*)chid;
 
 +(void)startChapter:(NSString*)chid;
 - (IBAction)onSliderUpInside:(UISlider *)sender;
@@ -69,6 +69,6 @@
 //@property (nonatomic, strong) NSString *message;
 //- (IBAction)btnPressFF:(UIBarButtonItem *)sender;
 //- (void)updateToBook:(NSString*)bid;
-- (id)initWithBook:(int) bid;
+- (id)initWithBook:(NSString*) bid;
 
 @end

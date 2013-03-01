@@ -39,15 +39,15 @@ static ASIHTTPRequest* currentRequest = nil;
 - (void)requestFinished:(ASIHTTPRequest *)request
 {
     NSError* error;
-    NSString* response = [NSString stringWithContentsOfURL:[NSURL fileURLWithPath:[gss() pathForBuy:[[request.userInfo objectForKey:@"bid" ] intValue]] ] encoding:NSUTF8StringEncoding error:&error];
+    NSString* response = [NSString stringWithContentsOfURL:[NSURL fileURLWithPath:[gss() pathForBuy:[request.userInfo objectForKey:@"bid" ]] ] encoding:NSUTF8StringEncoding error:&error];
     NSLog(@"++Finished buy option1: %@", response);
     NSRange r = [response rangeOfString:@"yes"];
     if ((response && r.location != NSNotFound) && request.responseStatusCode == 200)
     {
        int isfree = [[request.userInfo valueForKey:@"isfree"] intValue];
         if (isfree) {
-             NSString *devhash = [gs md5: [[[UIDevice currentDevice] identifierForVendor] UUIDString]];
-             NSArray *arr = [gs srvArrForUrl:[NSString stringWithFormat:@"http://%@/free1closecode.php?dev=%@&bookid=%@", AppConnectionHost, devhash,[request.userInfo objectForKey:@"bid" ]] xpath:@"//canuse" message:[NSString stringWithFormat:@"**err:unable to request success to close code: %s", __func__ ]];
+             NSString *devid = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+             NSArray *arr = [gs srvArrForUrl:[NSString stringWithFormat:@"http://%@/free1closecode.php?dev=%@&bookid=%@", AppConnectionHost, devid,[request.userInfo objectForKey:@"bid" ]] xpath:@"//canuse" message:[NSString stringWithFormat:@"**err:unable to request success to close code: %s", __func__ ]];
             NSString* canuse = [arr objectAtIndex:0];
             NSLog(@"++close code: %@", canuse);
 //            if (![canuse isEqualToString:@"yes"]) {
@@ -73,15 +73,15 @@ static ASIHTTPRequest* currentRequest = nil;
 }
 
 
--(BOOL)startWithBook:(int)bid isfree:(BOOL)free
+-(BOOL)startWithBook:(NSString*)bid isfree:(BOOL)free
 {
     if (currentRequest && !currentRequest.complete) {
         return NO;
     }
     
     // create main request
-    NSString *devhash = [gs md5: [[[UIDevice currentDevice] identifierForVendor] UUIDString]];
-    NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/buy.php?bid=%d&dev=%@&bt=1", AppConnectionHost, bid, devhash]];
+    NSString *devid =[[[UIDevice currentDevice] identifierForVendor] UUIDString];
+    NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/buy.php?bid=%@&dev=%@&bt=1", AppConnectionHost, bid, devid]];
     currentRequest = [ASIHTTPRequest requestWithURL:url];
     NSString *downloadPath = [gss() pathForBuy:bid];
     
@@ -100,7 +100,7 @@ static ASIHTTPRequest* currentRequest = nil;
     //    int alreadyDownloaded = 2354100;
     //    [request addRequestHeader:@"Range" value:[NSString stringWithFormat:@"bytes=%i-", alreadyDownloaded]];
     //[currentRequest setMyDontRemoveFlag:true];
-    NSNumber* nBid = [NSNumber numberWithInt: bid];
+    NSString* nBid = bid;
     NSNumber* bookfree = [NSNumber numberWithInt: free];
     [currentRequest setUserInfo:[NSDictionary dictionaryWithObjectsAndKeys:
                                 nBid, @"bid", bookfree, @"isfree",  nil]];

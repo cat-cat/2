@@ -77,7 +77,7 @@ enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
     [NSThread sleepForTimeInterval:0.3];
     
     // remove files for book
-    NSString* chaptersAudioPath = [[gss() dirsForBook:[bid intValue] ] stringByAppendingString:@"/ca"];
+    NSString* chaptersAudioPath = [[gss() dirsForBook:bid ] stringByAppendingString:@"/ca"];
     NSError* error;
     BOOL success = [[NSFileManager defaultManager] removeItemAtPath:chaptersAudioPath error:&error];
     [gss() handleError:error];
@@ -139,7 +139,7 @@ enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
 //
 //        sPlayer.streamer.aqChangedUnexpected = NO;
 //    }
-    [PlayerViewController db_InsertMybook:[NSString stringWithFormat:@"%d",sPlayer.bookId]];
+    [PlayerViewController db_InsertMybook:[NSString stringWithFormat:@"%@",sPlayer.bookId]];
     bindProgressVal = YES;
     [sPlayer.streamer performSelector:@selector(doVolumeFadeIn) withObject:nil afterDelay:1.0];
 }
@@ -150,12 +150,12 @@ enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
     
     // reinit player
     NSString* chid = sPlayer.chapter;
-    int bid = sPlayer.bookId;
+    NSString* bid = sPlayer.bookId;
     [sPlayer myrelease];
     if (progressSliderPtr) {
         progressSliderPtr.value = 0.0;
     }
-    [PlayerViewController savedbTrackProgress];
+    [PlayerViewController db_SaveTrackProgress];
     sPlayer = [[StreamingPlayer alloc] initPlayerWithBook:bid  chapter:chid];
     [sPlayer setDelegate:[StaticPlayer sharedInstance]];
     [PlayerViewController setDelegates:[StaticPlayer sharedInstance]];
@@ -179,15 +179,15 @@ BOOL buyQueryStarted = NO;
         case BB_GETFREE:
         {
             // TODO: check inet, then loading screen
-            NSString *devhash = [gs md5: [[[UIDevice currentDevice] identifierForVendor] UUIDString]];
-            NSArray *arr = [gs srvArrForUrl:[NSString stringWithFormat:@"http://%@/free1checkcode.php?dev=%@", AppConnectionHost, devhash] xpath:@"//freeflag" message:[NSString stringWithFormat:@"unable to get freeflag: %s", __func__ ]];
+            NSString *devid = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+            NSArray *arr = [gs srvArrForUrl:[NSString stringWithFormat:@"http://%@/free1checkcode.php?dev=%@", AppConnectionHost, devid] xpath:@"//freeflag" message:[NSString stringWithFormat:@"unable to get freeflag: %s", __func__ ]];
             int freeflag = [[arr objectAtIndex:0] intValue];
 
             switch (freeflag) {
                 case 1: // can use free book
                     // you'we got free book
                 {
-                Book* b = [gs db_GetBookWithID:[NSString stringWithFormat:@"%d",[StaticPlayer sharedInstance].bookID ]];
+                Book* b = [gs db_GetBookWithID:[NSString stringWithFormat:@"%@",[StaticPlayer sharedInstance].bookID ]];
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Получение бесплатной книги"
                                                                 message:[NSString stringWithFormat:@"Хотите получить бесплатно книгу %@?", b.title] delegate:self cancelButtonTitle:@"Нет" otherButtonTitles:@"Да", nil];
                 [alert show];
@@ -235,7 +235,7 @@ BOOL buyQueryStarted = NO;
 //        return;
 //    }
     
-    if (!isBought && [StaticPlayer sharedInstance].bookID == sPlayer.bookId) {
+    if (!isBought && [[StaticPlayer sharedInstance].bookID isEqualToString: sPlayer.bookId]) {
         float actual = anProgress;
         float max = progressSliderPtr.maximumValue;
         float procSize = (actual / max) * 100;
@@ -257,7 +257,7 @@ BOOL buyQueryStarted = NO;
 
     }
     
-    if (bindProgressVal && progressSliderPtr && ([StaticPlayer sharedInstance].bookID==sPlayer.bookId)) {
+    if (bindProgressVal && progressSliderPtr && ([[StaticPlayer sharedInstance].bookID isEqualToString: sPlayer.bookId])) {
         progressSliderPtr.value = anProgress;
         float passedTime = anProgress;
         float leftTime   = progressSliderPtr.maximumValue - anProgress;
@@ -280,11 +280,11 @@ BOOL buyQueryStarted = NO;
 {
     //    NSLog(@"++bytes received: %lld", bytes);
     NSString* strURL = [PlayerViewController chapterIdentityFromURL:[[request url] absoluteString]];
-    int bid = [gss() bidFromChapterIdentity:strURL];
+    NSString* bid = [gss() bidFromChapterIdentity:strURL];
     NSString* chid = [gss() chidFromChapterIdentity:strURL];
     
     float progressVal = 0.0;
-    if([StaticPlayer sharedInstance].bookID==bid && [sPlayer.chapter isEqualToString:chid])
+    if([[StaticPlayer sharedInstance].bookID isEqualToString: bid] && [sPlayer.chapter isEqualToString:chid])
     {
         trackLength += bytes;
         progressVal = (float)trackLength/(float)trackSize;
@@ -360,7 +360,7 @@ static StreamingPlayer *sPlayer = nil;
 {
     NSLog(@"++Finished request !");
     NSString* strURL = [PlayerViewController chapterIdentityFromURL:[[request url] absoluteString]];
-    int bid = [gss() bidFromChapterIdentity:strURL];
+    NSString* bid = [gss() bidFromChapterIdentity:strURL];
     NSString* chid = [gss() chidFromChapterIdentity:strURL];
     NSString *path = [gss() pathForBookFinished:bid chapter:chid];
     
@@ -469,7 +469,7 @@ static Book *book;
 
 +(void)startPlayer
 {
-    float stps = [self getdbTrackProgress];
+    float stps = [self db_GetTrackProgress];
     if (stps == 0) {
         [sPlayer.streamer start];
     }
@@ -496,7 +496,7 @@ static Book *book;
 //    [gs assertNoError:returnCode==SQLITE_OK withMsg:[NSString stringWithFormat:@"**dberr %s: cannot open : %s", __func__, sqlite3_errmsg(db) ]];
 //    returnCode = sqlite3_exec(db, "delete from t_tracks", 0, 0, 0);
 //    [gs assertNoError:returnCode==SQLITE_OK withMsg:[NSString stringWithFormat:@"**dberr %s: cannnot execute : %s", __func__, sqlite3_errmsg(db) ]];
-//    returnCode = sqlite3_exec(db, "create unique index idx_t_tracks on t_tracks (abook_id, track_number)", 0, 0, 0);
+//    returnCode = sqlite3_exec(db, "create unique index idx_t_tracks on t_tracks (abook_id, track_id)", 0, 0, 0);
 //    [gs assertNoError:returnCode==SQLITE_OK withMsg:[NSString stringWithFormat:@"**dberr %s: cannnot execute : %s", __func__, sqlite3_errmsg(db) ]];
 //}
 
@@ -517,7 +517,7 @@ static Book *book;
     returnCode = sqlite3_prepare_v2(db, sqlStatement, -1, &compiledStatement, NULL);
     [gs assertNoError:returnCode==SQLITE_OK withMsg:[NSString stringWithFormat:@"**err db prepare2: %s", sqlite3_errmsg(db) ]];
     
-    sqlite3_bind_text(compiledStatement, 1, [[NSString stringWithFormat:@"%d",[StaticPlayer sharedInstance].bookID] UTF8String], -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(compiledStatement, 1, [[NSString stringWithFormat:@"%@",[StaticPlayer sharedInstance].bookID] UTF8String], -1, SQLITE_TRANSIENT);
     
     returnCode = sqlite3_step(compiledStatement);
     [gs assertNoError:returnCode==SQLITE_DONE withMsg:[NSString stringWithFormat:@"**dberr %s: cannot step  %s", __func__, sqlite3_errmsg(db) ]];
@@ -529,11 +529,11 @@ static Book *book;
     
 }
 
-+(void)savedbTrackProgress
++(void)db_SaveTrackProgress
 {
     //[self runOnce];
     
-    if (!sPlayer || ![sPlayer.chapter length] || sPlayer.bookId != [StaticPlayer sharedInstance].bookID) {
+    if (!sPlayer || ![sPlayer.chapter length] || ![sPlayer.bookId isEqualToString: [StaticPlayer sharedInstance].bookID]) {
         return;
     }
     
@@ -545,41 +545,27 @@ static Book *book;
     int returnCode = sqlite3_open([gs dbname], &db);
     [gs assertNoError:returnCode==SQLITE_OK withMsg:[NSString stringWithFormat:@"**dberr cannot open db: %s", sqlite3_errmsg(db) ]];
     
-    const char *sqlStatement = "INSERT OR REPLACE INTO t_tracks (abook_id, track_number, name, created_date, begin_time, end_time, free, in_progress, downloaded_length, size, length, bitrate, path, text_data_path, current_progress, isReachEnd) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    const char *sqlStatement = "INSERT OR REPLACE INTO t_tracks (abook_id, track_id, current_progress) VALUES (?, ?, ?)";
     sqlite3_stmt *compiledStatement;
     
     returnCode = sqlite3_prepare_v2(db, sqlStatement, -1, &compiledStatement, NULL);
     [gs assertNoError:returnCode==SQLITE_OK withMsg:[NSString stringWithFormat:@"**err db prepare2: %s", sqlite3_errmsg(db) ]];
     
-    sqlite3_bind_int(compiledStatement, 1, [StaticPlayer sharedInstance].bookID);
+    sqlite3_bind_text(compiledStatement, 1, [[StaticPlayer sharedInstance].bookID UTF8String], -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(compiledStatement, 2, [sPlayer.chapter UTF8String], -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(compiledStatement, 3, NULL, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(compiledStatement, 4, NULL, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_int(compiledStatement, 5, 0);
-    sqlite3_bind_int(compiledStatement, 6, 0);
-    sqlite3_bind_int(compiledStatement, 7, 0);
-    sqlite3_bind_int(compiledStatement, 8, 0);
-    sqlite3_bind_int(compiledStatement, 9, 0);
-    sqlite3_bind_int(compiledStatement, 10, 0);
-    sqlite3_bind_int(compiledStatement, 11, 0);
-    sqlite3_bind_int(compiledStatement, 12, 0);
-    sqlite3_bind_text(compiledStatement, 13, NULL, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(compiledStatement, 14, NULL, -1, SQLITE_TRANSIENT);
     
     if(progressSliderPtr)
     {
         float testVal = progressSliderPtr.value - 8.0;
         float valToSave = testVal > 0.0 ? testVal : 0.0;
         NSLog(@"Progress : %lf", valToSave);
-        sqlite3_bind_double(compiledStatement, 15, valToSave);
+        sqlite3_bind_double(compiledStatement, 3, valToSave);
     }
     else
     {
-        sqlite3_bind_double(compiledStatement, 15, 0);
+        sqlite3_bind_double(compiledStatement, 3, 0);
     }
-    
-    sqlite3_bind_int(compiledStatement, 16, 0);
-    
+        
     returnCode = sqlite3_step(compiledStatement);
     [gs assertNoError:returnCode==SQLITE_DONE withMsg:[NSString stringWithFormat:@"**dberr %s: cannot step  %s", __func__, sqlite3_errmsg(db) ]];
     
@@ -589,9 +575,9 @@ static Book *book;
     [gs assertNoError:returnCode==SQLITE_OK withMsg:[NSString stringWithFormat:@"**dberr %s: cannot close db : %s", __func__, sqlite3_errmsg(db) ]];
 }
 
-+(float)getdbTrackProgress
++(float)db_GetTrackProgress
 {
-    if (!sPlayer || ![sPlayer.chapter length] || sPlayer.bookId != [StaticPlayer sharedInstance].bookID) {
+    if (!sPlayer || ![sPlayer.chapter length] || ![sPlayer.bookId isEqualToString: [StaticPlayer sharedInstance].bookID]) {
         return 0.0;
     }
     
@@ -603,8 +589,8 @@ static Book *book;
     [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"Unable to open db: %s", sqlite3_errmsg(db) ]];
     char *sqlStatement;
     
-    sqlStatement = sqlite3_mprintf("SELECT current_progress from t_tracks where track_number='%s' AND abook_id=%d"
-                                   " LIMIT 0,1", [sPlayer.chapter UTF8String], sPlayer.bookId);
+    sqlStatement = sqlite3_mprintf("SELECT current_progress from t_tracks where track_id='%s' AND abook_id='%s'"
+                                   " LIMIT 0,1", [sPlayer.chapter UTF8String], [sPlayer.bookId UTF8String]);
     
     sqlite3_stmt *statement;
     
@@ -641,11 +627,11 @@ static Book *book;
         NSError *error;
         [fileManager removeItemAtPath:[gss() pathForBookFinished:[StaticPlayer sharedInstance].bookID chapter:chid] error:&error];
         if (error) {
-            NSLog(@"--warning: cannot remove finished! for book: %d, chapter: %@, error: %@", [StaticPlayer sharedInstance].bookID, chid, [error localizedDescription]);
+            NSLog(@"--warning: cannot remove finished! for book: %@, chapter: %@, error: %@", [StaticPlayer sharedInstance].bookID, chid, [error localizedDescription]);
         }
         [fileManager removeItemAtPath:[gss() pathForBook:[StaticPlayer sharedInstance].bookID andChapter:chid] error:&error];
         if (error) {
-            NSLog(@"--warning: cannot remove chapter for book: %d, chapter: %@, error: %@", [StaticPlayer sharedInstance].bookID, chid, [error localizedDescription]);
+            NSLog(@"--warning: cannot remove chapter for book: %@, chapter: %@, error: %@", [StaticPlayer sharedInstance].bookID, chid, [error localizedDescription]);
         }
     }
 }
@@ -655,14 +641,14 @@ static Book *book;
     NSAssert1(started, @"**err: cannot start buy process: %s", __func__);
 }
 
-+(NSInteger) metaSizeForChapter:(int)bid chapter:(NSString*) chid
++(NSInteger) metaSizeForChapter:(NSString*)bid chapter:(NSString*) chid
 {
     NSInteger returnValue = 0;
     DDXMLDocument *xmldoc = [gss() docForFile:[gss() pathForBookMeta:[StaticPlayer sharedInstance].bookID]];
     // set meta file size
-    NSArray* arr1 = [gss() arrayForDoc:xmldoc xpath:[NSString stringWithFormat:@"//abook[@id='%d']/content/track[@number='%@']/file/size", [StaticPlayer sharedInstance].bookID, chid]];
+    NSArray* arr1 = [gss() arrayForDoc:xmldoc xpath:[NSString stringWithFormat:@"//abook[@id='%@']/content/track[@number='%@']/file/size", [StaticPlayer sharedInstance].bookID, chid]];
     if ([arr1 count] != 1) {
-        NSLog(@"**err: invalid meta size for book: %d, chpater: %@", [StaticPlayer sharedInstance].bookID, chid);
+        NSLog(@"**err: invalid meta size for book: %@, chpater: %@", [StaticPlayer sharedInstance].bookID, chid);
     }
     else
     {
@@ -672,7 +658,7 @@ static Book *book;
     return returnValue;
 }
 
-+(NSInteger) actualSizeForChapter:(int)bid chapter:(NSString*)chid
++(NSInteger) actualSizeForChapter:(NSString*)bid chapter:(NSString*)chid
 {
     NSInteger returnValue = 0;
     // get actual file size and set progressView.progress
@@ -681,7 +667,7 @@ static Book *book;
     NSDictionary *fileAttributes = [fileManager attributesOfItemAtPath:[gss() pathForBook:[StaticPlayer sharedInstance].bookID andChapter:chid] error:&error];
     if (nil != error)
     {
-        NSLog(@"**err: chapter not found for bookid: %d chapter: %@", [StaticPlayer sharedInstance].bookID, chid);
+        NSLog(@"**err: chapter not found for bookid: %@ chapter: %@", [StaticPlayer sharedInstance].bookID, chid);
     }
     else
     {
@@ -691,7 +677,7 @@ static Book *book;
     return returnValue;
 }
 
-+(float)calcDownProgressForBook:(int)bid chapter:(NSString*)chid
++(float)calcDownProgressForBook:(NSString*)bid chapter:(NSString*)chid
 {
     @synchronized(self)
     {
@@ -707,11 +693,11 @@ static Book *book;
 
 +(void)startChapter:(NSString *)chid
 {
-    if (chid != [sPlayer chapter]) {
+    if (![chid isEqualToString: [sPlayer chapter]]) {
         [self checkChapter:chid];
         
         if (sPlayer) { // already playied something
-            [self savedbTrackProgress];
+            [self db_SaveTrackProgress];
         }
         
         if(progressSliderPtr)
@@ -735,7 +721,7 @@ static Book *book;
         [[[StaticPlayer sharedInstance] downq] addObject:chapterIdentity];
     }
     
-    int bid =  [gss() bidFromChapterIdentity:chapterIdentity];
+    NSString* bid =  [gss() bidFromChapterIdentity:chapterIdentity];
     NSString* chid = [gss() chidFromChapterIdentity:chapterIdentity];
     
     @synchronized([[StaticPlayer sharedInstance] downq])
@@ -747,10 +733,10 @@ static Book *book;
 }
 
 
-+(void)startDownloadBook:(int)bid chapter:(NSString*)chid
++(void)startDownloadBook:(NSString*)bid chapter:(NSString*)chid
 {
     // if not doewnloaded yet, start downloading or partial downloading
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/chapter.php?bid=%d&ch=%@", AppConnectionHost, bid, chid ]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/chapter.php?bid=%@&ch=%@", AppConnectionHost, bid, chid ]];
     ASIHTTPRequest *req1 = [ASIHTTPRequest requestWithURL:url];
     [req1 startSynchronous];
     NSError *error;
@@ -791,13 +777,17 @@ static Book *book;
     //    [request addRequestHeader:@"Range" value:[NSString stringWithFormat:@"bytes=%i-", alreadyDownloaded]];
     [currentRequest setMyDontRemoveFlag:true];
     [currentRequest startAsynchronous];
-    [PlayerViewController db_InsertMybook:[NSString stringWithFormat:@"%d",bid ]];
+    [PlayerViewController db_InsertMybook:[NSString stringWithFormat:@"%@",bid ]];
 }
 
 +(void) handlePlayPause
 {
-    NSString* object = [NSString stringWithFormat:@"%d:%@", [StaticPlayer sharedInstance].bookID, sPlayer.chapter ];
-    NSString* curChId = [self chapterIdentityFromURL:[[currentRequest url] absoluteString]];
+    NSString* object = [NSString stringWithFormat:@"%@:%@", [StaticPlayer sharedInstance].bookID, sPlayer.chapter ];
+    
+    NSString* curChId;
+    if(currentRequest)
+        curChId = [self chapterIdentityFromURL:[[currentRequest url] absoluteString]];
+    
     if(![[NSFileManager defaultManager]  fileExistsAtPath:[gss() pathForBookFinished:[StaticPlayer sharedInstance].bookID chapter:[sPlayer chapter] ]] && ![curChId isEqualToString:object])
     {
         
@@ -828,27 +818,27 @@ static Book *book;
     
 }
 
-- (id)initWithBook:(int)bid
+- (id)initWithBook:(NSString*)bid
 {
     if (self = [super init]) {
         // custom initialization
             
         
-        if (bid > 0) { // if 0 - button Player clicked - use current bookID : means returning to last opened in player book
+        if ([bid intValue] > 0) { // if 0 - button Player clicked - use current bookID : means returning to last opened in player book
             trackSize = 0;
-            book = [gs db_GetBookWithID:[NSString stringWithFormat:@"%d",bid]];
+            book = [gs db_GetBookWithID:[NSString stringWithFormat:@"%@",bid]];
             [StaticPlayer sharedInstance].bookID = bid;
         }
         else if (sPlayer)
         {
                 [StaticPlayer sharedInstance].bookID = sPlayer.bookId;
-                book = [gs db_GetBookWithID:[NSString stringWithFormat:@"%d",[StaticPlayer sharedInstance].bookID]];
+                book = [gs db_GetBookWithID:[NSString stringWithFormat:@"%@",[StaticPlayer sharedInstance].bookID]];
         }
         else{
-            NSLog(@"**err: invalid bid initialized in player or something went wrong. PASSED BID: %d!", bid);
+            NSLog(@"**err: invalid bid initialized in player or something went wrong. PASSED BID: %@!", bid);
         }
         
-        if (sPlayer && [StaticPlayer sharedInstance].bookID == sPlayer.bookId) {
+        if (sPlayer && [[StaticPlayer sharedInstance].bookID isEqualToString: sPlayer.bookId]) {
             bindProgressVal = YES;
         }
         
@@ -884,9 +874,9 @@ static Book *book;
     NSInteger returnValue = 0;
     // set meta track length
     DDXMLDocument *xmldoc = [gss() docForFile:[gss() pathForBookMeta:[StaticPlayer sharedInstance].bookID]];
-    NSArray* arr = [gss() arrayForDoc:xmldoc xpath:[NSString stringWithFormat:@"//abook[@id='%d']/content/track[@number='%@']/file/length", [StaticPlayer sharedInstance].bookID, chid]];
+    NSArray* arr = [gss() arrayForDoc:xmldoc xpath:[NSString stringWithFormat:@"//abook[@id='%@']/content/track[@number='%@']/file/length", [StaticPlayer sharedInstance].bookID, chid]];
     if ([arr count] != 1) {
-        NSLog(@"**err: invalid length for book: %d, chpater: %@", [StaticPlayer sharedInstance].bookID, chid);
+        NSLog(@"**err: invalid length for book: %@, chpater: %@", [StaticPlayer sharedInstance].bookID, chid);
     }
     else
     {
@@ -936,7 +926,7 @@ static Book *book;
     
     chaptersTableView.delegate = chaptersController;
     chaptersTableView.dataSource = chaptersController;
-    if (sPlayer && sPlayer.bookId == [StaticPlayer sharedInstance].bookID) {
+    if (sPlayer && [sPlayer.bookId isEqualToString: [StaticPlayer sharedInstance].bookID]) {
         [chaptersController scrollToLastSelection];
     }
     //[chaptersTableView reloadData];
@@ -1008,7 +998,7 @@ BOOL shouldShowPlayerButton = YES;
     }
     else
     {
-        [PlayerViewController savedbTrackProgress];
+        [PlayerViewController db_SaveTrackProgress];
         [PlayerViewController handlePlayPause];
     }
 }
@@ -1031,13 +1021,13 @@ BOOL shouldShowPlayerButton = YES;
 - (void)viewWillAppear:(BOOL)animated
 {
     if (sPlayer) {
-        if (sPlayer.bookId == [StaticPlayer sharedInstance].bookID) {
+        if ([sPlayer.bookId isEqualToString: [StaticPlayer sharedInstance].bookID]) {
             [PlayerViewController setDelegates:[StaticPlayer sharedInstance]];
             if(progressViewPtr)
                 progressViewPtr.progress = [PlayerViewController calcDownProgressForBook:[StaticPlayer sharedInstance].bookID chapter:sPlayer.chapter];
         }
         else{
-            Book *b = [gs db_GetBookWithID:[NSString stringWithFormat:@"%d", sPlayer.bookId ]];
+            Book *b = [gs db_GetBookWithID:[NSString stringWithFormat:@"%@", sPlayer.bookId ]];
             [PlayerViewController showAlertAtTimer:[NSString stringWithFormat:@"вы слушаете %@", b.title] delay:1.0];
         }
     }
@@ -1047,7 +1037,7 @@ BOOL shouldShowPlayerButton = YES;
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    [PlayerViewController savedbTrackProgress];
+    [PlayerViewController db_SaveTrackProgress];
     [PlayerViewController setDelegates:[StaticPlayer sharedInstance]];
     
     if (sPlayer && shouldShowPlayerButton) {
@@ -1072,7 +1062,7 @@ BOOL shouldShowPlayerButton = YES;
 {
     // create xml from string
     DDXMLDocument *xmldoc = [gss() docForFile:[gss() pathForBookMeta:[StaticPlayer sharedInstance].bookID]];
-    NSArray* arr = [gss() arrayForDoc:xmldoc xpath:[NSString stringWithFormat:@"//abook[@id='%d']/content/track[1]/@number", [StaticPlayer sharedInstance].bookID]];
+    NSArray* arr = [gss() arrayForDoc:xmldoc xpath:[NSString stringWithFormat:@"//abook[@id='%@']/content/track[1]/@number", [StaticPlayer sharedInstance].bookID]];
     if ([arr count] != 1) {
         NSLog(@"**err: invalid tracks array");
         return nil;

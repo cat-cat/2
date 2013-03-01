@@ -126,7 +126,7 @@
 {
     // Navigation logic may go here. Create and push another view controller.
     
-    PlayerViewController *detailViewController = [[PlayerViewController alloc] initWithBook:[[mybooks objectAtIndex:indexPath.row ] intValue]];
+    PlayerViewController *detailViewController = [[PlayerViewController alloc] initWithBook:[mybooks objectAtIndex:indexPath.row ]];
      // ...
      // Pass the selected object to the new view controller.
      [self.navigationController pushViewController:detailViewController animated:YES];     

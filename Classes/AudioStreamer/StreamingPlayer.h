@@ -36,14 +36,14 @@
 	NSTimer *progressUpdateTimer;
 }
 
-@property (readonly, nonatomic, assign) int bookId;
+@property (readonly, nonatomic, retain) NSString* bookId;
 @property (readonly, nonatomic, retain) NSString * chapter;
 @property (nonatomic, readwrite, assign) id<StreamingPlayerDelegate> delegate;
 @property (nonatomic, retain) AudioStreamer *streamer;
 
 -(void)myrelease;
 //- (id)initPlayerWithURL:(NSURL*)anURL;
-- (id)initPlayerWithBook:(int)bid chapter:(NSString*)ch;
+- (id)initPlayerWithBook:(NSString*)bid chapter:(NSString*)ch;
 - (void)updateProgress:(NSTimer *)aNotification;
 
 @end

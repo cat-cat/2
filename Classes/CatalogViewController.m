@@ -82,7 +82,7 @@
     
     
     CatalogItem *g = [genres objectAtIndex:indexPath.row];
-    NSLog(@"++ g.type: %@", g.type);
+   // NSLog(@"++ g.type: %@", g.type);
     
     if (![g.type isEqualToString:@"2"]) // all but book cells - book cells need image
     {
@@ -135,7 +135,7 @@
         else if([g.type isEqualToString:@"2"]) // @"2" - book
         {
             
-            PlayerViewController *plConroller = [[PlayerViewController alloc] initWithBook:[g.ID intValue]];
+            PlayerViewController *plConroller = [[PlayerViewController alloc] initWithBook:g.ID];
             // ...
             // Pass the selected object to the new view controller.
             [gss().navigationController pushViewController:plConroller animated:YES];    
