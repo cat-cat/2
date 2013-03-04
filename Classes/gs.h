@@ -21,6 +21,7 @@ static NSString* AppConnectionHost = @"192.168.0.100:8080";
     UINavigationController *navigationController;
 //    ASINetworkQueue* queue;
 }
++ (bool) checkNetworkStatus:(NSNotification *)notice;
 +(UITableViewCell*) catalogCellForBook:(NSString*)bid tableView:(UITableView*)tableView title:(NSString*)title;
 @property(nonatomic, strong) UIButton* playerButton;
 @property(nonatomic, strong) UINavigationController *navigationController;

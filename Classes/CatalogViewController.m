@@ -232,12 +232,12 @@
         sqlStatement = [sqlStatement stringByAppendingString:[NSString stringWithFormat:@" SELECT 0 id, 'Найти книгу' name, 0 subgenres, -2 type UNION"
                     " SELECT t_abooks.abook_id AS id, title AS name, -1 AS subgenres, 2 AS type FROM t_abooks"
                      " JOIN t_abooks_genres ON t_abooks.abook_id = t_abooks_genres.abook_id"
-                     " WHERE t_abooks_genres.genre_id = %s"
+                     " WHERE t_abooks_genres.genre_id = '%s' AND (t_abooks.deleted=0 OR t_abooks.bought=1)"
                      " UNION"
                      " SELECT t_genres.genre_id AS id, name, COUNT(t_abooks_genres.genre_id) AS subgenres, 1 AS type FROM t_genres"
                      " LEFT JOIN"
                      " t_abooks_genres"
-                     " WHERE t_genres.genre_parent_id = %s AND t_genres.genre_id = t_abooks_genres.genre_id"
+                     " WHERE t_genres.genre_parent_id = '%s' AND t_genres.genre_id = t_abooks_genres.genre_id"
                      " GROUP BY name"
                      " ORDER BY  type, name  LIMIT %d, %d", [parentItem UTF8String], [parentItem UTF8String], offset, limit ]];
         
@@ -246,12 +246,12 @@
     
         sqlStatement = [NSString stringWithFormat:@"SELECT t_abooks.abook_id AS id, title AS name, -1 AS subgenres, 2 AS type FROM t_abooks"
                    " JOIN t_abooks_genres ON t_abooks.abook_id = t_abooks_genres.abook_id"
-                   " WHERE t_abooks_genres.genre_id = %s"
+                   " WHERE t_abooks_genres.genre_id = '%s' AND (t_abooks.deleted=0 OR t_abooks.bought=1)"
                    " UNION"
                    " SELECT t_genres.genre_id AS id, name, COUNT(t_abooks_genres.genre_id) AS subgenres, 1 AS type FROM t_genres"
                    " LEFT JOIN"
                    " t_abooks_genres"
-                   " WHERE t_genres.genre_parent_id = %s AND t_genres.genre_id = t_abooks_genres.genre_id"
+                   " WHERE t_genres.genre_parent_id = '%s' AND t_genres.genre_id = t_abooks_genres.genre_id"
                    " GROUP BY name"
                    " ORDER BY  type, name  LIMIT %d, %d", [parentItem UTF8String], [parentItem UTF8String], offset, limit];
     }

@@ -64,10 +64,11 @@
     " LEFT JOIN"
     " t_abooks_authors ON t_abooks_authors.abook_id=t_abooks.abook_id"
     " JOIN"
-    " t_authors ON t_abooks_authors.author_id=t_authors.author_id";
+    " t_authors ON t_abooks_authors.author_id=t_authors.author_id"
+    " WHERE (t_abooks.deleted=0 OR t_abooks.bought=1)";
     
     if (sf && sf.length) {
-        query = [query stringByAppendingString:[NSString stringWithFormat:@" WHERE t_authors.name LIKE '%%%@%%' OR title LIKE '%%%@%%' ", sf, sf]];
+        query = [query stringByAppendingString:[NSString stringWithFormat:@" AND (t_authors.name LIKE '%%%@%%' OR title LIKE '%%%@%%') ", sf, sf]];
     }
     
     if ([scope isEqualToString:@"Новые"]) // top level - genres without parents, add Search item at the top

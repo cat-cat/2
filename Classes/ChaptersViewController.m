@@ -104,10 +104,14 @@ static NSString* BTN_CANCEL = @"отменить";
     //    }
     
     
-    // parse
-    
-    // save to chapters variable
-
+    //NSArray *sortedArray;
+    NSArray* arr =  [chapters sortedArrayUsingComparator:^NSComparisonResult(id a, id b) {
+        NSString *first = [(Chapter*)a cId];
+        NSString *second = [(Chapter*)b cId];
+        return [first localizedCompare:second];
+    }];
+    [chapters removeAllObjects];
+    [chapters addObjectsFromArray:arr];
     
     // reload table view
     [(UITableView*)[self view] reloadData];
@@ -433,27 +437,32 @@ static NSString* BTN_CANCEL = @"отменить";
 */
 
 #pragma mark - Table view delegate
-static int rowIdx = -1;
+static int rowIdx = 0;
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // Navigation logic may go here. Create and push another view controller.
     // get chapter id from index and find that chapter id in bookMeta.xml
     rowIdx = indexPath.row;
+    int cc = [chapters count];
     // create xml from string
-    DDXMLDocument *xmldoc = [gss() docForFile:[gss() pathForBookMeta:[StaticPlayer sharedInstance].bookID]];
-    NSArray* arr = [gss() arrayForDoc:xmldoc xpath:[NSString stringWithFormat:@"//abook[@id='%@']/content/track[%d]/@number", [StaticPlayer sharedInstance].bookID, rowIdx+1]];
-    if ([arr count] != 1) {
-        NSLog(@"**err: invalid tracks array");
-        if (rowIdx>0) {
+//    DDXMLDocument *xmldoc = [gss() docForFile:[gss() pathForBookMeta:[StaticPlayer sharedInstance].bookID]];
+//    NSArray* arr = [gss() arrayForDoc:xmldoc xpath:[NSString stringWithFormat:@"//abook[@id='%@']/content/track[%d]/@number", [StaticPlayer sharedInstance].bookID, rowIdx+1]];
+//    if ([arr count] != 1) {
+        if (rowIdx>=cc) {
+            NSLog(@"**err: index more then chapters count");
             --rowIdx; // leave at last position
+            return;
         }
-        else
+        else if(rowIdx<0)
         {
+            NSLog(@"**err: index less then chapters count");
             rowIdx = 0; // set to first chapter
+            return;
         }
-        return;
-    }
-    NSString* chid = [arr objectAtIndex:0];
+        //return;
+    //}
+    //NSString* chid = [arr objectAtIndex:0];
+    NSString* chid = [[chapters objectAtIndex:rowIdx] cId];
     
     if (!tableView) { // call from player to select previous/next chapter
         [(UITableView*)[self view] selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionBottom];

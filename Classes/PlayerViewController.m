@@ -693,7 +693,7 @@ static Book *book;
 
 +(void)startChapter:(NSString *)chid
 {
-    if (![chid isEqualToString: [sPlayer chapter]]) {
+    if (![chid isEqualToString: [sPlayer chapter]] || ![[StaticPlayer sharedInstance].bookID isEqualToString:sPlayer.bookId]) {
         [self checkChapter:chid];
         
         if (sPlayer) { // already playied something

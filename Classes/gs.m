@@ -284,6 +284,8 @@ static NSString* databaseName;
         NSLog(@"************************ WiFi connection *************************");
         connectionType = 1;
         
+        [self updateCatalog:nil];
+        
         //        [self firstAction];
         //
         //        //[[AudiobookAppDelegate delegate] showAlertAtTimer:@"Соединение по WiFi." delay:1];
@@ -359,8 +361,8 @@ static NSString* databaseName;
 
 + (DDXMLDocument*) docForPage:(NSString*) page
 {
-    @synchronized(gss())
-    {
+//    @synchronized(gss())
+//    {
         NSError* e;
         NSString *tmp = [NSString stringWithContentsOfURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@/%@", AppConnectionHost, page]] encoding:NSUTF8StringEncoding error:&e];
         
@@ -376,7 +378,7 @@ static NSString* databaseName;
             return nil;
         
         return doc;
-    }
+//    }
 }
 
 + (NSString*) getNodeTextWithXPath:(NSString*) xpath andXMLDoc:(DDXMLDocument*)doc
@@ -443,15 +445,57 @@ static NSString* databaseName;
     return fieldID;
 }
 
++ (BOOL)db_PerformUpdate:(NSString*)sql
+{
+    NSArray* dbStatements = [sql componentsSeparatedByString:@";"];    
+    sqlite3* db;
+    
+    int returnCode = sqlite3_open([gs dbname], &db);
+    [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"Unable to open db: %s", sqlite3_errmsg(db) ]];
+
+    returnCode = sqlite3_exec(db, "BEGIN", 0, 0, 0);
+    [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"Unable to begin transaction db: %s", sqlite3_errmsg(db) ]];
+
+    
+    for (NSString* st in dbStatements) {
+        returnCode = sqlite3_exec(db, [st UTF8String], 0, 0, 0);
+        [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"Unable to exec statement db: %s", sqlite3_errmsg(db) ]];
+    }
+
+    
+    returnCode = sqlite3_exec(db, "COMMIT", 0, 0, 0);
+    [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"Unable to commit transaction db: %s", sqlite3_errmsg(db) ]];
+    
+    return YES;
+}
+
 + (bool)updateCatalog:(NSTimer*)t
 {
     NSLog(@"++ updateCatalog is called");
     
-    @synchronized(self) {
+    //@synchronized(self) {
         
-         NSString *devid = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+        NSString *devid = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
         NSString* updateid = [self db_GetLastUpdate];
         DDXMLDocument* doc = [gs docForPage:[NSString stringWithFormat:@"update.php?dev=%@&updateid=%@", devid, updateid]];
+        NSArray* ar = [gss() arrayForDoc:doc xpath:@"//sql"];
+        
+        if ([ar count]) { // there are updates
+            NSString* sqlstatements = [ar objectAtIndex:0];
+            [self db_PerformUpdate:sqlstatements];
+        }
+        
+        ar = [gss() arrayForDoc:doc xpath:@"//sql/@newbooks"];
+        if ([ar count]) {
+            int nc = [[ar objectAtIndex:0] intValue];
+            
+            if (nc > 0) {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Обновление!"
+                                                                message:[NSString stringWithFormat:@"Каталог обновился, получено новых книг: %d", nc ]
+                                                               delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                [alert show];                 
+            }
+        }
         
 //        // first handle errors
 //        //
@@ -1002,7 +1046,7 @@ static NSString* databaseName;
 //        //    self.dxml = nil;
 //        //    [conData setLength:0];
 //        //    self.conData = nil;
-    }// @synchronized
+//    }// @synchronized
     
     return true;
 }
@@ -1094,7 +1138,7 @@ static NSString* databaseName;
             NSString *dbSourcePath = [[NSBundle mainBundle] pathForResource:@"database" ofType:@"db"];
             [[NSFileManager defaultManager] copyItemAtPath:dbSourcePath toPath:dbWorkingCopyPath error:nil];
         }
-        databaseName = dbWorkingCopyPath;
+        databaseName = [[NSString alloc] initWithString: dbWorkingCopyPath];
         
         
         //*************** monitor network status
@@ -1114,7 +1158,7 @@ static NSString* databaseName;
         inet_aton([[@"http://" stringByAppendingString: AppConnectionHost] UTF8String], &sin.sin_addr);
         hostReachable = [Reachability reachabilityWithAddress:&sin];
         [hostReachable startNotifier];
-        [self checkNetworkStatus:nil];
+        //[self checkNetworkStatus:nil];
         
         
         // TODO: switch on update timer

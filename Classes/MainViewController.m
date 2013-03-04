@@ -81,7 +81,7 @@
 //    [GlobalSingleton setDelegate:self];
     
     // start update timer
-    gss();
+    [gs checkNetworkStatus:nil];
     
 }
 
