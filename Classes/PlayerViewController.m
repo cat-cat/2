@@ -32,7 +32,9 @@
 #import "DownloadsViewController.h"
 #import "BuyOption1.h"
 #import "Free1ViewController.h"
+#import "MBProgressHUD.h"
 
+MBProgressHUD *HUD = nil;
 PlayerViewController* PlayerFreeViewControllerPtr = nil;
 static ASIHTTPRequest* currentRequest;
 BOOL isBought = NO;
@@ -84,6 +86,12 @@ enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
     if (success) {
         [gs db_MybooksRemove:bid];
     }
+    NSString *pathToMeta = [gss() pathForBookMeta:bid];
+    success = [[NSFileManager defaultManager] removeItemAtPath:pathToMeta error:&error];
+    [gss() handleError:error];
+    if(!success)
+        NSLog(@"++warning! cannot remove bookMeta for bid: %@", bid);
+
 
 //	removeFromDownqAllChaptersOfBook(bid);
 //
@@ -128,11 +136,40 @@ enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
         [btnPlayPtr setImage:[UIImage imageNamed:@"player_button_play.png"]];
 }
 
+-(void)showHUD
+{
+    if (!HUD) {
+        // The hud will dispable all input on the view (use the higest view possible in the view hierarchy)
+        HUD = [MBProgressHUD showHUDAddedTo:PlayerFreeViewControllerPtr.view animated:YES];
+    }
+    //hud.mode = MBProgressHUDModeAnnularDeterminate;
+	
+    //	// Regiser for HUD callbacks so we can remove it from the window at the right time
+    //	HUD.delegate = self;
+	
+	// Show the HUD while the provided method executes in a new thread
+	//[HUD showWhileExecuting:@selector(myTask) onTarget:self withObject:nil animated:YES];    
+}
+
+-(void)hideHUD
+{
+    if (HUD) {
+        [MBProgressHUD hideHUDForView:PlayerFreeViewControllerPtr.view animated:YES];
+        HUD=nil;        
+    }
+}
+
 - (void) streamingPlayerIsWaiting:(StreamingPlayer *) anPlayer {
     NSLog(@"++ player IsWaiting");
+    if (PlayerFreeViewControllerPtr) {
+        [self showHUD];
+    }
 }
 - (void) streamingPlayerDidStartPlaying:(StreamingPlayer *) anPlayer {
     NSLog(@"++ player DidStartPlaying");
+    if (PlayerFreeViewControllerPtr) {
+        [self hideHUD];
+    }
     
     // TODO: unreliable logic
 //    if (sPlayer.streamer.aqChangedUnexpected == YES) {
@@ -160,6 +197,10 @@ enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
     [sPlayer setDelegate:[StaticPlayer sharedInstance]];
     [PlayerViewController setDelegates:[StaticPlayer sharedInstance]];
     bindProgressVal = YES;
+    
+    if (PlayerFreeViewControllerPtr) {
+        [self hideHUD];
+    }
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
@@ -170,6 +211,7 @@ enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
     }
 }
 
+BOOL shouldShowPlayerButton = YES;
 BOOL buyQueryStarted = NO;
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
@@ -195,6 +237,7 @@ BOOL buyQueryStarted = NO;
                 }
                 case 0: // should register email and promocode first
                 {
+                    shouldShowPlayerButton = NO;
                     Free1ViewController* vc = [[Free1ViewController alloc] init];
                     [[gss() navigationController] pushViewController:vc animated:YES];
                     break;
@@ -398,6 +441,16 @@ static StreamingPlayer *sPlayer = nil;
     //...
     return sharedInstance;
 }
+
++(BOOL)playerIsPlaying
+{
+    BOOL res = NO;
+    if (sPlayer && [sPlayer.streamer isPlaying]) {
+        res = YES;
+    }
+    return res;
+}
+
 @end
 //******************** END StaticPlayer
 
@@ -622,6 +675,7 @@ static Book *book;
     bool finished_exists = [fileManager fileExistsAtPath:[gss() pathForBookFinished:[StaticPlayer sharedInstance].bookID chapter:chid]];
     NSInteger actualSize = [self actualSizeForChapter:[StaticPlayer sharedInstance].bookID chapter:chid];
     NSInteger metaSize = [self metaSizeForChapter:[StaticPlayer sharedInstance].bookID chapter:chid];
+    
     if((finished_exists && actualSize<metaSize) || (!finished_exists && actualSize<400))
     {
         NSError *error;
@@ -735,6 +789,16 @@ static Book *book;
 
 +(void)startDownloadBook:(NSString*)bid chapter:(NSString*)chid
 {
+    if (![gs nfInternetAvailable:nil])
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Сообщение"
+                                                        message:@"Для загрузки главы нужен интернет. Проверьте соединение."
+                                                       delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        [alert show];
+        
+        return;
+    }
+    
     // if not doewnloaded yet, start downloading or partial downloading
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/chapter.php?bid=%@&ch=%@", AppConnectionHost, bid, chid ]];
     ASIHTTPRequest *req1 = [ASIHTTPRequest requestWithURL:url];
@@ -788,7 +852,7 @@ static Book *book;
     if(currentRequest)
         curChId = [self chapterIdentityFromURL:[[currentRequest url] absoluteString]];
     
-    if(![[NSFileManager defaultManager]  fileExistsAtPath:[gss() pathForBookFinished:[StaticPlayer sharedInstance].bookID chapter:[sPlayer chapter] ]] && ![curChId isEqualToString:object])
+    if(![[NSFileManager defaultManager]  fileExistsAtPath:[gss() pathForBookFinished:[StaticPlayer sharedInstance].bookID chapter:[sPlayer chapter] ]] && ![curChId isEqualToString:object] /*do not start download of the same chapter again*/ && [gs nfInternetAvailable:nil])
     {
         
         // set downloaded object to the top of array
@@ -801,6 +865,16 @@ static Book *book;
         
         [self startDownloadBook:[StaticPlayer sharedInstance].bookID chapter:sPlayer.chapter];
     }
+    else if (![gs nfInternetAvailable:nil] && ![[NSFileManager defaultManager]  fileExistsAtPath:[gss() pathForBook:[StaticPlayer sharedInstance].bookID andChapter:[sPlayer chapter]]]) // no downloaded chapter, even partially and no connection
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Сообщение"
+                                                        message:@"Для загрузки главы нужен интернет. Проверьте соединение."
+                                                       delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        [alert show];
+        
+        return;
+    }
+    // else play full or partially downloaded chapter
     
     
     
@@ -970,7 +1044,6 @@ static Book *book;
     }
 }
 
-BOOL shouldShowPlayerButton = YES;
 - (IBAction)btnOpenDownloadQueueClick:(UIBarButtonItem *)sender {
     shouldShowPlayerButton = NO;
 

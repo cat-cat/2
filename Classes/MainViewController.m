@@ -17,6 +17,7 @@
 @synthesize selectedCharacter;
 
 - (id)initWithMessage:(NSString *)theMessage andImage:(UIImage*) image {
+    
 	if (self = [super initWithNibName:nil bundle:nil]) {
         //		TVAppDelegate *delegate = [[UIApplication sharedApplication] delegate];
 //		self.title =  [delegate characterNameForShowIndex:delegate.selectedShow.row atIndex:delegate.selectedCharacter.row];
@@ -26,6 +27,12 @@
         //	window = [[UIWindow alloc] initWithFrame:[[UIScreen  mainScreen] bounds]] ;
         CatalogViewController *genresViewController = [[CatalogViewController alloc] initWithStyle:UITableViewStylePlain andParentGenre:@"-1"];
         gss().navigationController = [[UINavigationController alloc] initWithRootViewController:genresViewController];
+
+        
+        //[gss().navigationController.navigationBar setBarStyle:UIBarStyleBlack];
+        //UIImage *image = [UIImage imageNamed:@"tabbarbackground.png"];
+        //[gss().navigationController.navigationBar setBackgroundImage:image forBarMetrics:UIBarMetricsDefault];
+        
 
         [self.view addSubview:[gss().navigationController view]];
         //    [window addSubview:[navigationController view]];
@@ -81,7 +88,7 @@
 //    [GlobalSingleton setDelegate:self];
     
     // start update timer
-    [gs checkNetworkStatus:nil];
+    //[gs nfInternetAvailable:nil];
     
 }
 

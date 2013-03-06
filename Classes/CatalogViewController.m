@@ -134,11 +134,20 @@
         }
         else if([g.type isEqualToString:@"2"]) // @"2" - book
         {
-            
-            PlayerViewController *plConroller = [[PlayerViewController alloc] initWithBook:g.ID];
-            // ...
-            // Pass the selected object to the new view controller.
-            [gss().navigationController pushViewController:plConroller animated:YES];    
+            if([gs canGetMetaForBook:g.ID])
+            {
+                PlayerViewController *plConroller = [[PlayerViewController alloc] initWithBook:g.ID];
+                // ...
+                // Pass the selected object to the new view controller.
+                [gss().navigationController pushViewController:plConroller animated:YES];
+            }
+            else
+            {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Сообщение"
+                                                                message:@"Для получения книги нужен интернет. Проверьте соединение."
+                                                               delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                [alert show];                
+            }
         }
         else if([g.type isEqualToString:@"-2"])// search books
         {

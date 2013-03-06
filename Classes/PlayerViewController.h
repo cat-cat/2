@@ -22,16 +22,20 @@
  ******************************************************************************/
 #import "StreamingPlayer.h"
 
+//*************** StaticPlayer
 @interface StaticPlayer : NSObject <StreamingPlayerDelegate, UIActionSheetDelegate> {
 }
++(BOOL)playerIsPlaying;
 +(StaticPlayer*) sharedInstance;
 +(void) deleteBook:(NSString*)bid;
 + (void) buyBook;
 - (void) removeDownqObject:(NSString *)object;
-@property (nonatomic, assign) NSString* bookID;
+@property (nonatomic, strong) NSString* bookID;
 @property (nonatomic, strong) NSMutableArray* downq; // queue for downloading
 @end
 
+
+//************** PlayerViewController
 @class ChaptersViewController;
 @interface PlayerViewController : UIViewController {
     IBOutlet UIBarButtonItem *btnPlay;

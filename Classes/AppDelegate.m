@@ -33,8 +33,46 @@
 //{
 //    return [tabBarController.viewControllers objectAtIndex:index];
 //}
+UIBackgroundTaskIdentifier bgTask;
+NSTimer *backgroundTimer;
 
-- (void)applicationDidFinishLaunching:(UIApplication *)application {	
+-(BOOL)taskActive
+{
+    return [StaticPlayer playerIsPlaying] || [UIApplication sharedApplication].networkActivityIndicatorVisible;
+}
+
+-(void) onPerformBackgroundTask:(id) sender
+{    
+    if (![self taskActive])
+    {
+        [backgroundTimer invalidate];
+        backgroundTimer = nil;
+        [[UIApplication sharedApplication] endBackgroundTask:bgTask];
+        bgTask = UIBackgroundTaskInvalid;
+    }
+}
+
+- (void)applicationDidEnterBackground:(UIApplication *)application
+{
+    [application endBackgroundTask:bgTask];
+    bgTask = UIBackgroundTaskInvalid;
+    
+    if ([self taskActive])
+    {
+        bgTask = [application beginBackgroundTaskWithExpirationHandler:^{
+            [application endBackgroundTask:bgTask];
+            bgTask = UIBackgroundTaskInvalid;
+        }];
+        
+        if (!backgroundTimer)
+        {
+            backgroundTimer = [NSTimer scheduledTimerWithTimeInterval:60 target:self selector:@selector(onPerformBackgroundTask:) userInfo:nil repeats:YES];
+        }
+    }
+}
+
+
+- (void)applicationDidFinishLaunching:(UIApplication *)application {
   
 	window = [[UIWindow alloc] initWithFrame:[[UIScreen  mainScreen] bounds]] ;
     gss();

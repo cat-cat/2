@@ -3,13 +3,10 @@
    version = "1.0">
    <ContextStates>
       <ContextState
-         contextName = "-[PlayerFreeViewController saveTrackProgress]:PlayerFreeViewController.m">
+         contextName = "-[PlayerFreeViewController handlePlayPause]:PlayerFreeViewController.m">
          <PersistentStrings>
             <PersistentString
-               value = "book">
-            </PersistentString>
-            <PersistentString
-               value = "sPlayer">
+               value = "[gss() downq]">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -52,6 +49,17 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
+         contextName = "-[StaticPlayer streamingPlayer:didUpdateProgress:]:PlayerFreeViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "bookId">
+            </PersistentString>
+            <PersistentString
+               value = "sPlayer.bookId">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "__20+[gs sharedInstance]_block_invoke_0:gs.m">
          <PersistentStrings>
             <PersistentString
@@ -76,17 +84,6 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "-[StaticPlayer streamingPlayer:didUpdateProgress:]:PlayerFreeViewController.m">
-         <PersistentStrings>
-            <PersistentString
-               value = "bookId">
-            </PersistentString>
-            <PersistentString
-               value = "sPlayer.bookId">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
          contextName = "-[PlayerFreeViewController appendChapterIdentityForDownloading:]:PlayerFreeViewController.m">
          <PersistentStrings>
             <PersistentString
@@ -103,10 +100,21 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "-[PlayerFreeViewController handlePlayPause]:PlayerFreeViewController.m">
+         contextName = "+[PlayerViewController checkChapter:]:PlayerViewController.m">
          <PersistentStrings>
             <PersistentString
-               value = "[gss() downq]">
+               value = "[StaticPlayer sharedInstance]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[PlayerFreeViewController saveTrackProgress]:PlayerFreeViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "book">
+            </PersistentString>
+            <PersistentString
+               value = "sPlayer">
             </PersistentString>
          </PersistentStrings>
       </ContextState>

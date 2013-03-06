@@ -253,7 +253,9 @@ static NSString* BTN_CANCEL = @"отменить";
 }
 
 -(void)downClick:(UIButton*)sender
-{
+{    
+    NSLog(@"++btn state: %@", [sender titleForState:UIControlStateApplication]);
+    
     Chapter* c = (Chapter*) [chapters objectAtIndex:[[sender titleForState:UIControlStateApplication]intValue]];
     NSString* chapterIdentity = [NSString stringWithFormat:@"%@:%@", [StaticPlayer sharedInstance].bookID, c.cId ];
     NSString* btnState = [sender titleForState:UIControlStateNormal];
@@ -263,13 +265,21 @@ static NSString* BTN_CANCEL = @"отменить";
     }
     else if([btnState isEqualToString:BTN_DOWNLOAD])
     {
+        if (![gs nfInternetAvailable:nil])
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Сообщение"
+                                                            message:@"Для загрузки главы нужен интернет. Проверьте соединение."
+                                                           delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+            [alert show];
+            
+            return;
+        }
+
         [PlayerViewController appendChapterIdentityForDownloading:chapterIdentity];
         [sender setTitle:BTN_CANCEL forState:UIControlStateNormal];
     }
     // else BTN_READY - nothing to do
     
-    
-    NSLog(@"++btn state: %@", [sender titleForState:UIControlStateApplication]);
 }
 
 -(UITableViewCell*)findCellByChapter:(NSString*)chid
@@ -289,7 +299,7 @@ static NSString* BTN_CANCEL = @"отменить";
     UITableViewCell* cell = [self findCellByChapter:chid];
     UIProgressView* progress = (UIProgressView*) [cell viewWithTag:3];
     if (val < 1.0) {
-        progress.progress = val;        
+        [progress setProgress:val animated:YES];
     }
     else {
         progress.hidden = YES;

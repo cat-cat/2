@@ -21,7 +21,7 @@
 #import <CommonCrypto/CommonDigest.h>
 #import "PlayerViewController.h"
 #import "CatalogCellController.h"
-#import "AsyncImageView.h"
+#import "UIImageView+WebCache.h"
 
 // TODO: make all functions synchronized
 @implementation gs
@@ -35,6 +35,14 @@ static Reachability* hostReachable;
 static NSString* databaseName;
 #define ReachableViaWiFiNetwork          2
 #define ReachableDirectWWAN               (1 << 18)
+
++(BOOL)canGetMetaForBook:(NSString*)bookId
+{
+    NSString *pathToMeta = [gss() pathForBookMeta:bookId];
+    BOOL alreadyExists = [[NSFileManager defaultManager] fileExistsAtPath:pathToMeta];
+    BOOL connected = [gs nfInternetAvailable:nil];
+    return alreadyExists || connected;
+}
 
 -(DDXMLDocument*) docForFile:(NSString *)path
 {
@@ -262,7 +270,7 @@ static NSString* databaseName;
 }
 
 
-+ (bool) checkNetworkStatus:(NSNotification *)notice
++ (bool) nfInternetAvailable:(NSNotification *)notice
 {
     // NetworkStatus internetStatus = [internetReachable currentReachabilityStatus];
     NetworkStatus hostStatus     = [hostReachable currentReachabilityStatus];
@@ -308,7 +316,7 @@ static NSString* databaseName;
      }
      */
     // TODO: without condition
-    return YES;
+    return connectionType > 0;
 }
 
 + (BOOL)gotConnectionToSrv:(BOOL)showMsg
@@ -1143,7 +1151,7 @@ static NSString* databaseName;
         
         //*************** monitor network status
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(checkNetworkStatus:)
+                                                 selector:@selector(nfInternetAvailable:)
                                                      name:kReachabilityChangedNotification
                                                    object:nil];
         NSString * version = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleShortVersionString"];
@@ -1158,7 +1166,7 @@ static NSString* databaseName;
         inet_aton([[@"http://" stringByAppendingString: AppConnectionHost] UTF8String], &sin.sin_addr);
         hostReachable = [Reachability reachabilityWithAddress:&sin];
         [hostReachable startNotifier];
-        //[self checkNetworkStatus:nil];
+        //[self nfInternetAvailable:nil];
         
         
         // TODO: switch on update timer
@@ -1231,9 +1239,13 @@ static NSString* databaseName;
     cell.accessoryType = UITableViewCellAccessoryNone;
     UILabel* l = (UILabel*)[cell viewWithTag:1];
     l.text =  title;
-    AsyncImageView* iv = (AsyncImageView*) [cell viewWithTag:3];
-    [iv setImage:nil];
-    iv.imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/image.php?bid=%@", AppConnectionHost, bid]];
+    UIImageView* iv = (UIImageView*) [cell viewWithTag:3];
+    //AsyncImageView* iv = (AsyncImageView*) [cell viewWithTag:3];
+    //[iv setImage:nil];
+    [iv setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@/image.php?bid=%@", AppConnectionHost, bid]]
+                   placeholderImage:[UIImage imageNamed:@"Placeholder"]];
+
+//    iv.imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/image.php?bid=%@", AppConnectionHost, bid]];
     return cell;
 }
 @end

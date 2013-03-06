@@ -21,11 +21,11 @@
 @property(nonatomic, strong) NSIndexPath *selectedShow;
 @property(nonatomic, strong) NSIndexPath *selectedCharacter;
 
--(void)resetDBCursor;
+//-(void)resetDBCursor;
 - (id)initWithMessage:(NSString *)theMessage andImage:(UIImage*) image;
--(int)dbOffset;
--(NSInteger)genresCount;
--(NSString*)genreAtIndex:(NSInteger) index;
+//-(int)dbOffset;
+//-(NSInteger)genresCount;
+//-(NSString*)genreAtIndex:(NSInteger) index;
 -(NSInteger)numberOfCharactersForShowAtIndex:(NSInteger) index;
 -(NSString*)characterNameForShowIndex:(NSInteger) showIndex atIndex:(NSInteger) index;
 @end

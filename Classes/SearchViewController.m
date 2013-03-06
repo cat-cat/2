@@ -233,11 +233,28 @@
 	{
         genre = [self.listContent objectAtIndex:indexPath.row];
     }
-	//detailsViewController.title = genre.name;
-    PlayerViewController *pc = [[PlayerViewController alloc] initWithBook:genre.ID];
+    
+    
+    if([gs canGetMetaForBook:genre.ID])
+    {
+        PlayerViewController *plConroller = [[PlayerViewController alloc] initWithBook:genre.ID];
+        // ...
+        // Pass the selected object to the new view controller.
+        [gss().navigationController pushViewController:plConroller animated:YES];
+    }
+    else
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Сообщение"
+                                                        message:@"Для получения книги нужен интернет. Проверьте соединение."
+                                                       delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        [alert show];
+    }
 
-//    [[self navigationController] pushViewController:detailsViewController animated:YES];
-    [[self navigationController] pushViewController:pc animated:YES];
+//	//detailsViewController.title = genre.name;
+//    PlayerViewController *pc = [[PlayerViewController alloc] initWithBook:genre.ID];
+//
+////    [[self navigationController] pushViewController:detailsViewController animated:YES];
+//    [[self navigationController] pushViewController:pc animated:YES];
 }
 
 
