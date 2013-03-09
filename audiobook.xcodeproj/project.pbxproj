@@ -98,12 +98,13 @@
 		CE82EA8F16BA7D2D00F33698 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE82EA8E16BA7D2D00F33698 /* libz.dylib */; };
 		CE9AC37216DA2CB60014095C /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9AC37016DA2CB60014095C /* SearchViewController.m */; };
 		CE9AC37316DA2CB60014095C /* SearchView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE9AC37116DA2CB60014095C /* SearchView.xib */; };
+		CEA3206A16EB7B4E0025555E /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA3206916EB7B4E0025555E /* StoreKit.framework */; };
+		CEA3206E16EB7C660025555E /* Myshop.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA3206D16EB7C660025555E /* Myshop.m */; };
 		CEC6416416BC0B4800AC325F /* AudioStreamer.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC6416116BC0B4800AC325F /* AudioStreamer.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		CEC6416516BC0B4800AC325F /* StreamingPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC6416316BC0B4800AC325F /* StreamingPlayer.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		CEC6416A16BC0D6200AC325F /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC6416916BC0D6200AC325F /* AudioToolbox.framework */; };
 		CECCBA0216DF7F0A00FF9222 /* CatalogCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CECCBA0116DF7F0A00FF9222 /* CatalogCell.xib */; };
 		CECCBA0616DFA86700FF9222 /* CatalogCellController.m in Sources */ = {isa = PBXBuildFile; fileRef = CECCBA0516DFA86700FF9222 /* CatalogCellController.m */; };
-		CED2D90416D734F800054E13 /* BuyOption1.m in Sources */ = {isa = PBXBuildFile; fileRef = CED2D90316D734F800054E13 /* BuyOption1.m */; };
 		CED363E816D2D89500F2337F /* DownloadsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CED363E616D2D89500F2337F /* DownloadsViewController.m */; };
 		CED363E916D2D89500F2337F /* DownloadsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CED363E716D2D89500F2337F /* DownloadsView.xib */; };
 		CEDD9C6116DDDFCB00AD83EB /* MyBooksView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEDD9C5F16DDDFCB00AD83EB /* MyBooksView.m */; };
@@ -335,6 +336,9 @@
 		CE9AC36F16DA2CB60014095C /* SearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchViewController.h; sourceTree = "<group>"; };
 		CE9AC37016DA2CB60014095C /* SearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchViewController.m; sourceTree = "<group>"; };
 		CE9AC37116DA2CB60014095C /* SearchView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SearchView.xib; sourceTree = "<group>"; };
+		CEA3206916EB7B4E0025555E /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		CEA3206C16EB7C660025555E /* Myshop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Myshop.h; path = Classes/Myshop.h; sourceTree = "<group>"; };
+		CEA3206D16EB7C660025555E /* Myshop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Myshop.m; path = Classes/Myshop.m; sourceTree = "<group>"; };
 		CEC6416016BC0B4800AC325F /* AudioStreamer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioStreamer.h; sourceTree = "<group>"; };
 		CEC6416116BC0B4800AC325F /* AudioStreamer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioStreamer.m; sourceTree = "<group>"; };
 		CEC6416216BC0B4800AC325F /* StreamingPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamingPlayer.h; sourceTree = "<group>"; };
@@ -343,8 +347,6 @@
 		CECCBA0116DF7F0A00FF9222 /* CatalogCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CatalogCell.xib; sourceTree = "<group>"; };
 		CECCBA0416DFA86700FF9222 /* CatalogCellController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CatalogCellController.h; sourceTree = "<group>"; };
 		CECCBA0516DFA86700FF9222 /* CatalogCellController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CatalogCellController.m; sourceTree = "<group>"; };
-		CED2D90216D734F800054E13 /* BuyOption1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BuyOption1.h; sourceTree = "<group>"; };
-		CED2D90316D734F800054E13 /* BuyOption1.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BuyOption1.m; sourceTree = "<group>"; };
 		CED363E516D2D89500F2337F /* DownloadsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownloadsViewController.h; sourceTree = "<group>"; };
 		CED363E616D2D89500F2337F /* DownloadsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DownloadsViewController.m; sourceTree = "<group>"; };
 		CED363E716D2D89500F2337F /* DownloadsView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DownloadsView.xib; sourceTree = "<group>"; };
@@ -441,6 +443,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CEA3206A16EB7B4E0025555E /* StoreKit.framework in Frameworks */,
 				CE5E9DB516E7DC6D00A83D78 /* MapKit.framework in Frameworks */,
 				CE5E9DB116E7D88A00A83D78 /* ImageIO.framework in Frameworks */,
 				CE309AA216E0F9FF00EC5F0C /* libicucore.dylib in Frameworks */,
@@ -469,8 +472,6 @@
 				CE9AC37016DA2CB60014095C /* SearchViewController.m */,
 				CEF837B116D78BDC00603C6E /* Free1ViewController.h */,
 				CEF837B216D78BDC00603C6E /* Free1ViewController.m */,
-				CED2D90216D734F800054E13 /* BuyOption1.h */,
-				CED2D90316D734F800054E13 /* BuyOption1.m */,
 				CED363E516D2D89500F2337F /* DownloadsViewController.h */,
 				CED363E616D2D89500F2337F /* DownloadsViewController.m */,
 				CEDFAAAA16BFA9DD008601F6 /* ChaptersViewController.h */,
@@ -518,6 +519,8 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				CEA3206C16EB7C660025555E /* Myshop.h */,
+				CEA3206D16EB7C660025555E /* Myshop.m */,
 				CE82EA6916BA6D8400F33698 /* xibs */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
@@ -571,6 +574,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CEA3206916EB7B4E0025555E /* StoreKit.framework */,
 				CE5E9DB416E7DC6D00A83D78 /* MapKit.framework */,
 				CE5E9DB016E7D88A00A83D78 /* ImageIO.framework */,
 				CE309AA116E0F9FF00EC5F0C /* libicucore.dylib */,
@@ -1060,7 +1064,6 @@
 				CEDFAAAD16BFA9DD008601F6 /* ChaptersViewController.m in Sources */,
 				CE220C6016CED53D008E4A29 /* ChapterCellViewController.m in Sources */,
 				CED363E816D2D89500F2337F /* DownloadsViewController.m in Sources */,
-				CED2D90416D734F800054E13 /* BuyOption1.m in Sources */,
 				CEF837B416D78BDC00603C6E /* Free1ViewController.m in Sources */,
 				CE9AC37216DA2CB60014095C /* SearchViewController.m in Sources */,
 				CEDD9C6116DDDFCB00AD83EB /* MyBooksView.m in Sources */,
@@ -1076,6 +1079,7 @@
 				CE5E9DAB16E7D60B00A83D78 /* SDWebImagePrefetcher.m in Sources */,
 				CE5E9DAC16E7D60B00A83D78 /* UIButton+WebCache.m in Sources */,
 				CE5E9DAD16E7D60B00A83D78 /* UIImageView+WebCache.m in Sources */,
+				CEA3206E16EB7C660025555E /* Myshop.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

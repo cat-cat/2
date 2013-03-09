@@ -30,9 +30,10 @@
 #import "DDXMLDocument.h"
 #import "ChaptersViewController.h"
 #import "DownloadsViewController.h"
-#import "BuyOption1.h"
+#import "Myshop.h"
 #import "Free1ViewController.h"
 #import "MBProgressHUD.h"
+#import "Myshop.h"
 
 MBProgressHUD *HUD = nil;
 PlayerViewController* PlayerFreeViewControllerPtr = nil;
@@ -207,7 +208,7 @@ enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
 {
     NSLog(@"++alertView button clicked at index %d", buttonIndex);
     if (buttonIndex == 1) { // yes
-        [[BuyOption1 sharedInstance] startWithBook:[StaticPlayer sharedInstance].bookID isfree:YES];
+        [[Myshop sharedInstance] startWithBook:[StaticPlayer sharedInstance].bookID isfree:YES];
     }
 }
 
@@ -221,8 +222,8 @@ BOOL buyQueryStarted = NO;
         case BB_GETFREE:
         {
             // TODO: check inet, then loading screen
-            NSString *devid = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
-            NSArray *arr = [gs srvArrForUrl:[NSString stringWithFormat:@"http://%@/free1checkcode.php?dev=%@", AppConnectionHost, devid] xpath:@"//freeflag" message:[NSString stringWithFormat:@"unable to get freeflag: %s", __func__ ]];
+            NSString *devid = [[UIDevice currentDevice] uniqueIdentifier];
+            NSArray *arr = [gs srvArrForUrl:[NSString stringWithFormat:@"http://%@/free1checkcode.php?dev=%@", Host, devid] xpath:@"//freeflag" message:[NSString stringWithFormat:@"unable to get freeflag: %s", __func__ ]];
             int freeflag = [[arr objectAtIndex:0] intValue];
 
             switch (freeflag) {
@@ -256,7 +257,7 @@ BOOL buyQueryStarted = NO;
         }
         case BB_BUY:
         {
-            [[BuyOption1 sharedInstance] startWithBook:[StaticPlayer sharedInstance].bookID isfree:NO];
+            [[Myshop sharedInstance] requestProductData:[StaticPlayer sharedInstance].bookID];
             break;
         }
         
@@ -691,8 +692,9 @@ static Book *book;
 }
 
 - (IBAction)btnBuyBookClick:(UIBarButtonItem *)sender {
-    BOOL started = [[BuyOption1 sharedInstance] startWithBook:[StaticPlayer sharedInstance].bookID isfree:NO];
-    NSAssert1(started, @"**err: cannot start buy process: %s", __func__);
+    //BOOL started =
+    [[Myshop sharedInstance] requestProductData:[StaticPlayer sharedInstance].bookID];
+//    NSAssert1(started, @"**err: cannot start buy process: %s", __func__);
 }
 
 +(NSInteger) metaSizeForChapter:(NSString*)bid chapter:(NSString*) chid
@@ -800,7 +802,7 @@ static Book *book;
     }
     
     // if not doewnloaded yet, start downloading or partial downloading
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/chapter.php?bid=%@&ch=%@", AppConnectionHost, bid, chid ]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/chapter.php?bid=%@&ch=%@", Host, bid, chid ]];
     ASIHTTPRequest *req1 = [ASIHTTPRequest requestWithURL:url];
     [req1 startSynchronous];
     NSError *error;

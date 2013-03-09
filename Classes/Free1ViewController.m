@@ -105,8 +105,18 @@ static ASIHTTPRequest* currentRequest = nil;
 }
 
 - (IBAction)getCode:(UIButton *)sender {
-    // TODO: check email format
     NSLog(@"++txtEmail: %@", txtEmail.text);
+    NSString* pattern = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]+";
+    
+    NSPredicate* predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", pattern];
+    if (![predicate evaluateWithObject:txtEmail.text] == YES) {
+        // Okay
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Ошибка"
+                                                        message:@"проверьте формат email"
+                                                       delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        [alert show];
+        return;
+    }
     
     if (currentRequest && !currentRequest.complete) {
         // TODO: message to the user
@@ -114,8 +124,8 @@ static ASIHTTPRequest* currentRequest = nil;
     }
     
     // create main request
-    NSString *devid =  [[[UIDevice currentDevice] identifierForVendor] UUIDString];
-    NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/free1getcode.php?dev=%@&email=%@", AppConnectionHost, devid, txtEmail.text]];
+    NSString *devid =  [[UIDevice currentDevice] uniqueIdentifier];
+    NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/free1getcode.php?dev=%@&email=%@", Host, devid, txtEmail.text]];
     currentRequest = [ASIHTTPRequest requestWithURL:url];
     [currentRequest setDelegate:self];
     [currentRequest setDownloadProgressDelegate:self];
@@ -132,8 +142,8 @@ static ASIHTTPRequest* currentRequest = nil;
     }
     
     // create main request
-    NSString *devid = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
-    NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/free1setcode.php?dev=%@&email=%@&code5=%@", AppConnectionHost, devid, txtEmail.text, txtCode.text]];
+    NSString *devid = [[UIDevice currentDevice] uniqueIdentifier];
+    NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/free1setcode.php?dev=%@&email=%@&code5=%@", Host, devid, txtEmail.text, txtCode.text]];
     currentRequest = [ASIHTTPRequest requestWithURL:url];
     [currentRequest setDelegate:self];
     [currentRequest setDownloadProgressDelegate:self];

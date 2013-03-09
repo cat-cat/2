@@ -14,7 +14,7 @@
 @class MainViewController;
 @class Reachability;
 
-static NSString* AppConnectionHost = @"192.168.0.100:8080";
+static NSString* Host = @"192.168.0.100:8080";
 
 @interface gs : NSObject
 {    

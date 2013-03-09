@@ -26,6 +26,7 @@
 #import "MainViewController.h"
 #import "gs.h"
 #import "PlayerViewController.h"
+#import "Myshop.h"
 
 @implementation AppDelegate
 
@@ -121,6 +122,9 @@ NSTimer *backgroundTimer;
     window.rootViewController = mainViewController;
     
 	[window makeKeyAndVisible];
+    
+    // init global singleton instance
+    [[SKPaymentQueue defaultQueue] addTransactionObserver:[Myshop sharedInstance]];
 }
 
 //- (void)changeViewControllerToIndex:(NSUInteger)idx
