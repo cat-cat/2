@@ -154,7 +154,7 @@ SKPaymentTransaction* currentTransaction = nil;
   
     SKProductsRequest *request= [[SKProductsRequest alloc] initWithProductIdentifiers:
                                  
-                                 [NSSet setWithObject: [NSString stringWithFormat:@"com.audiobook.audiobook.%@", kMyFeatureIdentifier]]];
+                                 [NSSet setWithObject:  kMyFeatureIdentifier]];
     
     request.delegate = self;
     
@@ -173,7 +173,6 @@ SKPaymentTransaction* currentTransaction = nil;
     
     //[self recordTransaction:transaction];
     
-    // TODO: implement all delivery before finishTransaction
     [[Myshop sharedInstance] startWithBook:transaction.payment.productIdentifier isfree:NO];
     
     
@@ -195,7 +194,6 @@ SKPaymentTransaction* currentTransaction = nil;
   
     //[self recordTransaction: transaction];
     
-    // TODO: implement all delivery before finishTransaction
     [[Myshop sharedInstance] startWithBook:transaction.originalTransaction.payment.productIdentifier isfree:NO];
     
     //[[SKPaymentQueue defaultQueue] finishTransaction: transaction];

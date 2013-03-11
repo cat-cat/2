@@ -56,8 +56,6 @@
 
 - (NSMutableArray *)db_GetBooksWithScope:(NSString*) scope searchPhrase:(NSString*)sf
 {
-    // TODO: make case insensitive search for russian phrases
-    
     //char* sqlStatement = 0;
     
     NSString* query = @" SELECT t_abooks.abook_id AS id, title, GROUP_CONCAT(t_authors.name, ',') authors FROM t_abooks"
@@ -68,7 +66,8 @@
     " WHERE (t_abooks.deleted=0 OR t_abooks.bought=1)";
     
     if (sf && sf.length) {
-        query = [query stringByAppendingString:[NSString stringWithFormat:@" AND (t_authors.name LIKE '%%%@%%' OR title LIKE '%%%@%%') ", sf, sf]];
+        NSString* lsf = [sf lowercaseString];
+        query = [query stringByAppendingString:[NSString stringWithFormat:@" AND (t_authors.name_lower LIKE '%%%@%%' OR title_lower LIKE '%%%@%%') ", lsf, lsf]];
     }
     
     if ([scope isEqualToString:@"Новые"]) // top level - genres without parents, add Search item at the top

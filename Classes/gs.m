@@ -316,7 +316,6 @@ static NSString* databaseName;
      [self showRecoveryMsg];
      }
      */
-    // TODO: without condition
     return connectionType > 0;
 }
 
@@ -1176,7 +1175,6 @@ static NSString* databaseName;
         [hostReachable startNotifier];
         
         
-        // TODO: switch on update timer
         //[NSTimer scheduledTimerWithTimeInterval:5.0 // do not need to save timer, passed to callback function as the only argument
 //                                         target:self
 //                                       selector:@selector(updateCatalog:)

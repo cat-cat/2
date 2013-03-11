@@ -188,11 +188,6 @@ enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
         [self hideHUD];
     }
     
-    // TODO: unreliable logic
-//    if (sPlayer.streamer.aqChangedUnexpected == YES) {
-//
-//        sPlayer.streamer.aqChangedUnexpected = NO;
-//    }
     [PlayerViewController db_InsertMybook:[NSString stringWithFormat:@"%@",sPlayer.bookId]];
     bindProgressVal = YES;
     [sPlayer.streamer performSelector:@selector(doVolumeFadeIn) withObject:nil afterDelay:1.0];
@@ -830,7 +825,6 @@ static Book *book;
     NSArray* arr = [gss() arrayForDoc:doc xpath:@"//chapter_path"];
     if (![arr count]) {
         NSLog(@"**err: chapter_path eror");
-        // TODO: message to user about not found chapter
         return;
     }
     

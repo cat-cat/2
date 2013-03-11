@@ -107,7 +107,10 @@ static ASIHTTPRequest* currentRequest = nil;
 {
     NSLog(@"**err: request failed description %@, url: %@", [request.error description], [request url]);
     
-    // TODO: message to user request failed
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Сетевая ошибка"
+                                                    message:@"ошибка получения бесплатной книги"
+                                                   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+    [alert show];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
@@ -129,8 +132,14 @@ static ASIHTTPRequest* currentRequest = nil;
         return;
     }
     
+    // create a standardUserDefaults variable
+    NSUserDefaults * standardUserDefaults = [NSUserDefaults standardUserDefaults];
+    // saving an NSString
+    [standardUserDefaults setObject:txtEmail.text forKey:@"useremail"];
+    // synchronize the settings
+    [standardUserDefaults synchronize];
+    
     if (currentRequest && !currentRequest.complete) {
-        // TODO: message to the user
         return;
     }
     
@@ -148,7 +157,6 @@ static ASIHTTPRequest* currentRequest = nil;
     NSLog(@"++txtCode: %@", txtCode.text);
     
     if (currentRequest && !currentRequest.complete) {
-        // TODO: message to the user
         return;
     }
     
@@ -175,6 +183,14 @@ static ASIHTTPRequest* currentRequest = nil;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    // create a standardUserDefaults variable
+    NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];    
+    // getting an NSString object
+    NSString *myString = [standardUserDefaults stringForKey:@"useremail"];
+    if(myString)
+       [txtEmail setText:myString];
+
     // Do any additional setup after loading the view from its nib.
     [txtCode setDelegate:self];
     [txtEmail setDelegate:self];

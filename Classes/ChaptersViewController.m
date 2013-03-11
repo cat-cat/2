@@ -167,8 +167,15 @@ static NSString* BTN_CANCEL = @"отменить";
 {
     NSError *error = [request error];
     
-    //TODO:  show error with Alert
     [[gs sharedInstance] handleError:error];
+    
+    if(error)
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Сетевая ошибка"
+                                                        message:@"ошибка получения оглавления"
+                                                       delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        [alert show];
+    }
 }
 
 //
@@ -242,14 +249,12 @@ static NSString* BTN_CANCEL = @"отменить";
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-#warning Potentially incomplete method implementation.
     // Return the number of sections.
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-#warning Incomplete method implementation.
     // Return the number of rows in the section.
     return [chapters count];
 }

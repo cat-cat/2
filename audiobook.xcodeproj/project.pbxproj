@@ -84,6 +84,7 @@
 		CE5E9DB116E7D88A00A83D78 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE5E9DB016E7D88A00A83D78 /* ImageIO.framework */; };
 		CE5E9DB516E7DC6D00A83D78 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE5E9DB416E7DC6D00A83D78 /* MapKit.framework */; };
 		CE6EC00C16E551A600F9F609 /* tabbarbackground.png in Resources */ = {isa = PBXBuildFile; fileRef = CE6EC00B16E551A600F9F609 /* tabbarbackground.png */; };
+		CE7FD1C316EE33C30024E589 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CE7FD1C216EE33C30024E589 /* Default-568h@2x.png */; };
 		CE7FD5EC16B9397C00748E29 /* PlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7FD5EB16B9397C00748E29 /* PlayerViewController.m */; };
 		CE7FD5EE16B93DEA00748E29 /* PlayerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE7FD5ED16B93DEA00748E29 /* PlayerView.xib */; };
 		CE82EA8116BA7ABB00F33698 /* ASIAuthenticationDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = CE82EA6E16BA7ABB00F33698 /* ASIAuthenticationDialog.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -309,6 +310,7 @@
 		CE5E9DB016E7D88A00A83D78 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		CE5E9DB416E7DC6D00A83D78 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		CE6EC00B16E551A600F9F609 /* tabbarbackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = tabbarbackground.png; path = resources/img/tabbarbackground.png; sourceTree = "<group>"; };
+		CE7FD1C216EE33C30024E589 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		CE7FD5EA16B9397C00748E29 /* PlayerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerViewController.h; sourceTree = "<group>"; };
 		CE7FD5EB16B9397C00748E29 /* PlayerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayerViewController.m; sourceTree = "<group>"; };
 		CE7FD5ED16B93DEA00748E29 /* PlayerView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlayerView.xib; sourceTree = "<group>"; };
@@ -521,6 +523,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				CE7FD1C216EE33C30024E589 /* Default-568h@2x.png */,
 				CE1019DE16ED33D900060C41 /* Default@2x.png */,
 				CEA3206C16EB7C660025555E /* Myshop.h */,
 				CEA3206D16EB7C660025555E /* Myshop.m */,
@@ -1023,6 +1026,7 @@
 				CE6EC00C16E551A600F9F609 /* tabbarbackground.png in Resources */,
 				CE5E9DAF16E7D7A700A83D78 /* Placeholder.png in Resources */,
 				CE1019DF16ED33D900060C41 /* Default@2x.png in Resources */,
+				CE7FD1C316EE33C30024E589 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
