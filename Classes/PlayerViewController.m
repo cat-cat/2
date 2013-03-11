@@ -51,6 +51,22 @@ static __weak UIBarButtonItem *btnPlayPtr;
 @implementation StaticPlayer
 enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
 
++(BOOL)checkBuyBook
+{    
+    NSError* error;
+    NSString* buy = [NSString stringWithContentsOfURL:[NSURL fileURLWithPath:[gss() pathForBuy:[StaticPlayer sharedInstance].bookID] ] encoding:NSUTF8StringEncoding error:&error];
+    [gss() handleError:error];
+    if (buy && [buy rangeOfString:@"yes"].location != NSNotFound) {
+        isBought = YES;
+    }
+    else
+    {
+        isBought = NO;
+    }
+    
+    return isBought;
+}
+
 +(void) deleteBook:(NSString*)bid
 {
     @synchronized([[StaticPlayer sharedInstance] downq])
@@ -72,7 +88,7 @@ enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
         [downq removeObjectsInArray:discardedItems];
     }
     
-    if (currentRequest && [[PlayerViewController chapterIdentityFromURL:[currentRequest.url absoluteString]] hasPrefix:bid]) {
+    if (currentRequest && [[PlayerViewController chapterIdentityFromRequest:currentRequest] hasPrefix:bid]) {
         [currentRequest cancel];
     }
     
@@ -115,7 +131,7 @@ enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
 
 - (void) removeDownqObject:(NSString *)object
 {
-    NSString* strURL = [PlayerViewController chapterIdentityFromURL:[[currentRequest url] absoluteString]];
+    NSString* strURL = [PlayerViewController chapterIdentityFromRequest:currentRequest];
 
     if ([strURL isEqualToString:object]) {
         [currentRequest cancel]; // will remove request from downq in onRequestFailed
@@ -223,7 +239,7 @@ BOOL buyQueryStarted = NO;
         {
             // TODO: check inet, then loading screen
             NSString *devid = [[UIDevice currentDevice] uniqueIdentifier];
-            NSArray *arr = [gs srvArrForUrl:[NSString stringWithFormat:@"http://%@/free1checkcode.php?dev=%@", Host, devid] xpath:@"//freeflag" message:[NSString stringWithFormat:@"unable to get freeflag: %s", __func__ ]];
+            NSArray *arr = [gs srvArrForUrl:[NSString stringWithFormat:@"http://%@/free1checkcode.php?dev=%@", BookHost, devid] xpath:@"//freeflag" message:[NSString stringWithFormat:@"unable to get freeflag: %s", __func__ ]];
             int freeflag = [[arr objectAtIndex:0] intValue];
 
             switch (freeflag) {
@@ -323,7 +339,7 @@ BOOL buyQueryStarted = NO;
 - (void) request:(ASIHTTPRequest *)request didReceiveBytes:(unsigned long long) bytes
 {
     //    NSLog(@"++bytes received: %lld", bytes);
-    NSString* strURL = [PlayerViewController chapterIdentityFromURL:[[request url] absoluteString]];
+    NSString* strURL = [PlayerViewController chapterIdentityFromRequest:request];
     NSString* bid = [gss() bidFromChapterIdentity:strURL];
     NSString* chid = [gss() chidFromChapterIdentity:strURL];
     
@@ -353,7 +369,7 @@ BOOL buyQueryStarted = NO;
     }
     
     if(chaptersControllerPtr)
-        [chaptersControllerPtr updateProgressForChapterIdentity:[PlayerViewController chapterIdentityFromURL: [[request url] absoluteString] ] value:progressVal];
+        [chaptersControllerPtr updateProgressForChapterIdentity:[PlayerViewController chapterIdentityFromRequest: request ] value:progressVal];
     
     
     //    else
@@ -403,7 +419,7 @@ static StreamingPlayer *sPlayer = nil;
 - (void)requestFinished:(ASIHTTPRequest *)request
 {
     NSLog(@"++Finished request !");
-    NSString* strURL = [PlayerViewController chapterIdentityFromURL:[[request url] absoluteString]];
+    NSString* strURL = [PlayerViewController chapterIdentityFromRequest:request];
     NSString* bid = [gss() bidFromChapterIdentity:strURL];
     NSString* chid = [gss() chidFromChapterIdentity:strURL];
     NSString *path = [gss() pathForBookFinished:bid chapter:chid];
@@ -413,7 +429,7 @@ static StreamingPlayer *sPlayer = nil;
     if(fileCreationSuccess == NO){ NSLog(@"Failed to create the finished! file"); }
     
     // set up requests queue
-    [PlayerViewController downqNextAfter:[[request url] absoluteString]];
+    [PlayerViewController downqNextAfter:request];
 }
 
 - (void)requestFailed:(ASIHTTPRequest *)request
@@ -422,7 +438,7 @@ static StreamingPlayer *sPlayer = nil;
     //[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
     
     // set up requests queue
-    [PlayerViewController downqNextAfter:[[request url] absoluteString]];
+    [PlayerViewController downqNextAfter:request];
 }
 
 
@@ -461,40 +477,40 @@ static __weak UILabel *lbTimePassedPtr;
 static __weak UILabel *lbTimeLeftPtr;
 static Book *book;
 
-+(NSString*)chapterIdentityFromURL:(NSString*)url
++(NSString*)chapterIdentityFromRequest:(ASIHTTPRequest*)req
 {
     NSString* resultString;
-    
+    resultString = [req.userInfo objectForKey:@"chid" ];
     //NSString *htmlString = @"http://192.168.0.100:80/books/3456/chaptersAudio/01_02_crypt.mp3";
-    NSString *htmlString = url;
-    @try {
-        NSRegularExpression *nameExpression = [NSRegularExpression regularExpressionWithPattern:@"/books/(\\w+)/chaptersAudio/(\\w+)_crypt.mp3" options:NSRegularExpressionSearch error:nil];
-        
-        NSArray *matches = [nameExpression matchesInString:htmlString
-                                                   options:0
-                                                     range:NSMakeRange(0, [htmlString length])];
-        for (NSTextCheckingResult *match in matches) {
-            //NSRange matchRange = [match range];
-            NSRange matchRange = [match rangeAtIndex:1];
-            NSString *matchString1 = [htmlString substringWithRange:matchRange];
-            matchRange = [match rangeAtIndex:2];
-            NSString *matchString2 = [htmlString substringWithRange:matchRange];
-            //NSLog(@"%@:%@", matchString1, matchString2);
-            resultString = [NSString stringWithFormat:@"%@:%@", matchString1, matchString2 ];
-        }
-    }
-    
-    @catch (NSException *exception) {
-        NSLog(@"**err: error getting chapter's identity for url: %@", url);
-    }
+//    NSString *htmlString = url;
+//    @try {
+//        NSRegularExpression *nameExpression = [NSRegularExpression regularExpressionWithPattern:@"/books/(\\w+)/chaptersAudio/(\\w+)_crypt.mp3" options:NSRegularExpressionSearch error:nil];
+//        
+//        NSArray *matches = [nameExpression matchesInString:htmlString
+//                                                   options:0
+//                                                     range:NSMakeRange(0, [htmlString length])];
+//        for (NSTextCheckingResult *match in matches) {
+//            //NSRange matchRange = [match range];
+//            NSRange matchRange = [match rangeAtIndex:1];
+//            NSString *matchString1 = [htmlString substringWithRange:matchRange];
+//            matchRange = [match rangeAtIndex:2];
+//            NSString *matchString2 = [htmlString substringWithRange:matchRange];
+//            //NSLog(@"%@:%@", matchString1, matchString2);
+//            resultString = [NSString stringWithFormat:@"%@:%@", matchString1, matchString2 ];
+//        }
+//    }
+//    
+//    @catch (NSException *exception) {
+//        NSLog(@"**err: error getting chapter's identity for url: %@", url);
+//    }
     
     return resultString;
 }
 
 // called only from finished or failed requests, so we should remove it from download queue
-+(void)downqNextAfter:(NSString*)completedURL
++(void)downqNextAfter:(ASIHTTPRequest*)req
 {
-    NSString* object = [self chapterIdentityFromURL:completedURL];
+    NSString* object = [self chapterIdentityFromRequest:req];
     
     //if([[gss() downq] count] > 1)
     @synchronized([[StaticPlayer sharedInstance] downq])
@@ -509,7 +525,7 @@ static Book *book;
     @synchronized([[StaticPlayer sharedInstance] downq])
     {
         for (NSString* item in [[StaticPlayer sharedInstance] downq]) {
-            NSString* curChId = [self chapterIdentityFromURL:[[currentRequest url] absoluteString]];
+            NSString* curChId = [self chapterIdentityFromRequest:currentRequest];
             if ([curChId isEqualToString:item]) {
                 continue;
             }
@@ -802,7 +818,7 @@ static Book *book;
     }
     
     // if not doewnloaded yet, start downloading or partial downloading
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/chapter.php?bid=%@&ch=%@", Host, bid, chid ]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/chapter.php?bid=%@&ch=%@", BookHost, bid, chid ]];
     ASIHTTPRequest *req1 = [ASIHTTPRequest requestWithURL:url];
     [req1 startSynchronous];
     NSError *error;
@@ -842,6 +858,8 @@ static Book *book;
     //    int alreadyDownloaded = 2354100;
     //    [request addRequestHeader:@"Range" value:[NSString stringWithFormat:@"bytes=%i-", alreadyDownloaded]];
     [currentRequest setMyDontRemoveFlag:true];
+    [currentRequest setUserInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+                                [NSString stringWithFormat:@"%@:%@", bid, chid ], @"chid",  nil]];
     [currentRequest startAsynchronous];
     [PlayerViewController db_InsertMybook:[NSString stringWithFormat:@"%@",bid ]];
 }
@@ -852,7 +870,7 @@ static Book *book;
     
     NSString* curChId;
     if(currentRequest)
-        curChId = [self chapterIdentityFromURL:[[currentRequest url] absoluteString]];
+        curChId = [self chapterIdentityFromRequest:currentRequest];
     
     if(![[NSFileManager defaultManager]  fileExistsAtPath:[gss() pathForBookFinished:[StaticPlayer sharedInstance].bookID chapter:[sPlayer chapter] ]] && ![curChId isEqualToString:object] /*do not start download of the same chapter again*/ && [gs nfInternetAvailable:nil])
     {
@@ -967,17 +985,8 @@ static Book *book;
 {
     
     PlayerFreeViewControllerPtr = self;
-    
-    NSError* error;
-    NSString* buy = [NSString stringWithContentsOfURL:[NSURL fileURLWithPath:[gss() pathForBuy:[StaticPlayer sharedInstance].bookID] ] encoding:NSUTF8StringEncoding error:&error];
-    [gss() handleError:error];
-    if (buy && [buy rangeOfString:@"yes"].location != NSNotFound) {
-        isBought = YES;
-    }
-    else
-    {
-        isBought = NO;
-    }
+
+    [StaticPlayer checkBuyBook];
     
     // init controls
     lbTimePassedPtr = lbTimePassed;

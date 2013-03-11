@@ -25,6 +25,7 @@
 //*************** StaticPlayer
 @interface StaticPlayer : NSObject <StreamingPlayerDelegate, UIActionSheetDelegate> {
 }
++(BOOL)checkBuyBook;
 +(BOOL)playerIsPlaying;
 +(StaticPlayer*) sharedInstance;
 +(void) deleteBook:(NSString*)bid;
@@ -36,6 +37,7 @@
 
 
 //************** PlayerViewController
+@class ASIHTTPRequest;
 @class ChaptersViewController;
 @interface PlayerViewController : UIViewController {
     IBOutlet UIBarButtonItem *btnPlay;
@@ -55,12 +57,12 @@
 +(NSInteger) actualSizeForChapter:(NSString*)bid chapter:(NSString*)chid;
 +(void)startPlayer;
 +(void)startChapter:(NSString *)chid;
-+(void)downqNextAfter:(NSString*)completedURL;
++(void)downqNextAfter:(ASIHTTPRequest*)req;
 + (void)setPassedTime:(double)passedTime leftTime:(double)leftTime;
 +(void)setDelegates:(id)obj;
 +(void)db_SaveTrackProgress;
 +(void)checkChapter:(NSString*)chid;
-+(NSString*)chapterIdentityFromURL:(NSString*)url;
++(NSString*)chapterIdentityFromRequest:(ASIHTTPRequest*)req;
 +(void)appendChapterIdentityForDownloading:(NSString*)chapterIdentity;
 +(float)calcDownProgressForBook:(NSString*)bid chapter:(NSString*)chid;
 

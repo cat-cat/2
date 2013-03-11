@@ -14,7 +14,9 @@
 @class MainViewController;
 @class Reachability;
 
-static NSString* Host = @"192.168.0.100:8080";
+//static NSString* BookHost = @"192.168.0.100:8080";
+static NSString* BookHost = @"book-smile.ru";
+
 
 @interface gs : NSObject
 {    

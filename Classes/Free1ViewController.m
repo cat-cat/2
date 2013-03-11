@@ -48,7 +48,18 @@ static ASIHTTPRequest* currentRequest = nil;
         [gss() handleError:error];
         NSArray* arr = [gss() arrayForDoc:doc xpath:@"//code"];
         NSAssert1([arr count], @"**err: no code!: %s", __func__);
-        txtCode.text = [arr objectAtIndex:0];
+        //txtCode.text = [arr objectAtIndex:0];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Информация"
+                                                        message:@"Письмо с кодом отправлено на указанный email. Введите код в поле ниже и нажмите кнопку Проверить код"
+                                                       delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        [alert show];
+    }
+    else
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Ошибка"
+                                                        message:@"ошибка получения кода"
+                                                       delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        [alert show];
     }
 }
 
@@ -125,7 +136,7 @@ static ASIHTTPRequest* currentRequest = nil;
     
     // create main request
     NSString *devid =  [[UIDevice currentDevice] uniqueIdentifier];
-    NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/free1getcode.php?dev=%@&email=%@", Host, devid, txtEmail.text]];
+    NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/free1getcode.php?dev=%@&email=%@", BookHost, devid, txtEmail.text]];
     currentRequest = [ASIHTTPRequest requestWithURL:url];
     [currentRequest setDelegate:self];
     [currentRequest setDownloadProgressDelegate:self];
@@ -143,7 +154,7 @@ static ASIHTTPRequest* currentRequest = nil;
     
     // create main request
     NSString *devid = [[UIDevice currentDevice] uniqueIdentifier];
-    NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/free1setcode.php?dev=%@&email=%@&code5=%@", Host, devid, txtEmail.text, txtCode.text]];
+    NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/free1setcode.php?dev=%@&email=%@&code5=%@", BookHost, devid, txtEmail.text, txtCode.text]];
     currentRequest = [ASIHTTPRequest requestWithURL:url];
     [currentRequest setDelegate:self];
     [currentRequest setDownloadProgressDelegate:self];

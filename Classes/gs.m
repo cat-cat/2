@@ -373,7 +373,7 @@ static NSString* databaseName;
 //    @synchronized(gss())
 //    {
         NSError* e;
-        NSString *tmp = [NSString stringWithContentsOfURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@/%@", Host, page]] encoding:NSUTF8StringEncoding error:&e];
+        NSString *tmp = [NSString stringWithContentsOfURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@/%@", BookHost, page]] encoding:NSUTF8StringEncoding error:&e];
         
         //NSLog(@"url string content: %@", tmp);
         
@@ -1157,15 +1157,22 @@ static NSString* databaseName;
                                                    object:nil];
         NSString * version = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleShortVersionString"];
         NSString * build = [[NSBundle mainBundle] objectForInfoDictionaryKey: (NSString *)kCFBundleVersionKey];
-        NSLog(@"Server Host : %@, version : %@, build : %@", Host, version, build);
+        NSLog(@"Server Host : %@, version : %@, build : %@", BookHost, version, build);
         
-        //hostReachable = [Reachability reachabilityWithHostName:AppConnectionHost];
-        struct sockaddr_in sin;
-        bzero(&sin, sizeof(sin));
-        sin.sin_len = sizeof(sin);
-        sin.sin_family = AF_INET;
-        inet_aton([[@"http://" stringByAppendingString: Host] UTF8String], &sin.sin_addr);
-        hostReachable = [Reachability reachabilityWithAddress:&sin];
+        
+        // TODO: unreliable logic
+        if ([BookHost rangeOfString:@".ru"].location != NSNotFound)
+            hostReachable = [Reachability reachabilityWithHostName:BookHost];
+        else
+        {
+            struct sockaddr_in sin;
+            bzero(&sin, sizeof(sin));
+            sin.sin_len = sizeof(sin);
+            sin.sin_family = AF_INET;
+            inet_aton([[@"http://" stringByAppendingString: BookHost] UTF8String], &sin.sin_addr);
+            hostReachable = [Reachability reachabilityWithAddress:&sin];
+        }
+        
         [hostReachable startNotifier];
         
         
@@ -1242,8 +1249,10 @@ static NSString* databaseName;
     UIImageView* iv = (UIImageView*) [cell viewWithTag:3];
     //AsyncImageView* iv = (AsyncImageView*) [cell viewWithTag:3];
     //[iv setImage:nil];
-    [iv setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@/image.php?bid=%@", Host, bid]]
-                   placeholderImage:[UIImage imageNamed:@"Placeholder"]];
+    [iv setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@/books/%@/BookImage.jpg", BookHost, bid]]
+       placeholderImage:[UIImage imageNamed:@"Placeholder"]];
+//    [iv setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@/image.php?bid=%@", BookHost, bid]]
+//       placeholderImage:[UIImage imageNamed:@"Placeholder"]];
 
 //    iv.imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/image.php?bid=%@", AppConnectionHost, bid]];
     return cell;

@@ -67,7 +67,7 @@ static NSString* BTN_CANCEL = @"отменить";
 - (void)requestBookMeta:(NSString*)bid
 {
      NSString *devid = [[UIDevice currentDevice] uniqueIdentifier];
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/bookmeta.php?bid=%@&dev=%@", Host, bid, devid]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/bookmeta.php?bid=%@&dev=%@", BookHost, bid, devid]];
     //NSURL *url = [NSURL URLWithString:@"http://dl.dropbox.com/u/4115029/bookMeta.xml"];
     ASIHTTPRequest* request = [ASIHTTPRequest requestWithURL:url];
     [request setDelegate:self];
@@ -131,6 +131,8 @@ static NSString* BTN_CANCEL = @"отменить";
     BOOL fileCreationSuccess =
     [fileManager createFileAtPath:fileName contents:data attributes:nil];
     NSAssert1(fileCreationSuccess, @"**err: Failed to create the buy file: %s", __func__);
+    [StaticPlayer checkBuyBook];
+
 
 //    }
     // [[NSFileManager defaultManager] removeItemAtPath:currentTrack.audioFilePath error:nil];
