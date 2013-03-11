@@ -45,8 +45,8 @@
     IBOutlet UILabel *lbTimePassed;
     IBOutlet UILabel *lbTimeLeft;
     IBOutlet ChaptersViewController *chaptersController;
-    __weak IBOutlet UITableView *chaptersTableView;
-    __weak IBOutlet UISlider *progressSlider;
+    IBOutlet UITableView *chaptersTableView;
+    IBOutlet UISlider *progressSlider;
     //    __weak IBOutlet UILabel *labelSmallHeader;
     //    __weak IBOutlet UILabel *labelHeader;
 }

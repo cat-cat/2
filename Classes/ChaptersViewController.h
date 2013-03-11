@@ -10,7 +10,7 @@
 @class PlayerViewController;
 @interface ChaptersViewController : UITableViewController
 {
-    __weak IBOutlet PlayerViewController *playerController;
+    IBOutlet PlayerViewController *playerController;
     NSMutableArray* chapters;
 //    int bookId;
 }

@@ -22,7 +22,6 @@
  ******************************************************************************/
 
 #import "PlayerViewController.h"
-#import "CDBUIView.h"
 #import "gs.h"
 #import "Book.h"
 #import "ASIHTTPRequest.h"
@@ -43,10 +42,10 @@ BOOL isBought = NO;
 NSInteger trackLength = 0, trackSize = 0;
 bool NeedToStartWithFistDownloadedBytes = false;
 static BOOL bindProgressVal;
-static __weak ChaptersViewController *chaptersControllerPtr;
-static __weak UIProgressView *progressViewPtr;
-static __weak UISlider *progressSliderPtr;
-static __weak UIBarButtonItem *btnPlayPtr;
+ChaptersViewController *chaptersControllerPtr;
+UIProgressView *progressViewPtr;
+UISlider *progressSliderPtr;
+UIBarButtonItem *btnPlayPtr;
 
 @implementation StaticPlayer
 enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
@@ -468,8 +467,8 @@ static StreamingPlayer *sPlayer = nil;
 
 
 @implementation PlayerViewController
-static __weak UILabel *lbTimePassedPtr;
-static __weak UILabel *lbTimeLeftPtr;
+static UILabel *lbTimePassedPtr;
+static UILabel *lbTimeLeftPtr;
 static Book *book;
 
 +(NSString*)chapterIdentityFromRequest:(ASIHTTPRequest*)req

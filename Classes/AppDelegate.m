@@ -22,7 +22,7 @@
  ******************************************************************************/
 
 #import "AppDelegate.h"
-#import "CDBViewController.h"
+//#import "CDBViewController.h"
 #import "MainViewController.h"
 #import "gs.h"
 #import "PlayerViewController.h"
@@ -85,24 +85,24 @@ NSTimer *backgroundTimer;
 	mainViewController.title =  @"Каталог";
     // init main navigation controller in catalogViewController as well
     
-	viewController2 = [[CDBViewController alloc]
-                     initWithMessage:@"Rectangle"
-                     andImage:[UIImage imageNamed:@"rect.png"]];
-	viewController2.title =  @"Rect";
-	viewController3 = [[CDBViewController alloc] 
-                     initWithMessage:@"Ellipse"
-                     andImage:[UIImage imageNamed:@"ellipse.png"]];
-	viewController3.title =  @"Elli";
-	viewController4 = [[PlayerViewController alloc] initWithNibName:@"PlayerFreeView" bundle:nil];
-	viewController4.title =  @"Слушать";
-	viewController5 = [[CDBViewController alloc] 
-                     initWithMessage:@"Играть книгу"
-                     andImage:[UIImage imageNamed:@"rect-tri.png"]];
-	viewController5.title =  @"R&T";
-	viewController6 = [[CDBViewController alloc] 
-                     initWithMessage:@"Rectangle+Rectangle"
-                     andImage:[UIImage imageNamed:@"two-tri.png"]];
-	viewController6.title =  @"R&R";
+//	viewController2 = [[CDBViewController alloc]
+//                     initWithMessage:@"Rectangle"
+//                     andImage:[UIImage imageNamed:@"rect.png"]];
+//	viewController2.title =  @"Rect";
+//	viewController3 = [[CDBViewController alloc] 
+//                     initWithMessage:@"Ellipse"
+//                     andImage:[UIImage imageNamed:@"ellipse.png"]];
+//	viewController3.title =  @"Elli";
+//	viewController4 = [[PlayerViewController alloc] initWithNibName:@"PlayerFreeView" bundle:nil];
+//	viewController4.title =  @"Слушать";
+//	viewController5 = [[CDBViewController alloc] 
+//                     initWithMessage:@"Играть книгу"
+//                     andImage:[UIImage imageNamed:@"rect-tri.png"]];
+//	viewController5.title =  @"R&T";
+//	viewController6 = [[CDBViewController alloc] 
+//                     initWithMessage:@"Rectangle+Rectangle"
+//                     andImage:[UIImage imageNamed:@"two-tri.png"]];
+//	viewController6.title =  @"R&R";
 //	tabBarController = [[UITabBarController alloc] init];
 //	tabBarController.viewControllers = [NSArray arrayWithObjects:
 //                                      mainViewController,

@@ -18,6 +18,6 @@
 -(BOOL)startWithBook:(NSString*)bid isfree:(BOOL)free;
 
 //********** Appstore part
-@property (nonatomic, weak) Myshop* delegate;
+//@property (nonatomic, strong) Myshop* delegate;
 -(void) requestProductData:(NSString*)kMyFeatureIdentifier;
 @end
