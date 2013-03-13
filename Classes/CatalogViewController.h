@@ -20,8 +20,9 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  ******************************************************************************/
+#import "MyTableViewController.h"
 @class MainViewController;
-@interface CatalogViewController : UITableViewController {
+@interface CatalogViewController : MyTableViewController {
     NSString* parentGenre;
     int dbOffset;
     int dbLimit;

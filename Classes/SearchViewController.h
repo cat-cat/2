@@ -44,8 +44,8 @@
  Copyright (C) 2010 Apple Inc. All Rights Reserved.
  
  */
-
-@interface SearchViewController : UITableViewController <UISearchDisplayDelegate, UISearchBarDelegate>
+#import "MyTableViewController.h"
+@interface SearchViewController : MyTableViewController <UISearchDisplayDelegate, UISearchBarDelegate>
 {
 	NSMutableArray			*listContent;			// The master content.
 	NSMutableArray	*filteredListContent;	// The content filtered as a result of a search.

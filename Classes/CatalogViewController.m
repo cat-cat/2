@@ -28,6 +28,7 @@
 #import "Book.h"
 #import "SearchViewController.h"
 #import "MyBooksView.h"
+#import "CatalogOptionCell.h"
 
 @implementation CatalogViewController
 
@@ -76,6 +77,24 @@
 	return [genres count];
 }
 
+-(void)goSearch:(UIButton*)sender
+{
+    // Create and configure the main view controller.
+    static SearchViewController* sv = nil; // TODO: hack to avoid crash search bar released by system one more time then needed when view is unloaded
+    if (sv)
+        sv = nil;
+    
+    sv = [[SearchViewController alloc] initWithNibName:@"SearchView" bundle:nil];
+    //searchViewController.listContent = genres;
+    [gss().navigationController pushViewController:sv animated:YES];
+}
+
+-(void)goHistory:(UIButton*)sender
+{
+    MyBooksView* dv = [[MyBooksView alloc] initWithStyle:UITableViewStylePlain];
+    //searchViewController.listContent = genres;
+    [gss().navigationController pushViewController:dv animated:YES];
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell;
@@ -83,9 +102,22 @@
     
     CatalogItem *g = [genres objectAtIndex:indexPath.row];
    // NSLog(@"++ g.type: %@", g.type);
-    
-    if (![g.type isEqualToString:@"2"]) // all but book cells - book cells need image
+    if ([g.type isEqualToString:@"-2"]) // search, recent
     {
+        static NSString *MyIdentifier = @"CatalogOptionCell";
+        cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
+        if (cell == nil) {
+            CatalogOptionCell* c = [[CatalogOptionCell alloc] init];
+            cell = (UITableViewCell *) [c view];
+        }
+        
+        UIButton* btn = (UIButton*)[cell viewWithTag:2]; // history button        
+        [btn addTarget:self action:@selector(goHistory:) forControlEvents:UIControlEventTouchUpInside];
+        btn = (UIButton*)[cell viewWithTag:1]; // search button
+        [btn addTarget:self action:@selector(goSearch:) forControlEvents:UIControlEventTouchUpInside];        
+    }
+    else if ([g.type isEqualToString:@"1"]) // category
+    {        
         static NSString *MyIdentifier = @"CatalogItemCell";
         cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
         if (cell == nil) {
@@ -160,12 +192,12 @@
             //searchViewController.listContent = genres;
             [gss().navigationController pushViewController:sv animated:YES];
         }
-        else // expected @"0" - downloaded books
-        {
-            MyBooksView* dv = [[MyBooksView alloc] initWithStyle:UITableViewStylePlain];
-            //searchViewController.listContent = genres;
-            [gss().navigationController pushViewController:dv animated:YES];
-        }
+//        else // expected @"0" - downloaded books
+//        {
+//            MyBooksView* dv = [[MyBooksView alloc] initWithStyle:UITableViewStylePlain];
+//            //searchViewController.listContent = genres;
+//            [gss().navigationController pushViewController:dv animated:YES];
+//        }
     
 //    ShowCharactersTableViewController *showCharactersController = [[ShowCharactersTableViewController alloc] initWithStyle:UITableViewStylePlain];
 //    showCharactersController.delegate = delegate;
@@ -233,10 +265,10 @@
     
     if ([parentItem isEqualToString:@"-1"]) { // top level - genres without parents, add Search item at the top
         
-        NSArray* arr = [gs db_GetMybooks];
-        if ([arr count]) {
-            sqlStatement = @"SELECT 0 id, 'Недавно открытые' name, 0 subgenres, 0 type UNION ";
-        }
+//        NSArray* arr = [gs db_GetMybooks];
+//        if ([arr count]) {
+//            sqlStatement = @"SELECT 0 id, 'Недавно открытые' name, 0 subgenres, 0 type UNION ";
+//        }
         
         sqlStatement = [sqlStatement stringByAppendingString:[NSString stringWithFormat:@" SELECT 0 id, 'Найти книгу' name, 0 subgenres, -2 type UNION"
                     " SELECT t_abooks.abook_id AS id, title AS name, -1 AS subgenres, 2 AS type FROM t_abooks"
@@ -309,26 +341,28 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
+    
     if (![genres count] || ![((CatalogItem*)[genres objectAtIndex:0]).type isEqualToString:@"-2"]) { // only for top level with search
         return;
     }
     
-    NSArray* arr = [gs db_GetMybooks];
-    
-    if([arr count] && [genres count]>=2 && ![((CatalogItem*)[genres objectAtIndex:1]).type isEqualToString:@"0"]) // show
-    {
-        UITableView* tv = (UITableView*)self.view;
-        CatalogItem* ci = [[CatalogItem alloc] init];
-        ci.name = @"Скаченные";
-        ci.type = @"0";
-        [genres insertObject:ci atIndex:1];
-        [tv insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:1 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
-    }else if (![arr count] && [genres count]>=2 && [((CatalogItem*)[genres objectAtIndex:1]).type isEqualToString:@"0"]) // hide
-    {
-        UITableView* tv = (UITableView*)self.view;
-        [genres removeObjectAtIndex:1];
-        [tv deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:1 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
-    }
+//    NSArray* arr = [gs db_GetMybooks];
+//    
+//    if([arr count] && [genres count]>=2 && ![((CatalogItem*)[genres objectAtIndex:1]).type isEqualToString:@"0"]) // show
+//    {
+//        UITableView* tv = (UITableView*)self.view;
+//        CatalogItem* ci = [[CatalogItem alloc] init];
+//        ci.name = @"Скаченные";
+//        ci.type = @"0";
+//        [genres insertObject:ci atIndex:1];
+//        [tv insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:1 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+//    }else if (![arr count] && [genres count]>=2 && [((CatalogItem*)[genres objectAtIndex:1]).type isEqualToString:@"0"]) // hide
+//    {
+//        UITableView* tv = (UITableView*)self.view;
+//        [genres removeObjectAtIndex:1];
+//        [tv deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:1 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+//    }
     // else probably should do nothing - didn't check
 }
 

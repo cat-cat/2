@@ -26,7 +26,7 @@ static NSString* BookHost = @"book-smile.ru";
 +(BOOL)canGetMetaForBook:(NSString*)bookId;
 + (bool) nfInternetAvailable:(NSNotification *)notice;
 +(UITableViewCell*) catalogCellForBook:(NSString*)bid tableView:(UITableView*)tableView title:(NSString*)title;
-@property(nonatomic, strong) UIButton* playerButton;
+//@property(nonatomic, strong) UIButton* playerButton;
 @property(nonatomic, strong) UINavigationController *navigationController;
 +(void)db_MybooksRemove:(NSString*)bid;
 +(NSArray*)db_GetMybooks;

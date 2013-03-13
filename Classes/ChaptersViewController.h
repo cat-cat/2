@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MyTableViewController.h"
 @class PlayerViewController;
-@interface ChaptersViewController : UITableViewController
+@interface ChaptersViewController : MyTableViewController
 {
     IBOutlet PlayerViewController *playerController;
     NSMutableArray* chapters;

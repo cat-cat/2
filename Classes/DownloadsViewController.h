@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MyTableViewController.h"
 @class StaticPlayer;
-@interface DownloadsViewController : UITableViewController
+@interface DownloadsViewController : MyTableViewController
 @property (nonatomic,strong) NSMutableArray* downq;
 @property (nonatomic,strong) StaticPlayer* delegate;
 - (id)initWithStyle:(UITableViewStyle)style andDelegate:(StaticPlayer*)d;

@@ -21,6 +21,7 @@
  * DEALINGS IN THE SOFTWARE.
  ******************************************************************************/
 #import "StreamingPlayer.h"
+#import "MyViewController.h"
 
 //*************** StaticPlayer
 @interface StaticPlayer : NSObject <StreamingPlayerDelegate, UIActionSheetDelegate> {
@@ -31,6 +32,7 @@
 +(void) deleteBook:(NSString*)bid;
 + (void) buyBook;
 - (void) removeDownqObject:(NSString *)object;
+@property (nonatomic,assign) BOOL shouldShowPlayerButton;
 @property (nonatomic, strong) NSString* bookID;
 @property (nonatomic, strong) NSMutableArray* downq; // queue for downloading
 @end
@@ -39,7 +41,7 @@
 //************** PlayerViewController
 @class ASIHTTPRequest;
 @class ChaptersViewController;
-@interface PlayerViewController : UIViewController {
+@interface PlayerViewController : MyViewController {
     IBOutlet UIBarButtonItem *btnPlay;
     IBOutlet UIProgressView *progressView;
     IBOutlet UILabel *lbTimePassed;

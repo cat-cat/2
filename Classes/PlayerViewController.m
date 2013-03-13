@@ -222,7 +222,7 @@ enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
     }
 }
 
-BOOL shouldShowPlayerButton = YES;
+
 BOOL buyQueryStarted = NO;
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
@@ -248,7 +248,7 @@ BOOL buyQueryStarted = NO;
                 }
                 case 0: // should register email and promocode first
                 {
-                    shouldShowPlayerButton = NO;
+                    self.shouldShowPlayerButton = NO;
                     Free1ViewController* vc = [[Free1ViewController alloc] init];
                     [[gss() navigationController] pushViewController:vc animated:YES];
                     break;
@@ -445,6 +445,7 @@ static StreamingPlayer *sPlayer = nil;
         sharedInstance = [[StaticPlayer alloc] init];
         // Do any other initialisation stuff here
         [sharedInstance setDownq:[[NSMutableArray alloc] init] ];
+        sharedInstance.shouldShowPlayerButton=NO;
 
     });
     
@@ -702,6 +703,14 @@ static Book *book;
 }
 
 - (IBAction)btnBuyBookClick:(UIBarButtonItem *)sender {
+    
+    if([gs nfInternetAvailable:nil] == 0)
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Сообщение" message:@"Интернет не доступен. Проверьте настройки." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] ;
+        [alert show];
+        return;
+    }
+    
     //BOOL started =
     [[Myshop sharedInstance] requestProductData:[StaticPlayer sharedInstance].bookID];
 //    NSAssert1(started, @"**err: cannot start buy process: %s", __func__);
@@ -1049,7 +1058,7 @@ static Book *book;
 }
 
 - (IBAction)btnOpenDownloadQueueClick:(UIBarButtonItem *)sender {
-    shouldShowPlayerButton = NO;
+    [StaticPlayer sharedInstance]. shouldShowPlayerButton = NO;
 
     
     DownloadsViewController *dController = [[DownloadsViewController alloc] initWithStyle:UITableViewStylePlain andDelegate:[StaticPlayer sharedInstance ]];
@@ -1097,6 +1106,7 @@ static Book *book;
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
     if (sPlayer) {
         if ([sPlayer.bookId isEqualToString: [StaticPlayer sharedInstance].bookID]) {
             [PlayerViewController setDelegates:[StaticPlayer sharedInstance]];
@@ -1108,31 +1118,31 @@ static Book *book;
             [PlayerViewController showAlertAtTimer:[NSString stringWithFormat:@"вы слушаете %@", b.title] delay:1.0];
         }
     }
-    [gss().playerButton setHidden:YES];
-    [super viewWillAppear:animated];
+    //[gss().playerButton setHidden:YES];
+    [StaticPlayer sharedInstance]. shouldShowPlayerButton = NO;
+
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    [super viewDidDisappear:animated];
     [PlayerViewController db_SaveTrackProgress];
     [PlayerViewController setDelegates:[StaticPlayer sharedInstance]];
     
-    if (sPlayer && shouldShowPlayerButton) {
-        [gss().playerButton setHidden:NO];
-    }
-    shouldShowPlayerButton = YES; // set it to initial state
-
-    [super viewDidDisappear:animated];
+//    if (sPlayer && shouldShowPlayerButton) {
+//        [gss().playerButton setHidden:NO];
+//    }
+    [StaticPlayer sharedInstance]. shouldShowPlayerButton = YES; // set it to initial state
 }
 
 - (void)viewDidUnload {
+    [super viewDidUnload];
+    
     chaptersTableView = nil;
     chaptersController = nil;
     lbTimeLeft = nil;
     lbTimePassed = nil;
     progressView = nil;
-
-    [super viewDidUnload];
 }
 
 - (NSString*)firstChapter

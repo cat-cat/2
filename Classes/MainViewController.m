@@ -23,7 +23,7 @@
 //		self.title =  [delegate characterNameForShowIndex:delegate.selectedShow.row atIndex:delegate.selectedCharacter.row];
 
 //        selectedGenreIndex = -1;
-        [self prepareDataModel];
+        //[self prepareDataModel];
         //	window = [[UIWindow alloc] initWithFrame:[[UIScreen  mainScreen] bounds]] ;
         CatalogViewController *genresViewController = [[CatalogViewController alloc] initWithStyle:UITableViewStylePlain andParentGenre:@"-1"];
         gss().navigationController = [[UINavigationController alloc] initWithRootViewController:genresViewController];
@@ -37,7 +37,7 @@
         [self.view addSubview:[gss().navigationController view]];
         //    [window addSubview:[navigationController view]];
         //	[window makeKeyAndVisible];
-        [self.view addSubview:gss().playerButton];
+        //[self.view addSubview:gss().playerButton];
         
 		self.message = theMessage;
 		self.tabBarItem.image  = image;
@@ -49,7 +49,7 @@
 
 
 
--(void)prepareDataModel{
+//-(void)prepareDataModel{
 //    @autoreleasepool {
 //
     // init database
@@ -62,26 +62,26 @@
 //        [self nextGenres];
             
 
-            
-        NSDictionary    *dic1 = [NSDictionary dictionaryWithObjectsAndKeys:
-                                     @"Seinfeld",
-                                     @"Name",
-                                     [NSArray arrayWithObjects:
-                                      @"Jerry", @"George", @"Elaine", @"Kramer",
-                                      @"Newman", @"Frank",  @"Susan",  @"Peterman",  @"Bania", nil],
-                                     @"Characters",
-                                     nil
-                                     ];
-        NSDictionary    *dic2 = [NSDictionary dictionaryWithObjectsAndKeys:
-                                     @"Lost",
-                                     @"Name",
-                                     [NSArray arrayWithObjects:
-                                      @"Kate", @"Sayid", @"Sun", @"Hurley",
-                                      @"Boone", @"Claire",  @"Jin",  @"Locke",  @"Charlie", @"Eko", @"Ben", nil],
-                                     @"Characters",
-                                     nil
-                                     ];
-        theShows = [NSArray arrayWithObjects:dic1, dic2, nil];
+//            
+//        NSDictionary    *dic1 = [NSDictionary dictionaryWithObjectsAndKeys:
+//                                     @"Seinfeld",
+//                                     @"Name",
+//                                     [NSArray arrayWithObjects:
+//                                      @"Jerry", @"George", @"Elaine", @"Kramer",
+//                                      @"Newman", @"Frank",  @"Susan",  @"Peterman",  @"Bania", nil],
+//                                     @"Characters",
+//                                     nil
+//                                     ];
+//        NSDictionary    *dic2 = [NSDictionary dictionaryWithObjectsAndKeys:
+//                                     @"Lost",
+//                                     @"Name",
+//                                     [NSArray arrayWithObjects:
+//                                      @"Kate", @"Sayid", @"Sun", @"Hurley",
+//                                      @"Boone", @"Claire",  @"Jin",  @"Locke",  @"Charlie", @"Eko", @"Ben", nil],
+//                                     @"Characters",
+//                                     nil
+//                                     ];
+//        theShows = [NSArray arrayWithObjects:dic1, dic2, nil];
 
 //    }
     
@@ -90,7 +90,7 @@
     // start update timer
     //[gs nfInternetAvailable:nil];
     
-}
+//}
 
 //-(int)dbOffset
 //{
@@ -105,15 +105,15 @@
 //-(Genre*)genreAtIndex:(NSInteger) index{
 //	return [genres objectAtIndex:index];
 //}
-
--(NSInteger)numberOfCharactersForShowAtIndex:(NSInteger) index{
-    return [[[theShows objectAtIndex:index] valueForKey:@"Characters"] count];
-}
-
-
--(NSString*)characterNameForShowIndex:(NSInteger) showIndex atIndex:(NSInteger) index{
-	return [[[theShows objectAtIndex:showIndex] valueForKey:@"Characters"] objectAtIndex:index];
-}
+//
+//-(NSInteger)numberOfCharactersForShowAtIndex:(NSInteger) index{
+//    return [[[theShows objectAtIndex:index] valueForKey:@"Characters"] count];
+//}
+//
+//
+//-(NSString*)characterNameForShowIndex:(NSInteger) showIndex atIndex:(NSInteger) index{
+//	return [[[theShows objectAtIndex:showIndex] valueForKey:@"Characters"] objectAtIndex:index];
+//}
 
 
 @end

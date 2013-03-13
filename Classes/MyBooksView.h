@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MyTableViewController.h"
 
-@interface MyBooksView : UITableViewController {
+@interface MyBooksView : MyTableViewController {
     NSMutableArray* mybooks;
 }
 

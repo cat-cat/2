@@ -48,7 +48,7 @@ static ASIHTTPRequest* currentRequest = nil;
         [gss() handleError:error];
         NSArray* arr = [gss() arrayForDoc:doc xpath:@"//code"];
         NSAssert1([arr count], @"**err: no code!: %s", __func__);
-        //txtCode.text = [arr objectAtIndex:0];
+        txtCode.text = [arr objectAtIndex:0];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Информация"
                                                         message:@"Письмо с кодом отправлено на указанный email. Введите код в поле ниже и нажмите кнопку Проверить код"
                                                        delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];

@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
+#import "MyViewController.h"
 //@class Database;
-@interface MainViewController : UIViewController {
+@interface MainViewController : MyViewController {
 	NSString *message;
 	NSIndexPath  *selectedShow;
 	NSIndexPath  *selectedCharacter;
@@ -26,8 +27,8 @@
 //-(int)dbOffset;
 //-(NSInteger)genresCount;
 //-(NSString*)genreAtIndex:(NSInteger) index;
--(NSInteger)numberOfCharactersForShowAtIndex:(NSInteger) index;
--(NSString*)characterNameForShowIndex:(NSInteger) showIndex atIndex:(NSInteger) index;
+//-(NSInteger)numberOfCharactersForShowAtIndex:(NSInteger) index;
+//-(NSString*)characterNameForShowIndex:(NSInteger) showIndex atIndex:(NSInteger) index;
 @end
 
 

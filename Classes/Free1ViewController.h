@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MyViewController.h"
 
-@interface Free1ViewController : UIViewController <UITextFieldDelegate> {
+@interface Free1ViewController : MyViewController <UITextFieldDelegate> {
     
     IBOutlet UITextField *txtCode;
     IBOutlet UITextField *txtEmail;

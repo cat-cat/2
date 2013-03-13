@@ -319,15 +319,15 @@ static NSString* databaseName;
     return connectionType > 0;
 }
 
-+ (BOOL)gotConnectionToSrv:(BOOL)showMsg
-{
-    if(connectionType == 0 && showMsg)
-    {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Сервер не доступен. Проверьте интернет-соденинение." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] ;
-        [alert show];
-    }
-    return connectionType != 0;
-}
+//+ (BOOL)gotConnectionToSrv:(BOOL)showMsg
+//{
+//    if(connectionType == 0 && showMsg)
+//    {
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Сервер не доступен. Проверьте интернет-соденинение." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] ;
+//        [alert show];
+//    }
+//    return connectionType != 0;
+//}
 
 //+ (void) setDelegate:(CatalogViewController *)d
 //{
@@ -1104,12 +1104,12 @@ static NSString* databaseName;
     }
 }
 
--(void)playerButtonClick:(id)sender
-{
-//    NSLog(@"++ player button click");
-    PlayerViewController* playerView = [[PlayerViewController alloc] initWithBook:0];
-    [self.navigationController pushViewController:playerView animated:YES];
-}
+//-(void)playerButtonClick:(id)sender
+//{
+////    NSLog(@"++ player button click");
+//    PlayerViewController* playerView = [[PlayerViewController alloc] initWithBook:0];
+//    [self.navigationController pushViewController:playerView animated:YES];
+//}
 
 //#include <netinet/in.h>
 #include <arpa/inet.h>
@@ -1122,15 +1122,15 @@ static NSString* databaseName;
         // Do any other initialisation stuff here
         
         //****************** init requests queue
-        CGRect	rectFrame = CGRectMake(220.0, 440.0, 100, 20);
+        //CGRect	rectFrame = CGRectMake(220.0, 440.0, 100, 20);
 		// create a UIButton (UIButtonTypeRoundedRect)
-		sharedInstance.playerButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-		sharedInstance.playerButton.frame = rectFrame;
-		[sharedInstance.playerButton setTitle:@"Плеер" forState:UIControlStateNormal];
-		sharedInstance.playerButton.backgroundColor = [UIColor clearColor];		
-		sharedInstance.playerButton.tag = 2;
-        [sharedInstance.playerButton addTarget:sharedInstance action:@selector(playerButtonClick:) forControlEvents:UIControlEventTouchUpInside];
-        [sharedInstance.playerButton setHidden:YES];
+//		sharedInstance.playerButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+//		sharedInstance.playerButton.frame = rectFrame;
+//		[sharedInstance.playerButton setTitle:@"Плеер" forState:UIControlStateNormal];
+//		sharedInstance.playerButton.backgroundColor = [UIColor clearColor];		
+//		sharedInstance.playerButton.tag = 2;
+//        [sharedInstance.playerButton addTarget:sharedInstance action:@selector(playerButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+//        [sharedInstance.playerButton setHidden:YES];
         //[sharedInstance.navigationController.view addSubview:sharedInstance.playerButton];
 
         //theView.myController = self;

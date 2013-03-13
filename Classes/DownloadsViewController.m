@@ -27,6 +27,12 @@
     return self;
 }
 
+-(void)viewWillAppear:(BOOL)animated
+{
+    [StaticPlayer sharedInstance]. shouldShowPlayerButton = NO;
+    [super viewWillAppear:animated];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -35,7 +41,8 @@
     self.clearsSelectionOnViewWillAppear = NO;
  
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    //self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    [(UITableView*)self.view setEditing:YES animated:YES];
 }
 
 - (void)didReceiveMemoryWarning
