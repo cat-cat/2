@@ -54,6 +54,8 @@
     //    __weak IBOutlet UILabel *labelSmallHeader;
     //    __weak IBOutlet UILabel *labelHeader;
 }
+- (IBAction)btn30Forward:(UIBarButtonItem *)sender;
+- (IBAction)btn30Back:(UIBarButtonItem *)sender;
 - (IBAction)btnBookDetailsClick:(UIBarButtonItem *)sender;
 +(void)db_InsertMybook:(NSString*)bid;
 + (void) showAlertAtTimer:(NSString*)msg delay:(int)delayInSeconds;

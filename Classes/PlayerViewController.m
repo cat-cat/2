@@ -33,9 +33,10 @@
 #import "Free1ViewController.h"
 #import "MBProgressHUD.h"
 #import "Myshop.h"
+#import "BookViewController.h"
 
 MBProgressHUD *HUD = nil;
-PlayerViewController* PlayerFreeViewControllerPtr = nil;
+PlayerViewController* PlayerViewControllerPtr = nil;
 static ASIHTTPRequest* currentRequest;
 BOOL isBought = NO;
 //static int bookId;
@@ -61,7 +62,7 @@ enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
 }
 
 +(BOOL)checkBuyBook
-{    
+{
     NSError* error;
     NSString* buy = [NSString stringWithContentsOfURL:[NSURL fileURLWithPath:[gss() pathForBuy:[StaticPlayer sharedInstance].bookID] ] encoding:NSUTF8StringEncoding error:&error];
     [gss() handleError:error];
@@ -70,7 +71,7 @@ enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
         if (btnBuyPtr) {
             NSArray* tms = toolbarPlayerPtr.items;
             UIBarButtonItem* bb = [[UIBarButtonItem alloc] initWithTitle:@"Отзыв" style:UIBarButtonSystemItemEdit target:[StaticPlayer sharedInstance] action:@selector(goVote:)];
-            [toolbarPlayerPtr setItems:@[[tms objectAtIndex:0],[tms objectAtIndex:1],[tms objectAtIndex:2],[tms objectAtIndex:3], bb]];
+            [toolbarPlayerPtr setItems:@[[tms objectAtIndex:0],[tms objectAtIndex:1],[tms objectAtIndex:2],[tms objectAtIndex:3],[tms objectAtIndex:4],[tms objectAtIndex:5], bb]];
         }
     }
     else
@@ -141,7 +142,7 @@ enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
     if (btnBuyPtr) {
         NSArray* tms = toolbarPlayerPtr.items;
         UIBarButtonItem* bb = [[UIBarButtonItem alloc] initWithTitle:@"Отзыв" style:UIBarButtonSystemItemEdit target:[StaticPlayer sharedInstance] action:@selector(goVote:)];
-        [toolbarPlayerPtr setItems:@[[tms objectAtIndex:0],[tms objectAtIndex:1],[tms objectAtIndex:2],[tms objectAtIndex:3], bb]];
+        [toolbarPlayerPtr setItems:@[[tms objectAtIndex:0],[tms objectAtIndex:1],[tms objectAtIndex:2],[tms objectAtIndex:3],[tms objectAtIndex:4],[tms objectAtIndex:5], bb]];
     }
 
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Покупка книги"
@@ -178,7 +179,7 @@ enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
 {
     if (!HUD) {
         // The hud will dispable all input on the view (use the higest view possible in the view hierarchy)
-        HUD = [MBProgressHUD showHUDAddedTo:PlayerFreeViewControllerPtr.view animated:YES];
+        HUD = [MBProgressHUD showHUDAddedTo:PlayerViewControllerPtr.view animated:YES];
     }
     //hud.mode = MBProgressHUDModeAnnularDeterminate;
 	
@@ -192,20 +193,20 @@ enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
 -(void)hideHUD
 {
     if (HUD) {
-        [MBProgressHUD hideHUDForView:PlayerFreeViewControllerPtr.view animated:YES];
+        [MBProgressHUD hideHUDForView:PlayerViewControllerPtr.view animated:YES];
         HUD=nil;        
     }
 }
 
 - (void) streamingPlayerIsWaiting:(StreamingPlayer *) anPlayer {
     NSLog(@"++ player IsWaiting");
-    if (PlayerFreeViewControllerPtr) {
+    if (PlayerViewControllerPtr) {
         [self showHUD];
     }
 }
 - (void) streamingPlayerDidStartPlaying:(StreamingPlayer *) anPlayer {
     NSLog(@"++ player DidStartPlaying");
-    if (PlayerFreeViewControllerPtr) {
+    if (PlayerViewControllerPtr) {
         [self hideHUD];
     }
     
@@ -231,7 +232,7 @@ enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
     [PlayerViewController setDelegates:[StaticPlayer sharedInstance]];
     bindProgressVal = YES;
     
-    if (PlayerFreeViewControllerPtr) {
+    if (PlayerViewControllerPtr) {
         [self hideHUD];
     }
 }
@@ -336,7 +337,7 @@ BOOL buyQueryStarted = NO;
             UIActionSheet *
             actionSheet = [[UIActionSheet alloc]
                            initWithTitle:@"Ограничение прослушивания книги" delegate:self cancelButtonTitle:@"Отмена" destructiveButtonTitle:nil otherButtonTitles:@"Купить", @"Получить бесплатно", nil];
-            [actionSheet showInView:PlayerFreeViewControllerPtr.view];
+            [actionSheet showInView:PlayerViewControllerPtr.view];
         }
 //        int length = [self metaLengthForChapter:sPlayer.chapter];
 //        int val = (procSize / 100) * length;
@@ -505,9 +506,37 @@ static UILabel *lbTimePassedPtr;
 static UILabel *lbTimeLeftPtr;
 static Book *book;
 
+- (IBAction)btn30Forward:(UIBarButtonItem *)sender {
+    if (sPlayer && [sPlayer.streamer isPlaying] && [sPlayer.bookId isEqualToString:[StaticPlayer sharedInstance].bookID]) {
+        [sPlayer.streamer seekToTime:progressSlider.value + 25.0];
+    }
+    else
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Функция" message:@"Перемотать на 30 сек. вперед во время проигрывания главы" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] ;
+        [alert show];        
+    }
+    
+}
+
+- (IBAction)btn30Back:(UIBarButtonItem *)sender {
+    if (sPlayer && [sPlayer.streamer isPlaying] && [sPlayer.bookId isEqualToString:[StaticPlayer sharedInstance].bookID]) {
+        [sPlayer.streamer seekToTime:progressSlider.value - 35.0];
+    }
+    else
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Функция" message:@"Перемотать на 30 сек. назад во время проигрывания главы" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] ;
+        [alert show];
+    }
+}
+
 - (IBAction)btnBookDetailsClick:(UIBarButtonItem *)sender
 {
-    NSLog(@"%s", __func__);
+    BookViewController* secondaryCtrl1 = [[BookViewController alloc]
+                                          initWithNibName:nil
+                                          bundle:nil bookId:[StaticPlayer sharedInstance].bookID];
+    UINavigationController *secondaryNavigationCtrl = [[UINavigationController alloc]
+                                                                          initWithRootViewController:secondaryCtrl1];
+    [self presentModalViewController:secondaryNavigationCtrl animated:YES];
 }
 
 +(NSString*)chapterIdentityFromRequest:(ASIHTTPRequest*)req
@@ -1027,7 +1056,7 @@ static Book *book;
 
     [super viewDidLoad];
     
-    PlayerFreeViewControllerPtr = self;
+    PlayerViewControllerPtr = self;
     
     // init controls
     lbTimePassedPtr = lbTimePassed;
@@ -1045,6 +1074,7 @@ static Book *book;
     //    [labelHeader setText:book.title];
     //    [labelSmallHeader setText:book.title];
     self.title = book.title;
+    self.trackedViewName = book.title;
     
     // TODO: doesn't work
     // self.navigationItem.backBarButtonItem.title = @"в каталог";

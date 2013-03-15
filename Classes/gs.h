@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <sqlite3.h>
+#import "GAI.h"
 @class CatalogItem;
 @class DDXMLDocument;
 @class ASINetworkQueue;

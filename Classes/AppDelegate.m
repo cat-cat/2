@@ -125,6 +125,17 @@ NSTimer *backgroundTimer;
     
     // init global singleton instance
     [[SKPaymentQueue defaultQueue] addTransactionObserver:[Myshop sharedInstance]];
+    
+    // init google tracker gantracker
+    // Optional: automatically send uncaught exceptions to Google Analytics.
+    [GAI sharedInstance].trackUncaughtExceptions = YES;
+    // Optional: set Google Analytics dispatch interval to e.g. 20 seconds.
+    [GAI sharedInstance].dispatchInterval = 20;
+    // Optional: set debug to YES for extra debugging information.
+    [GAI sharedInstance].debug = YES;
+    // Create tracker instance.
+    id<GAITracker> tracker = [[GAI sharedInstance] trackerWithTrackingId:@"UA-39335784-1"];
+
 }
 
 //- (void)changeViewControllerToIndex:(NSUInteger)idx

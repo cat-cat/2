@@ -75,6 +75,12 @@
 		CE9AC37316DA2CB60014095C /* SearchView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE9AC37116DA2CB60014095C /* SearchView.xib */; };
 		CEA3206A16EB7B4E0025555E /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA3206916EB7B4E0025555E /* StoreKit.framework */; };
 		CEA3206E16EB7C660025555E /* Myshop.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA3206D16EB7C660025555E /* Myshop.m */; };
+		CEB7789F16F3426900336C4B /* BookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB7789D16F3426900336C4B /* BookViewController.m */; };
+		CEB778A016F3426900336C4B /* BookViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEB7789E16F3426900336C4B /* BookViewController.xib */; };
+		CEB778A316F3620900336C4B /* 30_back.PNG in Resources */ = {isa = PBXBuildFile; fileRef = CEB778A116F3620900336C4B /* 30_back.PNG */; };
+		CEB778A416F3620900336C4B /* 30_forward.PNG in Resources */ = {isa = PBXBuildFile; fileRef = CEB778A216F3620900336C4B /* 30_forward.PNG */; };
+		CEB778B616F3779600336C4B /* libGoogleAnalytics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB778B216F373D400336C4B /* libGoogleAnalytics.a */; };
+		CEB778B816F377DB00336C4B /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB778B716F377DB00336C4B /* CoreData.framework */; };
 		CEC6416416BC0B4800AC325F /* AudioStreamer.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC6416116BC0B4800AC325F /* AudioStreamer.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		CEC6416516BC0B4800AC325F /* StreamingPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC6416316BC0B4800AC325F /* StreamingPlayer.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		CEC6416A16BC0D6200AC325F /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC6416916BC0D6200AC325F /* AudioToolbox.framework */; };
@@ -218,6 +224,19 @@
 		CEA3206916EB7B4E0025555E /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		CEA3206C16EB7C660025555E /* Myshop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Myshop.h; sourceTree = "<group>"; };
 		CEA3206D16EB7C660025555E /* Myshop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Myshop.m; sourceTree = "<group>"; };
+		CEB7789C16F3426900336C4B /* BookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookViewController.h; sourceTree = "<group>"; };
+		CEB7789D16F3426900336C4B /* BookViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookViewController.m; sourceTree = "<group>"; };
+		CEB7789E16F3426900336C4B /* BookViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BookViewController.xib; sourceTree = "<group>"; };
+		CEB778A116F3620900336C4B /* 30_back.PNG */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 30_back.PNG; sourceTree = "<group>"; };
+		CEB778A216F3620900336C4B /* 30_forward.PNG */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 30_forward.PNG; sourceTree = "<group>"; };
+		CEB778A616F3703900336C4B /* libGoogleAnalytics.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libGoogleAnalytics.a; path = resources/libGoogleAnalytics.a; sourceTree = "<group>"; };
+		CEB778AD16F373D400336C4B /* GAI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAI.h; sourceTree = "<group>"; };
+		CEB778AE16F373D400336C4B /* GAITrackedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAITrackedViewController.h; sourceTree = "<group>"; };
+		CEB778AF16F373D400336C4B /* GAITracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAITracker.h; sourceTree = "<group>"; };
+		CEB778B016F373D400336C4B /* GAITransaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAITransaction.h; sourceTree = "<group>"; };
+		CEB778B116F373D400336C4B /* GAITransactionItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAITransactionItem.h; sourceTree = "<group>"; };
+		CEB778B216F373D400336C4B /* libGoogleAnalytics.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGoogleAnalytics.a; sourceTree = "<group>"; };
+		CEB778B716F377DB00336C4B /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		CEC6416016BC0B4800AC325F /* AudioStreamer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioStreamer.h; sourceTree = "<group>"; };
 		CEC6416116BC0B4800AC325F /* AudioStreamer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioStreamer.m; sourceTree = "<group>"; };
 		CEC6416216BC0B4800AC325F /* StreamingPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamingPlayer.h; sourceTree = "<group>"; };
@@ -250,6 +269,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CEB778B816F377DB00336C4B /* CoreData.framework in Frameworks */,
+				CEB778B616F3779600336C4B /* libGoogleAnalytics.a in Frameworks */,
 				CEA3206A16EB7B4E0025555E /* StoreKit.framework in Frameworks */,
 				CE5E9DB516E7DC6D00A83D78 /* MapKit.framework in Frameworks */,
 				CE5E9DB116E7D88A00A83D78 /* ImageIO.framework in Frameworks */,
@@ -273,6 +294,8 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				CEB7789C16F3426900336C4B /* BookViewController.h */,
+				CEB7789D16F3426900336C4B /* BookViewController.m */,
 				CE0876A516F001B400AF56B3 /* MyTableViewController.h */,
 				CE0876A616F001B400AF56B3 /* MyTableViewController.m */,
 				CE0876A216EFFF5700AF56B3 /* MyViewController.h */,
@@ -329,11 +352,6 @@
 			isa = PBXGroup;
 			children = (
 				8D1107310486CEB800E47090 /* audiobook-Info.plist */,
-				CE0C419716EE4343008E12E6 /* 57-1.PNG */,
-				CE0C419516EE433C008E12E6 /* 114.PNG */,
-				CE7FD1C216EE33C30024E589 /* Default-568h@2x.png */,
-				8ED3BCC215FA4B7200326459 /* Default.png */,
-				CE1019DE16ED33D900060C41 /* Default@2x.png */,
 				CE82EA6916BA6D8400F33698 /* xibs */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
@@ -367,6 +385,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				CEB778AC16F373D400336C4B /* Library */,
 				CE17B28A16C2794300D0FB36 /* img */,
 				8ED3BCA615F798E800326459 /* database.db */,
 			);
@@ -376,6 +395,8 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CEB778B716F377DB00336C4B /* CoreData.framework */,
+				CEB778A616F3703900336C4B /* libGoogleAnalytics.a */,
 				CEA3206916EB7B4E0025555E /* StoreKit.framework */,
 				CE5E9DB416E7DC6D00A83D78 /* MapKit.framework */,
 				CE5E9DB016E7D88A00A83D78 /* ImageIO.framework */,
@@ -480,6 +501,11 @@
 		CE17B28A16C2794300D0FB36 /* img */ = {
 			isa = PBXGroup;
 			children = (
+				CE0C419716EE4343008E12E6 /* 57-1.PNG */,
+				CE0C419516EE433C008E12E6 /* 114.PNG */,
+				CE7FD1C216EE33C30024E589 /* Default-568h@2x.png */,
+				8ED3BCC215FA4B7200326459 /* Default.png */,
+				CE1019DE16ED33D900060C41 /* Default@2x.png */,
 				CEDB95C416F0A4A6009F9245 /* player */,
 				CE08769E16EFE68500AF56B3 /* UITabBarHistory.jpg */,
 				CE08769F16EFE68500AF56B3 /* UITabBarSearch.jpg */,
@@ -491,6 +517,7 @@
 		CE82EA6916BA6D8400F33698 /* xibs */ = {
 			isa = PBXGroup;
 			children = (
+				CEB7789E16F3426900336C4B /* BookViewController.xib */,
 				CE08769A16EFDBD000AF56B3 /* CatalogOptionCell.xib */,
 				CEDD9C6016DDDFCB00AD83EB /* MyBooksView.xib */,
 				CE9AC37116DA2CB60014095C /* SearchView.xib */,
@@ -532,6 +559,19 @@
 			path = Classes/asih;
 			sourceTree = "<group>";
 		};
+		CEB778AC16F373D400336C4B /* Library */ = {
+			isa = PBXGroup;
+			children = (
+				CEB778AD16F373D400336C4B /* GAI.h */,
+				CEB778AE16F373D400336C4B /* GAITrackedViewController.h */,
+				CEB778AF16F373D400336C4B /* GAITracker.h */,
+				CEB778B016F373D400336C4B /* GAITransaction.h */,
+				CEB778B116F373D400336C4B /* GAITransactionItem.h */,
+				CEB778B216F373D400336C4B /* libGoogleAnalytics.a */,
+			);
+			path = Library;
+			sourceTree = "<group>";
+		};
 		CEC6415F16BC0B4800AC325F /* AudioStreamer */ = {
 			isa = PBXGroup;
 			children = (
@@ -547,6 +587,8 @@
 		CEDB95C416F0A4A6009F9245 /* player */ = {
 			isa = PBXGroup;
 			children = (
+				CEB778A116F3620900336C4B /* 30_back.PNG */,
+				CEB778A216F3620900336C4B /* 30_forward.PNG */,
 				CEE8D29716F125AC00AB78B1 /* download.png */,
 				CEE8D29816F125AC00AB78B1 /* stop.png */,
 				CEDB95C516F0A4A6009F9245 /* player_button_pause.png */,
@@ -627,6 +669,9 @@
 				CEDB95CC16F0A4A6009F9245 /* player_button_play@2x.png in Resources */,
 				CEE8D29916F125AC00AB78B1 /* download.png in Resources */,
 				CEE8D29A16F125AC00AB78B1 /* stop.png in Resources */,
+				CEB778A016F3426900336C4B /* BookViewController.xib in Resources */,
+				CEB778A316F3620900336C4B /* 30_back.PNG in Resources */,
+				CEB778A416F3620900336C4B /* 30_forward.PNG in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -686,6 +731,7 @@
 				CE08769B16EFDBD000AF56B3 /* CatalogOptionCell.m in Sources */,
 				CE0876A416EFFF5800AF56B3 /* MyViewController.m in Sources */,
 				CE0876A716F001B400AF56B3 /* MyTableViewController.m in Sources */,
+				CEB7789F16F3426900336C4B /* BookViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -710,6 +756,8 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/resources\"",
+					"\"$(SRCROOT)/Library\"",
 				);
 				PRODUCT_NAME = audiobook;
 				PROVISIONING_PROFILE = "";
@@ -735,6 +783,8 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/resources\"",
+					"\"$(SRCROOT)/Library\"",
 				);
 				PRODUCT_NAME = audiobook;
 				PROVISIONING_PROFILE = "";
