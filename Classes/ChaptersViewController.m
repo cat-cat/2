@@ -269,6 +269,7 @@ static NSString* BTN_CANCEL = @"отменить";
     if ([btnState isEqualToString:BTN_CANCEL]) {
         [[StaticPlayer sharedInstance] removeDownqObject:chapterIdentity];
         [sender setTitle:BTN_DOWNLOAD forState:UIControlStateNormal];
+        [sender setImage:[UIImage imageNamed:@"download.png"]  forState:UIControlStateNormal];
     }
     else if([btnState isEqualToString:BTN_DOWNLOAD])
     {
@@ -284,6 +285,7 @@ static NSString* BTN_CANCEL = @"отменить";
 
         [PlayerViewController appendChapterIdentityForDownloading:chapterIdentity];
         [sender setTitle:BTN_CANCEL forState:UIControlStateNormal];
+        [sender setImage:[UIImage imageNamed:@"stop.png"]  forState:UIControlStateNormal];
     }
     // else BTN_READY - nothing to do
     
@@ -342,6 +344,7 @@ static NSString* BTN_CANCEL = @"отменить";
     
     if (progress < 1.0) {
         [self setBtnTitleForChapter:chid title:BTN_DOWNLOAD];
+        
     }
     else {
         [self setBtnTitleForChapter:chid title:BTN_READY];
@@ -374,8 +377,6 @@ static NSString* BTN_CANCEL = @"отменить";
     cell.tag = 1000+indexPath.row;
     // Configure the cell...
     Chapter *lc = [chapters objectAtIndex:indexPath.row];
-    UILabel* lblBig = (UILabel*)[cell viewWithTag:1];
-    lblBig.text = lc.cId;
     UILabel* lblSmall = (UILabel*)[cell viewWithTag:2];
     lblSmall.text = lc.name;
     UIProgressView* progress = (UIProgressView*) [cell viewWithTag:3];
@@ -384,6 +385,8 @@ static NSString* BTN_CANCEL = @"отменить";
     
     if (progress.progress < 1.0) {
         [btn setTitle:BTN_DOWNLOAD forState:UIControlStateNormal];
+        [btn setImage:[UIImage imageNamed:@"download.png"]  forState:UIControlStateNormal];
+
         btn.hidden = NO;
         progress.hidden = NO;
     }
@@ -392,6 +395,21 @@ static NSString* BTN_CANCEL = @"отменить";
         btn.hidden = YES;
         progress.hidden = YES;
     }
+    DDXMLDocument *xmldoc = [gss() docForFile:[gss() pathForBookMeta:[StaticPlayer sharedInstance].bookID]];
+    NSArray* arr = [gss() arrayForDoc:xmldoc xpath:[NSString stringWithFormat:@"//abook[@id='%@']/content/track[@number='%@']/file/length", [StaticPlayer sharedInstance].bookID, lc.cId]];
+    
+    if ([arr count] != 1) {
+        NSLog(@"**err: invalid length for book: %@, chpater: %@", [StaticPlayer sharedInstance].bookID, lc.cId);
+    }
+    else
+    {
+        int fsz = [[arr objectAtIndex:0] intValue];
+        NSString* timeString = [NSString stringWithFormat:@"%d:%02d", (NSInteger)(fsz / 60.0),
+         (NSInteger)fsz % 60];
+        UILabel* lblBig = (UILabel*)[cell viewWithTag:1];
+        lblBig.text = timeString;
+    }
+    
     
     [btn setTitle:[NSString stringWithFormat:@"%d",indexPath.row ] forState:UIControlStateApplication];
     [btn addTarget:self action:@selector(downClick:) forControlEvents:UIControlEventTouchUpInside];

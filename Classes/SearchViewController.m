@@ -58,7 +58,7 @@
 {
     //char* sqlStatement = 0;
     
-    NSString* query = @" SELECT t_abooks.abook_id AS id, title, GROUP_CONCAT(t_authors.name, ',') authors FROM t_abooks"
+    NSString* query = @" SELECT t_abooks.abook_id AS id, title, GROUP_CONCAT(t_authors.name, ',') authors, CASE t_abooks.bought WHEN 1 THEN '+' ELSE priceios END priceios  FROM t_abooks"
     " LEFT JOIN"
     " t_abooks_authors ON t_abooks_authors.abook_id=t_abooks.abook_id"
     " JOIN"
@@ -103,18 +103,18 @@
     // get result
     returnCode = sqlite3_step(statement);
     while(returnCode == SQLITE_ROW){
-        CatalogItem *genre = [[CatalogItem alloc] init];
+        CatalogItem *catalogItem = [[CatalogItem alloc] init];
         ;
-        genre.ID = [NSString stringWithCString:sqlite3_column_text(statement, 0) == nil ? "" : (char *)sqlite3_column_text(statement, 0) encoding:NSUTF8StringEncoding];
-        genre.name = [NSString stringWithCString:sqlite3_column_text(statement, 1) == nil ? "" : (char *)sqlite3_column_text(statement, 1) encoding:NSUTF8StringEncoding];
-        genre.authors = [NSString stringWithCString:sqlite3_column_text(statement, 2) == nil ? "" : (char *)sqlite3_column_text(statement, 2) encoding:NSUTF8StringEncoding];
-//        genre.subgenresCount = [NSString stringWithCString:sqlite3_column_text(statement, 2) == nil ? "" : (char *)sqlite3_column_text(statement, 2) encoding:NSUTF8StringEncoding];
+        catalogItem.ID = [NSString stringWithCString:sqlite3_column_text(statement, 0) == nil ? "" : (char *)sqlite3_column_text(statement, 0) encoding:NSUTF8StringEncoding];
+        catalogItem.name = [NSString stringWithCString:sqlite3_column_text(statement, 1) == nil ? "" : (char *)sqlite3_column_text(statement, 1) encoding:NSUTF8StringEncoding];
+        catalogItem.authors = [NSString stringWithCString:sqlite3_column_text(statement, 2) == nil ? "" : (char *)sqlite3_column_text(statement, 2) encoding:NSUTF8StringEncoding];
+        catalogItem.priceios = [NSString stringWithCString:sqlite3_column_text(statement, 3) == nil ? "" : (char *)sqlite3_column_text(statement, 3) encoding:NSUTF8StringEncoding];
 //        genre.type = [NSString stringWithCString:sqlite3_column_text(statement, 3) == nil ? "" : (char *)sqlite3_column_text(statement, 3) encoding:NSUTF8StringEncoding];
         //        printf("name %s count %s ID %s\n",
         //               name, count, ID);
         returnCode = sqlite3_step(statement);
         
-        [genresList insertObject:genre atIndex:genresList.count];
+        [genresList insertObject:catalogItem atIndex:genresList.count];
         
     }
     returnCode = sqlite3_finalize(statement);
@@ -199,19 +199,19 @@
 	/*
 	 If the requesting table view is the search display controller's table view, configure the cell using the filtered content, otherwise use the main list.
 	 */
-	CatalogItem *genre = nil;
+	CatalogItem *catalogItem = nil;
 	if (tableView == self.searchDisplayController.searchResultsTableView)
 	{
-        genre = [self.filteredListContent objectAtIndex:indexPath.row];
+        catalogItem = [self.filteredListContent objectAtIndex:indexPath.row];
     }
 	else
 	{
-        genre = [self.listContent objectAtIndex:indexPath.row];
+        catalogItem = [self.listContent objectAtIndex:indexPath.row];
     }
     
-    UITableViewCell* cell = [gs catalogCellForBook:genre.ID tableView:tableView title:genre.name];
-    UILabel* l2 = (UILabel*)[cell viewWithTag:2];
-    l2.text = genre.authors;
+    UITableViewCell* cell = [gs catalogCellForBook:catalogItem tableView:tableView];
+//    UILabel* l2 = (UILabel*)[cell viewWithTag:2];
+//    l2.text = catalogItem.authors;
 	return cell;
 }
 

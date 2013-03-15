@@ -43,6 +43,8 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     //self.navigationItem.rightBarButtonItem = self.editButtonItem;
     [(UITableView*)self.view setEditing:YES animated:YES];
+    
+    [self setTitle:@"Очередь загрузки"];
 }
 
 - (void)didReceiveMemoryWarning

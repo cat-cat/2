@@ -131,7 +131,7 @@ SKPaymentTransaction* currentTransaction = nil;
     [currentRequest startAsynchronous];
     if (!HUD2) {
         HUD2 = [MBProgressHUD showHUDAddedTo:gss().navigationController.view animated:YES];
-        HUD2.labelText = @"обработка...";
+        HUD2.labelText = @"проверка книги...";
     }
 
     
@@ -160,7 +160,7 @@ SKPaymentTransaction* currentTransaction = nil;
     
     [request start];
     HUD2 = [MBProgressHUD showHUDAddedTo:gss().navigationController.view animated:YES];
-    HUD2.labelText = @"обработка...";
+    HUD2.labelText = @"проверка книги...";
 }
 
 //NSArray* myProducts;
@@ -267,8 +267,20 @@ SKPaymentTransaction* currentTransaction = nil;
     }
     
 }
-- (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response
 
+NSString* lastInvalidProductId = nil;
+UIAlertView* alertViewToCheck = nil;
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+	if (buttonIndex == 0 && alertViewToCheck == alertView) {
+		[self requestProductData:lastInvalidProductId];
+        lastInvalidProductId = nil;
+	}
+    //	else {
+    //		NSLog(@"user pressed Cancel");
+    //	}
+}
+
+- (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response
 {
     NSLog(@"^^^%s", __func__);
     
@@ -288,17 +300,28 @@ SKPaymentTransaction* currentTransaction = nil;
     {
         NSLog(@"***err: %s no valid products:%@", __func__, response.invalidProductIdentifiers);
         [self hideHUD];
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Ошибка"
-                                                        message:@"книга не доступна :(\nзато ваши деньги целы :)"
-                                                       delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
-        [alert show];        
+        if ([response.invalidProductIdentifiers count]) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Ошибка сервера"
+                                                            message:@"Книга не куплена.\nПовторить попытку?"
+                                                           delegate:self cancelButtonTitle:@"Нет" otherButtonTitles:@"Да", nil];
+            [alert show];
+            
+            lastInvalidProductId = [response.invalidProductIdentifiers objectAtIndex:0];
+            alertViewToCheck = alert;
+        }
+        else
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Ошибка сервера"
+                                                            message:@"Книга не куплена."
+                                                           delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert show];
+        }
     }
     
 }
 
 + (Myshop *)sharedInstance
-{
-    static Myshop *sharedInstance = nil;
+{    static Myshop *sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         sharedInstance = [[Myshop alloc] init];

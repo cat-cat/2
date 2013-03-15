@@ -130,7 +130,7 @@
     }
     else // only for book cells
     {
-        cell = [gs catalogCellForBook:g.ID tableView:tableView title:g.name];
+        cell = [gs catalogCellForBook:g tableView:tableView];
     }
     
 
@@ -270,12 +270,16 @@
 //            sqlStatement = @"SELECT 0 id, 'Недавно открытые' name, 0 subgenres, 0 type UNION ";
 //        }
         
-        sqlStatement = [sqlStatement stringByAppendingString:[NSString stringWithFormat:@" SELECT 0 id, 'Найти книгу' name, 0 subgenres, -2 type UNION"
-                    " SELECT t_abooks.abook_id AS id, title AS name, -1 AS subgenres, 2 AS type FROM t_abooks"
+        sqlStatement = [sqlStatement stringByAppendingString:[NSString stringWithFormat:@" SELECT 0 id, 'Найти книгу' name, 0 subgenres, -2 type , 'n/a' priceos, '-' authors UNION"
+                    " SELECT t_abooks.abook_id AS id, title AS name, -1 AS subgenres, 2 AS type, CASE t_abooks.bought WHEN 1 THEN '+' ELSE priceios END priceios, GROUP_CONCAT(t_authors.name, ',') authors FROM t_abooks"
+                                                              " LEFT JOIN"
+                                                              " t_abooks_authors ON t_abooks_authors.abook_id=t_abooks.abook_id"
+                                                              " JOIN"
+                                                              " t_authors ON t_abooks_authors.author_id=t_authors.author_id"
                      " JOIN t_abooks_genres ON t_abooks.abook_id = t_abooks_genres.abook_id"
-                     " WHERE t_abooks_genres.genre_id = '%s' AND (t_abooks.deleted=0 OR t_abooks.bought=1)"
+                     " WHERE t_abooks_genres.genre_id = '%s' AND (t_abooks.deleted=0 OR t_abooks.bought=1)  GROUP BY t_abooks.abook_id"
                      " UNION"
-                     " SELECT t_genres.genre_id AS id, name, COUNT(t_abooks_genres.genre_id) AS subgenres, 1 AS type FROM t_genres"
+                     " SELECT t_genres.genre_id AS id, name, COUNT(t_abooks_genres.genre_id) AS subgenres, 1 AS type, 'n/a' priceos, '-' authors FROM t_genres"
                      " LEFT JOIN"
                      " t_abooks_genres"
                      " WHERE t_genres.genre_parent_id = '%s' AND t_genres.genre_id = t_abooks_genres.genre_id"
@@ -285,11 +289,15 @@
     }
     else{
     
-        sqlStatement = [NSString stringWithFormat:@"SELECT t_abooks.abook_id AS id, title AS name, -1 AS subgenres, 2 AS type FROM t_abooks"
+        sqlStatement = [NSString stringWithFormat:@"SELECT t_abooks.abook_id AS id, title AS name, -1 AS subgenres, 2 AS type, CASE t_abooks.bought WHEN 1 THEN '+' ELSE priceios END priceios, GROUP_CONCAT(t_authors.name, ',') authors  FROM t_abooks"
+                        " LEFT JOIN"
+                        " t_abooks_authors ON t_abooks_authors.abook_id=t_abooks.abook_id"
+                        " JOIN"
+                        " t_authors ON t_abooks_authors.author_id=t_authors.author_id"
                    " JOIN t_abooks_genres ON t_abooks.abook_id = t_abooks_genres.abook_id"
-                   " WHERE t_abooks_genres.genre_id = '%s' AND (t_abooks.deleted=0 OR t_abooks.bought=1)"
+                   " WHERE t_abooks_genres.genre_id = '%s' AND (t_abooks.deleted=0 OR t_abooks.bought=1) GROUP BY t_abooks.abook_id"
                    " UNION"
-                   " SELECT t_genres.genre_id AS id, name, COUNT(t_abooks_genres.genre_id) AS subgenres, 1 AS type FROM t_genres"
+                   " SELECT t_genres.genre_id AS id, name, COUNT(t_abooks_genres.genre_id) AS subgenres, 1 AS type, 'n/a' priceos, '-' authors   FROM t_genres"
                    " LEFT JOIN"
                    " t_abooks_genres"
                    " WHERE t_genres.genre_parent_id = '%s' AND t_genres.genre_id = t_abooks_genres.genre_id"
@@ -323,6 +331,8 @@
         genre.name = [NSString stringWithCString:sqlite3_column_text(statement, 1) == nil ? "" : (char *)sqlite3_column_text(statement, 1) encoding:NSUTF8StringEncoding];
         genre.subgenresCount = [NSString stringWithCString:sqlite3_column_text(statement, 2) == nil ? "" : (char *)sqlite3_column_text(statement, 2) encoding:NSUTF8StringEncoding];
         genre.type = [NSString stringWithCString:sqlite3_column_text(statement, 3) == nil ? "" : (char *)sqlite3_column_text(statement, 3) encoding:NSUTF8StringEncoding];
+        genre.priceios = [NSString stringWithCString:sqlite3_column_text(statement, 4) == nil ? "" : (char *)sqlite3_column_text(statement, 4) encoding:NSUTF8StringEncoding];
+        genre.authors = [NSString stringWithCString:sqlite3_column_text(statement, 5) == nil ? "" : (char *)sqlite3_column_text(statement, 5) encoding:NSUTF8StringEncoding];
         //        printf("name %s count %s ID %s\n",
         //               name, count, ID);
         returnCode = sqlite3_step(statement);

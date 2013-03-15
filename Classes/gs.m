@@ -22,6 +22,7 @@
 #import "PlayerViewController.h"
 #import "CatalogCellController.h"
 #import "UIImageView+WebCache.h"
+#import "CatalogItem.h"
 
 // TODO: make all functions synchronized
 @implementation gs
@@ -268,6 +269,8 @@ static NSString* databaseName;
     
     return statement;
 }
+
+
 
 
 + (bool) nfInternetAvailable:(NSNotification *)notice
@@ -1233,7 +1236,7 @@ static NSString* databaseName;
 }
 
 // TODO: should not be called from diffrent threads simultanously
-+(UITableViewCell*)catalogCellForBook:(NSString *)bid tableView:(UITableView *)tableView title:(NSString*)title
++(UITableViewCell*)catalogCellForBook:(CatalogItem *)ci tableView:(UITableView *)tableView
 {
     static NSString *MyIdentifier = @"CatalogBookCell";
     UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
@@ -1242,12 +1245,21 @@ static NSString* databaseName;
         cell = (UITableViewCell *) [c view];
     }
     cell.accessoryType = UITableViewCellAccessoryNone;
-    UILabel* l = (UILabel*)[cell viewWithTag:1];
-    l.text =  title;
+
+    
+    // add price
+    UILabel* l = (UILabel*)[cell viewWithTag:4];
+    l.text =  ci.priceios;
+
+    l = (UILabel*)[cell viewWithTag:2];
+    l.text =  ci.authors;
+
+    l = (UILabel*)[cell viewWithTag:1];
+    l.text =  ci.name;
     UIImageView* iv = (UIImageView*) [cell viewWithTag:3];
     //AsyncImageView* iv = (AsyncImageView*) [cell viewWithTag:3];
     //[iv setImage:nil];
-    [iv setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@/books/%@/BookImage.jpg", BookHost, bid]]
+    [iv setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@/books/%@/BookImage.jpg", BookHost, ci.ID]]
        placeholderImage:[UIImage imageNamed:@"Placeholder"]];
 //    [iv setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@/image.php?bid=%@", BookHost, bid]]
 //       placeholderImage:[UIImage imageNamed:@"Placeholder"]];

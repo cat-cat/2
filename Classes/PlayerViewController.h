@@ -43,6 +43,8 @@
 @class ChaptersViewController;
 @interface PlayerViewController : MyViewController {
     IBOutlet UIBarButtonItem *btnPlay;
+    IBOutlet UIToolbar *toolbarPlayer;
+    IBOutlet UIBarButtonItem *btnBuy;
     IBOutlet UIProgressView *progressView;
     IBOutlet UILabel *lbTimePassed;
     IBOutlet UILabel *lbTimeLeft;
@@ -52,6 +54,7 @@
     //    __weak IBOutlet UILabel *labelSmallHeader;
     //    __weak IBOutlet UILabel *labelHeader;
 }
+- (IBAction)btnBookDetailsClick:(UIBarButtonItem *)sender;
 +(void)db_InsertMybook:(NSString*)bid;
 + (void) showAlertAtTimer:(NSString*)msg delay:(int)delayInSeconds;
 - (IBAction)btnBuyBookClick:(UIBarButtonItem *)sender;

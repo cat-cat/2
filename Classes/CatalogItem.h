@@ -9,12 +9,14 @@
 #import <Foundation/Foundation.h>
 
 @interface CatalogItem : NSObject {
-    NSString *authors;
-    NSString *ID;
-    NSString *name;
-    NSString *subgenresCount;
-    NSString *type;
+//    NSString *priceios;
+//    NSString *authors;
+//    NSString *ID;
+//    NSString *name;
+//    NSString *subgenresCount;
+//    NSString *type;
 }
+@property(copy) NSString *priceios;
 @property(copy) NSString *authors;
 @property(copy) NSString *ID;
 @property(copy) NSString *name;

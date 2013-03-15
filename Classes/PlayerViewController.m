@@ -46,9 +46,19 @@ ChaptersViewController *chaptersControllerPtr;
 UIProgressView *progressViewPtr;
 UISlider *progressSliderPtr;
 UIBarButtonItem *btnPlayPtr;
+UIBarButtonItem* btnBuyPtr;
+UIToolbar* toolbarPlayerPtr;
 
 @implementation StaticPlayer
 enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
+
+-(void)goVote:(id)sender
+{
+//    NSString *escaped = [@"https://itunes.apple.com/ru/app/booksmile/id616060097?l=ru&ls=1&mt=8" stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSURL *url = [NSURL URLWithString:@"itms://itunes.apple.com/ru/app/booksmile/id616060097?l=ru&ls=1&mt=8"];
+
+    [[UIApplication sharedApplication] openURL:url];
+}
 
 +(BOOL)checkBuyBook
 {    
@@ -57,6 +67,11 @@ enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
     [gss() handleError:error];
     if (buy && [buy rangeOfString:@"yes"].location != NSNotFound) {
         isBought = YES;
+        if (btnBuyPtr) {
+            NSArray* tms = toolbarPlayerPtr.items;
+            UIBarButtonItem* bb = [[UIBarButtonItem alloc] initWithTitle:@"Отзыв" style:UIBarButtonSystemItemEdit target:[StaticPlayer sharedInstance] action:@selector(goVote:)];
+            [toolbarPlayerPtr setItems:@[[tms objectAtIndex:0],[tms objectAtIndex:1],[tms objectAtIndex:2],[tms objectAtIndex:3], bb]];
+        }
     }
     else
     {
@@ -122,6 +137,13 @@ enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
 +(void) buyBook
 {
     isBought = YES;
+    
+    if (btnBuyPtr) {
+        NSArray* tms = toolbarPlayerPtr.items;
+        UIBarButtonItem* bb = [[UIBarButtonItem alloc] initWithTitle:@"Отзыв" style:UIBarButtonSystemItemEdit target:[StaticPlayer sharedInstance] action:@selector(goVote:)];
+        [toolbarPlayerPtr setItems:@[[tms objectAtIndex:0],[tms objectAtIndex:1],[tms objectAtIndex:2],[tms objectAtIndex:3], bb]];
+    }
+
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Покупка книги"
                                                     message:@"Книга куплена, поздравляем!"
                                                    delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
@@ -218,6 +240,17 @@ enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
 {
     NSLog(@"++alertView button clicked at index %d", buttonIndex);
     if (buttonIndex == 1) { // yes
+        
+        if (![gs nfInternetAvailable:nil])
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Ошибка сети"
+                                                            message:@"Для получения бесплатной книги нужен интернет. Проверьте соединение."
+                                                           delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+            [alert show];
+            
+            return;
+        }
+
         [[Myshop sharedInstance] startWithBook:[StaticPlayer sharedInstance].bookID isfree:YES];
     }
 }
@@ -302,7 +335,7 @@ BOOL buyQueryStarted = NO;
             // show action sheet
             UIActionSheet *
             actionSheet = [[UIActionSheet alloc]
-                           initWithTitle:@"Ограничение прослушивания книги" delegate:self cancelButtonTitle:@"Отмена" destructiveButtonTitle:@"Купить" otherButtonTitles: @"Получить бесплатно", nil];
+                           initWithTitle:@"Ограничение прослушивания книги" delegate:self cancelButtonTitle:@"Отмена" destructiveButtonTitle:nil otherButtonTitles:@"Купить", @"Получить бесплатно", nil];
             [actionSheet showInView:PlayerFreeViewControllerPtr.view];
         }
 //        int length = [self metaLengthForChapter:sPlayer.chapter];
@@ -471,6 +504,11 @@ static StreamingPlayer *sPlayer = nil;
 static UILabel *lbTimePassedPtr;
 static UILabel *lbTimeLeftPtr;
 static Book *book;
+
+- (IBAction)btnBookDetailsClick:(UIBarButtonItem *)sender
+{
+    NSLog(@"%s", __func__);
+}
 
 +(NSString*)chapterIdentityFromRequest:(ASIHTTPRequest*)req
 {
@@ -985,10 +1023,11 @@ static Book *book;
 
 - (void) viewDidLoad
 {
+    [StaticPlayer sharedInstance]. shouldShowPlayerButton = NO;
+
+    [super viewDidLoad];
     
     PlayerFreeViewControllerPtr = self;
-
-    [StaticPlayer checkBuyBook];
     
     // init controls
     lbTimePassedPtr = lbTimePassed;
@@ -997,6 +1036,10 @@ static Book *book;
     progressViewPtr = progressView;
     chaptersControllerPtr = chaptersController;
     btnPlayPtr = btnPlay;
+    btnBuyPtr = btnBuy;
+    toolbarPlayerPtr = toolbarPlayer;
+
+    [StaticPlayer checkBuyBook];
 
     
     //    [labelHeader setText:book.title];
@@ -1106,7 +1149,10 @@ static Book *book;
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    //[gss().playerButton setHidden:YES];
+    
     [super viewWillAppear:animated];
+    
     if (sPlayer) {
         if ([sPlayer.bookId isEqualToString: [StaticPlayer sharedInstance].bookID]) {
             [PlayerViewController setDelegates:[StaticPlayer sharedInstance]];
@@ -1118,9 +1164,6 @@ static Book *book;
             [PlayerViewController showAlertAtTimer:[NSString stringWithFormat:@"вы слушаете %@", b.title] delay:1.0];
         }
     }
-    //[gss().playerButton setHidden:YES];
-    [StaticPlayer sharedInstance]. shouldShowPlayerButton = NO;
-
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -1136,6 +1179,7 @@ static Book *book;
 }
 
 - (void)viewDidUnload {
+    toolbarPlayer = nil;
     [super viewDidUnload];
     
     chaptersTableView = nil;

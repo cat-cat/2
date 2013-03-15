@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <sqlite3.h>
+@class CatalogItem;
 @class DDXMLDocument;
 @class ASINetworkQueue;
 @class Book;
@@ -25,7 +26,7 @@ static NSString* BookHost = @"book-smile.ru";
 }
 +(BOOL)canGetMetaForBook:(NSString*)bookId;
 + (bool) nfInternetAvailable:(NSNotification *)notice;
-+(UITableViewCell*) catalogCellForBook:(NSString*)bid tableView:(UITableView*)tableView title:(NSString*)title;
++(UITableViewCell*) catalogCellForBook:(CatalogItem*)ci tableView:(UITableView*)tableView;
 //@property(nonatomic, strong) UIButton* playerButton;
 @property(nonatomic, strong) UINavigationController *navigationController;
 +(void)db_MybooksRemove:(NSString*)bid;

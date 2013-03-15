@@ -9,11 +9,11 @@
 #import "CatalogItem.h"
 
 @implementation CatalogItem
-@synthesize authors;
-@synthesize ID;
-@synthesize name;
-@synthesize subgenresCount;
-@synthesize type;
+//@synthesize authors;
+//@synthesize ID;
+//@synthesize name;
+//@synthesize subgenresCount;
+//@synthesize type;
 
 -(id)initWithName:(NSString*) theName andID:(NSString*) vID andCount:(NSString*) count andType:(NSString*) vType{
     self = [super init];
