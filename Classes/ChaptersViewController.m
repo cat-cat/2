@@ -308,7 +308,8 @@ static NSString* BTN_CANCEL = @"отменить";
     UITableViewCell* cell = [self findCellByChapter:chid];
     UIProgressView* progress = (UIProgressView*) [cell viewWithTag:3];
     if (val < 1.0) {
-        [progress setProgress:val animated:YES];
+        //[progress setProgress:val animated:YES];
+        progress.progress = val;
     }
     else {
         progress.hidden = YES;

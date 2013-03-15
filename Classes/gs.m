@@ -118,11 +118,13 @@ static NSString* databaseName;
         NSString* newDirPath = [NSHomeDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"tmp/%@", bid]];
         NSURL *urlToDir = [NSURL fileURLWithPath:newDirPath ];
         NSError *error;
-        [[NSFileManager defaultManager] createDirectoryAtURL:urlToDir withIntermediateDirectories:true attributes:nil error:&error];
+//        [[NSFileManager defaultManager] createDirectoryAtURL:urlToDir withIntermediateDirectories:true attributes:nil error:&error];
+        [[NSFileManager defaultManager] createDirectoryAtPath:newDirPath withIntermediateDirectories:true attributes:nil error:&error];
         [self handleError:error];
         NSString* chaptersAudioPath = [newDirPath stringByAppendingString:@"/ca"];
         urlToDir = [NSURL fileURLWithPath:chaptersAudioPath ];
-        bool success = [[NSFileManager defaultManager] createDirectoryAtURL:urlToDir withIntermediateDirectories:true attributes:nil error:&error];
+//        bool success = [[NSFileManager defaultManager] createDirectoryAtURL:urlToDir withIntermediateDirectories:true attributes:nil error:&error];
+        bool success = [[NSFileManager defaultManager] createDirectoryAtPath:chaptersAudioPath withIntermediateDirectories:true attributes:nil error:&error];
         [self handleError:error];
         return  success ? newDirPath : nil;
     }

@@ -252,7 +252,7 @@ void ASReadStreamCallBack
 - (void)dealloc
 {
 	[self stop];
-	[url release];
+	//[url release];
 	[super dealloc];
 }
 

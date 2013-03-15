@@ -25,7 +25,7 @@
 		
 		progressUpdateTimer =
 		[NSTimer
-		 scheduledTimerWithTimeInterval:0.1
+		 scheduledTimerWithTimeInterval:0.5
 		 target:self
 		 selector:@selector(updateProgress:)
 		 userInfo:nil
@@ -65,25 +65,30 @@
 //}
 -(void)myrelease
 {
-    [self release];
-}
-
-- (void) dealloc
-{
-	[[NSNotificationCenter defaultCenter]
+	[self.streamer stop];
+	//[self.streamer release];
+	self.delegate = nil;
+	
+    [[NSNotificationCenter defaultCenter]
 	 removeObserver:self
 	 name:ASStatusChangedNotification
 	 object:streamer];
 	[progressUpdateTimer invalidate];
 	progressUpdateTimer = nil;
 	
-	[self.streamer stop];
-	[streamer release];
-	self.delegate = nil;
-	[progressUpdateTimer invalidate];
-	progressUpdateTimer = nil;
     [bookId release];
 	[chapter release];
+    
+//    @try {
+//        [self dealloc];
+//    }
+//    @catch (NSException *exception) {
+//        NSLog(@"***: exception: was unable to myrelease StreamingPlayer");
+//    }
+}
+
+- (void) dealloc
+{    
     
 	[super dealloc];
 }
