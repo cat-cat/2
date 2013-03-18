@@ -18,7 +18,7 @@
 
 //static NSString* BookHost = @"192.168.0.100:8080";
 static NSString* BookHost = @"book-smile.ru";
-
+static int TAG_PLAYER_VIEW = 20;
 
 @interface gs : NSObject
 {    

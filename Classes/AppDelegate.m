@@ -27,6 +27,7 @@
 #import "gs.h"
 #import "PlayerViewController.h"
 #import "Myshop.h"
+#import <AVFoundation/AVFoundation.h>
 
 @implementation AppDelegate
 
@@ -82,7 +83,7 @@ NSTimer *backgroundTimer;
 	mainViewController = [[MainViewController alloc]
                      initWithMessage:@"Triangle"
                      andImage:[UIImage imageNamed:@"tri.png"]];
-	mainViewController.title =  @"Каталог";
+	mainViewController.title =  @"BookSmile - Каталог";
     // init main navigation controller in catalogViewController as well
     
 //	viewController2 = [[CDBViewController alloc]
@@ -125,6 +126,12 @@ NSTimer *backgroundTimer;
     
     // init global singleton instance
     [[SKPaymentQueue defaultQueue] addTransactionObserver:[Myshop sharedInstance]];
+    
+    // set to play audio in the background TODO: not checked
+    // allows you to play in the background when app is suspended in iOS4
+    //[[AVAudioSession sharedInstance] setDelegate: self];
+    [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayback error:NULL];
+    
     
     // init google tracker gantracker
     // Optional: automatically send uncaught exceptions to Google Analytics.

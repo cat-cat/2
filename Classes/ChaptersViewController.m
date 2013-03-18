@@ -385,8 +385,15 @@ static NSString* BTN_CANCEL = @"отменить";
     UIButton* btn = (UIButton*)[cell viewWithTag:4];
     
     if (progress.progress < 1.0) {
-        [btn setTitle:BTN_DOWNLOAD forState:UIControlStateNormal];
-        [btn setImage:[UIImage imageNamed:@"download.png"]  forState:UIControlStateNormal];
+        if ([[StaticPlayer sharedInstance] downqContainsObject:[NSString stringWithFormat:@"%@:%@", [StaticPlayer sharedInstance].bookID, lc.cId]]) {
+            [btn setTitle:BTN_CANCEL forState:UIControlStateNormal];
+            [btn setImage:[UIImage imageNamed:@"stop.png"]  forState:UIControlStateNormal];
+  
+        }
+        else{
+            [btn setTitle:BTN_DOWNLOAD forState:UIControlStateNormal];
+            [btn setImage:[UIImage imageNamed:@"download.png"]  forState:UIControlStateNormal];
+        }
 
         btn.hidden = NO;
         progress.hidden = NO;
@@ -502,6 +509,19 @@ static int rowIdx = 0;
     
     if (!tableView) { // call from player to select previous/next chapter
         [(UITableView*)[self view] selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionBottom];
+    }
+    
+    if (tableView) {
+        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        Chapter *lc = [chapters objectAtIndex:indexPath.row];
+        float progress = [PlayerViewController calcDownProgressForBook:[StaticPlayer sharedInstance].bookID chapter:lc.cId];
+        UIButton* btn = (UIButton*)[cell viewWithTag:4];
+        
+        if (progress < 100.0) {
+            // set progress button to right state
+            [self downClick:(UIButton*)btn];
+        }
+        
     }
     
     [PlayerViewController startChapter:chid];

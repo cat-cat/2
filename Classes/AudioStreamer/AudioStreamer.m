@@ -26,6 +26,8 @@
 #if TARGET_OS_IPHONE			
 #import <CFNetwork/CFNetwork.h>
 #endif
+#import "gs.h"
+#import "MBProgressHUD.h"
 
 #define BitRateEstimationMaxPackets 5000
 #define BitRateEstimationMinPackets 50
@@ -1309,6 +1311,11 @@ cleanup:
 			else if (err)
 			{
 				[self failWithErrorCode:AS_GET_AUDIO_TIME_FAILED];
+                [self stop];
+                UIView *v = [gss().navigationController.view viewWithTag:TAG_PLAYER_VIEW];
+                if (v) {
+                    [MBProgressHUD hideHUDForView:v animated:YES];
+                }
 			}
 
 			double progress = seekTime + queueTime.mSampleTime / sampleRate;

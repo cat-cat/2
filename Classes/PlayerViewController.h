@@ -26,6 +26,7 @@
 //*************** StaticPlayer
 @interface StaticPlayer : NSObject <StreamingPlayerDelegate, UIActionSheetDelegate> {
 }
+- (BOOL) downqContainsObject:(NSString *)object;
 +(BOOL)checkBuyBook;
 +(BOOL)playerIsPlaying;
 +(StaticPlayer*) sharedInstance;

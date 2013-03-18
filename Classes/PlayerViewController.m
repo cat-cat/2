@@ -154,7 +154,7 @@ enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
 - (void) removeDownqObject:(NSString *)object
 {
     NSString* strURL = [PlayerViewController chapterIdentityFromRequest:currentRequest];
-
+    
     if ([strURL isEqualToString:object]) {
         [currentRequest cancel]; // will remove request from downq in onRequestFailed
     }
@@ -164,6 +164,14 @@ enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
         {
             [self.downq removeObject:object];
         }
+    }
+}
+
+- (BOOL) downqContainsObject:(NSString *)object
+{
+    @synchronized(self.downq)
+    {
+        return [self.downq containsObject:object];
     }
 }
 
@@ -508,11 +516,13 @@ static Book *book;
 
 - (IBAction)btn30Forward:(UIBarButtonItem *)sender {
     if (sPlayer && [sPlayer.streamer isPlaying] && [sPlayer.bookId isEqualToString:[StaticPlayer sharedInstance].bookID]) {
-        [sPlayer.streamer seekToTime:progressSlider.value + 25.0];
+        if(progressSlider.maximumValue > progressSlider.value + 40.0)
+            [sPlayer.streamer seekToTime:progressSlider.value + 25.0];
+        // else do nothing
     }
     else
     {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Функция" message:@"Перемотать на 30 сек. вперед во время проигрывания главы" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] ;
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Функция" message:@"Перемотать на 30 сек. вперед" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] ;
         [alert show];        
     }
     
@@ -520,11 +530,14 @@ static Book *book;
 
 - (IBAction)btn30Back:(UIBarButtonItem *)sender {
     if (sPlayer && [sPlayer.streamer isPlaying] && [sPlayer.bookId isEqualToString:[StaticPlayer sharedInstance].bookID]) {
-        [sPlayer.streamer seekToTime:progressSlider.value - 35.0];
+        if ( 0.0 < progressSlider.value - 40.0)
+            [sPlayer.streamer seekToTime:progressSlider.value - 35.0];            
+        else
+            [sPlayer.streamer seekToTime:0.0];
     }
     else
     {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Функция" message:@"Перемотать на 30 сек. назад во время проигрывания главы" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] ;
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Функция" message:@"Перемотать на 30 сек. назад" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] ;
         [alert show];
     }
 }
@@ -1052,11 +1065,13 @@ static Book *book;
 
 - (void) viewDidLoad
 {
+    // must be before [super viewDidLoad]
     [StaticPlayer sharedInstance]. shouldShowPlayerButton = NO;
 
     [super viewDidLoad];
     
     PlayerViewControllerPtr = self;
+    PlayerViewControllerPtr.view.tag = TAG_PLAYER_VIEW;
     
     // init controls
     lbTimePassedPtr = lbTimePassed;

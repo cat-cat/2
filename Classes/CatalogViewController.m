@@ -43,7 +43,7 @@
 - (id)initWithStyle:(UITableViewStyle)style andParentGenre:(NSString*) parentParam{
 	if (self = [super initWithStyle:style]) {
 //        parent = p;
-		self.title = @"Каталог";
+		self.title = @"BookSmile - Каталог";
         //self.navigationItem.backBarButtonItem.title = @"назад";
         
         dbOffset = 0; // will be 0 with first call to db
