@@ -18,6 +18,7 @@
 -(BOOL)startWithBook:(NSString*)bid isfree:(BOOL)free;
 
 //********** Appstore part
+-(void) restorePurchases;
 //@property (nonatomic, strong) Myshop* delegate;
 -(void) requestProductData:(NSString*)kMyFeatureIdentifier;
 @end

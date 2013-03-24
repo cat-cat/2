@@ -17,7 +17,7 @@
 
 // ********************** Myshop part
 MBProgressHUD *HUD2 = nil;
-static ASIHTTPRequest* currentRequest = nil;
+//static ASIHTTPRequest* currentRequest = nil;
 
 
 -(void)hideHUD
@@ -72,9 +72,8 @@ SKPaymentTransaction* currentTransaction = nil;
         if (currentTransaction) {
             [[SKPaymentQueue defaultQueue] finishTransaction: currentTransaction];
             currentTransaction = nil;
+            [StaticPlayer buyBook];
         }
-        
-        [StaticPlayer buyBook];
         
     }
     else
@@ -99,14 +98,14 @@ SKPaymentTransaction* currentTransaction = nil;
 
 -(BOOL)startWithBook:(NSString*)bid isfree:(BOOL)free
 {
-    if (currentRequest && !currentRequest.complete) {
-        return NO;
-    }
+//    if (currentRequest && !currentRequest.complete) {
+//        return NO;
+//    }
     
     // create main request
     NSString *devid =[[UIDevice currentDevice] uniqueIdentifier];
     NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/buy.php?bid=%@&dev=%@&bt=1", BookHost, bid, devid]];
-    currentRequest = [ASIHTTPRequest requestWithURL:url];
+    ASIHTTPRequest* currentRequest = [ASIHTTPRequest requestWithURL:url];
     NSString *downloadPath = [gss() pathForBuy:bid];
     
     // create empty file for player could start streaming
@@ -139,6 +138,30 @@ SKPaymentTransaction* currentTransaction = nil;
 }
 
 // ********************** Appstore part
+- (void)paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error
+{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Восстановление покупок"
+                                                    message:@"Ошибка при восстановлении покупок."
+                                                   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+    [alert show];
+
+    [gss() handleError:error];
+}
+
+- (void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue
+{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Восстановление покупок"
+                                                    message:@"Покупки восстановлены!"
+                                                   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+    [alert show];
+}
+
+-(void)restorePurchases
+{
+    [[SKPaymentQueue defaultQueue]restoreCompletedTransactions];
+}
+
+
 -(void) requestProductData:(NSString*)kMyFeatureIdentifier
 {
     NSLog(@"^^^ %s %@", __func__, kMyFeatureIdentifier);
@@ -193,14 +216,14 @@ SKPaymentTransaction* currentTransaction = nil;
     NSLog(@"^^^%s", __func__);
   
     //[self recordTransaction: transaction];
+    NSString* pid = transaction.originalTransaction.payment.productIdentifier;
+    [[Myshop sharedInstance] startWithBook:pid isfree:NO];
     
-    [[Myshop sharedInstance] startWithBook:transaction.originalTransaction.payment.productIdentifier isfree:NO];
-    
-    //[[SKPaymentQueue defaultQueue] finishTransaction: transaction];
-    currentTransaction = transaction;
+    [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
+    //currentTransaction = transaction;
     
     if (HUD2) {
-        HUD2.labelText = @"регистрация книги...";
+        HUD2.labelText = @"восстановление книги...";
     }
 }
 

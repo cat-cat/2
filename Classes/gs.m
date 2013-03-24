@@ -23,6 +23,7 @@
 #import "CatalogCellController.h"
 #import "UIImageView+WebCache.h"
 #import "CatalogItem.h"
+#import "sys/xattr.h"
 
 // TODO: make all functions synchronized
 @implementation gs
@@ -115,14 +116,14 @@ static NSString* databaseName;
     @synchronized(self)
     {
         // try to create directory first
-        NSString* newDirPath = [NSHomeDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"tmp/%@", bid]];
-        NSURL *urlToDir = [NSURL fileURLWithPath:newDirPath ];
+        NSString* newDirPath = [NSHomeDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"Library/Caches/%@", bid]];
+        //NSURL *urlToDir = [NSURL fileURLWithPath:newDirPath ];
         NSError *error;
 //        [[NSFileManager defaultManager] createDirectoryAtURL:urlToDir withIntermediateDirectories:true attributes:nil error:&error];
         [[NSFileManager defaultManager] createDirectoryAtPath:newDirPath withIntermediateDirectories:true attributes:nil error:&error];
         [self handleError:error];
         NSString* chaptersAudioPath = [newDirPath stringByAppendingString:@"/ca"];
-        urlToDir = [NSURL fileURLWithPath:chaptersAudioPath ];
+        //urlToDir = [NSURL fileURLWithPath:chaptersAudioPath ];
 //        bool success = [[NSFileManager defaultManager] createDirectoryAtURL:urlToDir withIntermediateDirectories:true attributes:nil error:&error];
         bool success = [[NSFileManager defaultManager] createDirectoryAtPath:chaptersAudioPath withIntermediateDirectories:true attributes:nil error:&error];
         [self handleError:error];
@@ -1150,8 +1151,35 @@ static NSString* databaseName;
         {
             NSString *dbSourcePath = [[NSBundle mainBundle] pathForResource:@"database" ofType:@"db"];
             [[NSFileManager defaultManager] copyItemAtPath:dbSourcePath toPath:dbWorkingCopyPath error:nil];
+            
+            // add skip backup attribute to database
+            #define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)            
+            if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"5.1")) {
+                NSError *error = nil;
+                BOOL success = [[NSURL fileURLWithPath:dbWorkingCopyPath ] setResourceValue: [NSNumber numberWithBool: YES]
+                                              forKey: NSURLIsExcludedFromBackupKey error: &error];
+                
+                if(!success){
+                    NSLog(@"Error excluding %@ from backup %@", dbWorkingCopyPath, error);
+                }
+            }
+            else
+            {
+                const char* filePath = [dbWorkingCopyPath fileSystemRepresentation];
+                
+                const char* attrName = "com.apple.MobileBackup";
+                u_int8_t attrValue = 1;
+                
+                int result = setxattr(filePath, attrName, &attrValue, sizeof(attrValue), 0, 0);
+                if(result!=0){
+                    NSLog(@"Error excluding %@ from backup", dbWorkingCopyPath);
+                }
+            }            
         }
         databaseName = [[NSString alloc] initWithString: dbWorkingCopyPath];
+
+        
+        
         
         
         //*************** monitor network status

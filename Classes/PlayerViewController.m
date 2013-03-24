@@ -1063,6 +1063,12 @@ static Book *book;
     return returnValue;
 }
 
+- (void) restoreCompletedTransactions
+{
+    NSLog(@"+++initiate restoring transactions");
+    [[Myshop sharedInstance] restorePurchases];
+}
+
 - (void) viewDidLoad
 {
     // must be before [super viewDidLoad]
@@ -1072,6 +1078,11 @@ static Book *book;
     
     PlayerViewControllerPtr = self;
     PlayerViewControllerPtr.view.tag = TAG_PLAYER_VIEW;
+    
+    UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"Восст. пок."
+                                                                    style:UIBarButtonItemStyleDone target:self action:@selector(restoreCompletedTransactions)];
+    self.navigationItem.rightBarButtonItem = rightButton;
+
     
     // init controls
     lbTimePassedPtr = lbTimePassed;
