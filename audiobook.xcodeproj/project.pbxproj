@@ -71,6 +71,8 @@
 		CE82EA8B16BA7CA400F33698 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE82EA8A16BA7CA400F33698 /* CFNetwork.framework */; };
 		CE82EA8D16BA7CD600F33698 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE82EA8C16BA7CD600F33698 /* MobileCoreServices.framework */; };
 		CE82EA8F16BA7D2D00F33698 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE82EA8E16BA7D2D00F33698 /* libz.dylib */; };
+		CE85BD641706F3EE000832E6 /* InfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE85BD621706F3EE000832E6 /* InfoViewController.m */; };
+		CE85BD651706F3EE000832E6 /* InfoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE85BD631706F3EE000832E6 /* InfoViewController.xib */; };
 		CE9AC37216DA2CB60014095C /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9AC37016DA2CB60014095C /* SearchViewController.m */; };
 		CE9AC37316DA2CB60014095C /* SearchView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE9AC37116DA2CB60014095C /* SearchView.xib */; };
 		CEA3206A16EB7B4E0025555E /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA3206916EB7B4E0025555E /* StoreKit.framework */; };
@@ -221,6 +223,9 @@
 		CE82EA8A16BA7CA400F33698 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		CE82EA8C16BA7CD600F33698 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		CE82EA8E16BA7D2D00F33698 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		CE85BD611706F3EE000832E6 /* InfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfoViewController.h; sourceTree = "<group>"; };
+		CE85BD621706F3EE000832E6 /* InfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InfoViewController.m; sourceTree = "<group>"; };
+		CE85BD631706F3EE000832E6 /* InfoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InfoViewController.xib; sourceTree = "<group>"; };
 		CE9AC36F16DA2CB60014095C /* SearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchViewController.h; sourceTree = "<group>"; };
 		CE9AC37016DA2CB60014095C /* SearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchViewController.m; sourceTree = "<group>"; };
 		CE9AC37116DA2CB60014095C /* SearchView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SearchView.xib; sourceTree = "<group>"; };
@@ -309,6 +314,8 @@
 				CE0876A316EFFF5800AF56B3 /* MyViewController.m */,
 				CEA3206C16EB7C660025555E /* Myshop.h */,
 				CEA3206D16EB7C660025555E /* Myshop.m */,
+				CE85BD611706F3EE000832E6 /* InfoViewController.h */,
+				CE85BD621706F3EE000832E6 /* InfoViewController.m */,
 				CEDD9C5E16DDDFCB00AD83EB /* MyBooksView.h */,
 				CEDD9C5F16DDDFCB00AD83EB /* MyBooksView.m */,
 				CE9AC36F16DA2CB60014095C /* SearchViewController.h */,
@@ -525,6 +532,7 @@
 		CE82EA6916BA6D8400F33698 /* xibs */ = {
 			isa = PBXGroup;
 			children = (
+				CE85BD631706F3EE000832E6 /* InfoViewController.xib */,
 				CEB7789E16F3426900336C4B /* BookViewController.xib */,
 				CE08769A16EFDBD000AF56B3 /* CatalogOptionCell.xib */,
 				CEDD9C6016DDDFCB00AD83EB /* MyBooksView.xib */,
@@ -687,6 +695,7 @@
 				CEB778A416F3620900336C4B /* 30_forward.PNG in Resources */,
 				CEB1DD6416F3E58800FB259D /* 30_back@2x.PNG in Resources */,
 				CEB1DD6516F3E58800FB259D /* 30_forward@2x.PNG in Resources */,
+				CE85BD651706F3EE000832E6 /* InfoViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -747,6 +756,7 @@
 				CE0876A416EFFF5800AF56B3 /* MyViewController.m in Sources */,
 				CE0876A716F001B400AF56B3 /* MyTableViewController.m in Sources */,
 				CEB7789F16F3426900336C4B /* BookViewController.m in Sources */,
+				CE85BD641706F3EE000832E6 /* InfoViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
