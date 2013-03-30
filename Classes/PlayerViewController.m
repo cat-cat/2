@@ -34,6 +34,7 @@
 #import "MBProgressHUD.h"
 #import "Myshop.h"
 #import "BookViewController.h"
+#import "InfoViewController.h"
 
 MBProgressHUD *HUD = nil;
 PlayerViewController* PlayerViewControllerPtr = nil;
@@ -1063,10 +1064,14 @@ static Book *book;
     return returnValue;
 }
 
-- (void) restoreCompletedTransactions
+- (void) showInfo
 {
-    NSLog(@"+++initiate restoring transactions");
-    [[Myshop sharedInstance] restorePurchases];
+    InfoViewController* secondaryCtrl1 = [[InfoViewController alloc]
+                                          initWithNibName:nil
+                                          bundle:nil];
+    UINavigationController *secondaryNavigationCtrl = [[UINavigationController alloc]
+                                                       initWithRootViewController:secondaryCtrl1];
+    [self presentModalViewController:secondaryNavigationCtrl animated:YES];
 }
 
 - (void) viewDidLoad
@@ -1079,9 +1084,14 @@ static Book *book;
     PlayerViewControllerPtr = self;
     PlayerViewControllerPtr.view.tag = TAG_PLAYER_VIEW;
     
-    UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"Восст. пок."
-                                                                    style:UIBarButtonItemStyleDone target:self action:@selector(restoreCompletedTransactions)];
-    self.navigationItem.rightBarButtonItem = rightButton;
+//    UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@""
+//                                                                    style:UIBarButtonItemStyleDone target:self action:@selector(restoreCompletedTransactions)];
+//    
+//    self.navigationItem.rightBarButtonItem = rightButton;
+    
+    UIButton* infoButton = [UIButton buttonWithType:UIButtonTypeInfoDark];
+    [infoButton addTarget:self action:@selector(showInfo) forControlEvents:UIControlEventTouchUpInside];
+    self.navigationItem.rightBarButtonItem =[[UIBarButtonItem alloc] initWithCustomView:infoButton];
 
     
     // init controls

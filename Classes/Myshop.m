@@ -12,12 +12,14 @@
 #import "gs.h"
 #import "PlayerViewController.h"
 #import "MBProgressHUD.h"
+#import "ASINetworkQueue.h"
 
 @implementation Myshop
 
 // ********************** Myshop part
 MBProgressHUD *HUD2 = nil;
 //static ASIHTTPRequest* currentRequest = nil;
+static ASINetworkQueue *buyDownloadQueue;
 
 
 -(void)hideHUD
@@ -127,7 +129,10 @@ SKPaymentTransaction* currentTransaction = nil;
     NSNumber* bookfree = [NSNumber numberWithInt: free];
     [currentRequest setUserInfo:[NSDictionary dictionaryWithObjectsAndKeys:
                                  nBid, @"bid", bookfree, @"isfree",  nil]];
-    [currentRequest startAsynchronous];
+    //[currentRequest startAsynchronous];
+    [buyDownloadQueue addOperation:currentRequest];
+    [buyDownloadQueue go];
+    
     if (!HUD2) {
         HUD2 = [MBProgressHUD showHUDAddedTo:gss().navigationController.view animated:YES];
         HUD2.labelText = @"проверка книги...";
@@ -140,6 +145,7 @@ SKPaymentTransaction* currentTransaction = nil;
 // ********************** Appstore part
 - (void)paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error
 {
+    [self hideHUD];
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Восстановление покупок"
                                                     message:@"Ошибка при восстановлении покупок."
                                                    delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
@@ -150,6 +156,7 @@ SKPaymentTransaction* currentTransaction = nil;
 
 - (void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue
 {
+    [self hideHUD];
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Восстановление покупок"
                                                     message:@"Покупки восстановлены!"
                                                    delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
@@ -158,6 +165,10 @@ SKPaymentTransaction* currentTransaction = nil;
 
 -(void)restorePurchases
 {
+    if (!HUD2) {
+        HUD2 = [MBProgressHUD showHUDAddedTo:gss().navigationController.view animated:YES];
+        HUD2.labelText = @"восстановление покупок...";
+    }
     [[SKPaymentQueue defaultQueue]restoreCompletedTransactions];
 }
 
@@ -255,7 +266,11 @@ SKPaymentTransaction* currentTransaction = nil;
 {
     NSLog(@"^^^%s", __func__);
     
-
+    if ([transactions count] > 1) {
+        if (HUD2) {
+            HUD2.labelText = [NSString stringWithFormat:@"Всего покупок %d", [transactions count]];
+        }
+    }
    
     for (SKPaymentTransaction *transaction in transactions)
         
@@ -348,8 +363,11 @@ UIAlertView* alertViewToCheck = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         sharedInstance = [[Myshop alloc] init];
-        // Do any other initialisation stuff here
         
+        // Do any other initialisation stuff here
+        buyDownloadQueue = [[ASINetworkQueue alloc] init];
+        [buyDownloadQueue setShouldCancelAllRequestsOnFailure:NO];
+        buyDownloadQueue.maxConcurrentOperationCount = 1;
     });
     
     
