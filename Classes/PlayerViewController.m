@@ -232,6 +232,7 @@ enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
     NSString* chid = sPlayer.chapter;
     NSString* bid = sPlayer.bookId;
     [sPlayer myrelease];
+    sPlayer = nil;
     if (progressSliderPtr) {
         progressSliderPtr.value = 0.0;
     }
@@ -366,9 +367,9 @@ BOOL buyQueryStarted = NO;
 
 - (void)request:(ASIHTTPRequest *)request didReceiveResponseHeaders:(NSDictionary *)responseHeaders
 {
-    for (id key in responseHeaders) {
-        NSLog(@"key: %@, value: %@ \n", key, [responseHeaders objectForKey:key]);
-    }
+//    for (id key in responseHeaders) {
+//        NSLog(@"key: %@, value: %@ \n", key, [responseHeaders objectForKey:key]);
+//    }
     // [[NSFileManager defaultManager] removeItemAtPath:currentTrack.audioFilePath error:nil];
     //if(![[NSFileManager defaultManager] fileExistsAtPath:currentTrack.audioFilePath])
 }
@@ -392,7 +393,10 @@ BOOL buyQueryStarted = NO;
         {
             NeedToStartWithFistDownloadedBytes = false;
             if (sPlayer.streamer.state == AS_INITIALIZED) {
-                [PlayerViewController startPlayer];
+                if (PlayerViewControllerPtr) {
+                    [self showHUD];
+                }
+                [PlayerViewController performSelector:@selector(startPlayer) withObject:nil afterDelay:2.0];
             }
             else
                 NSLog(@"**err: player is not initialized");
@@ -860,6 +864,7 @@ static Book *book;
             progressSliderPtr.maximumValue = [self metaLengthForChapter:chid];
         
         [sPlayer myrelease];
+        sPlayer = nil;
         sPlayer = [[StreamingPlayer alloc] initPlayerWithBook:[StaticPlayer sharedInstance].bookID  chapter:chid];
         sPlayer.delegate = [StaticPlayer sharedInstance];
         [self handlePlayPause];

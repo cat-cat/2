@@ -2229,8 +2229,8 @@ cleanup:
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	@synchronized(self)
-	{
+//	@synchronized(self)
+//	{
 		if (inID == kAudioQueueProperty_IsRunning)
 		{
 			if (state == AS_STOPPING)
@@ -2264,7 +2264,7 @@ cleanup:
                 //self.aqChangedUnexpected = YES;
 			}
 		}
-	}
+//	}
 	
 	[pool release];
 }
