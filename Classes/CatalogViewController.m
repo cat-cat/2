@@ -284,7 +284,7 @@
                      " t_abooks_genres"
                      " WHERE t_genres.genre_parent_id = '%s' AND t_genres.genre_id = t_abooks_genres.genre_id"
                      " GROUP BY name"
-                     " ORDER BY  type, name DESC  LIMIT %d, %d", [parentItem UTF8String], [parentItem UTF8String], offset, limit ]];
+                     " ORDER BY  type, name  LIMIT %d, %d", [parentItem UTF8String], [parentItem UTF8String], offset, limit ]];
         
     }
     else{
@@ -302,7 +302,7 @@
                    " t_abooks_genres"
                    " WHERE t_genres.genre_parent_id = '%s' AND t_genres.genre_id = t_abooks_genres.genre_id"
                    " GROUP BY name"
-                   " ORDER BY  type, name DESC  LIMIT %d, %d", [parentItem UTF8String], [parentItem UTF8String], offset, limit];
+                   " ORDER BY  type, name  LIMIT %d, %d", [parentItem UTF8String], [parentItem UTF8String], offset, limit];
     }
     
    

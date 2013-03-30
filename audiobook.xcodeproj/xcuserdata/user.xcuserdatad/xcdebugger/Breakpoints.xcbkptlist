@@ -21,12 +21,25 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Classes/Myshop.m"
-         timestampString = "386335867.5717"
+         timestampString = "385798434.563954"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "59"
-         endingLineNumber = "59"
+         startingLineNumber = "57"
+         endingLineNumber = "57"
          landmarkName = "-requestFinished:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Classes/gs.m"
+         timestampString = "385807115.732954"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "1153"
+         endingLineNumber = "1153"
+         landmarkName = "+sharedInstance"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>
