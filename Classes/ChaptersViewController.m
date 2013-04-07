@@ -75,6 +75,24 @@ static NSString* BTN_CANCEL = @"отменить";
 //    [request setDidFailSelector:@selector(requestWentWrong:)];
     //[[GlobalSingleton sharedInstance].queue addOperation:request]; //queue is an NSOperationQueue
     [request startAsynchronous];
+    
+    
+    // Предупредить пользователя о загрузке оглавления
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Загрузка"
+                                                        message:@"Загрузка оглавления\nпожалуйста, подождите..."
+                                                       delegate:self
+                                              cancelButtonTitle:nil
+                                              otherButtonTitles:nil];
+    //[alertView show];
+    [alertView performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:YES];
+    
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 2.0 * NSEC_PER_SEC);
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        
+        [alertView dismissWithClickedButtonIndex:-1 animated:YES];
+    });
+    alertView = nil;
+
 }
 
 - (void) updateMeta:(NSString*) fileContent
