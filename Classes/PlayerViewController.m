@@ -1266,15 +1266,16 @@ static Book *book;
 //        [gss().playerButton setHidden:NO];
 //    }
     [StaticPlayer sharedInstance]. shouldShowPlayerButton = YES; // set it to initial state
-    
-    lbTimePassedPtr = nil;
-    lbTimeLeftPtr = nil;
-    progressSliderPtr = nil;
-    progressViewPtr = nil;
-    chaptersControllerPtr = nil;
-    btnPlayPtr = nil;
-    btnBuyPtr = nil;
-    toolbarPlayerPtr = nil;
+
+    // TODO: what do I need that for ? if uncomment below lines - app locks upon exiting from player. And other ui errors occure.
+//    lbTimePassedPtr = nil;
+//    lbTimeLeftPtr = nil;
+//    progressSliderPtr = nil;
+//    progressViewPtr = nil;
+//    chaptersControllerPtr = nil;
+//    btnPlayPtr = nil;
+//    btnBuyPtr = nil;
+//    toolbarPlayerPtr = nil;
 }
 
 - (void)viewDidUnload {
