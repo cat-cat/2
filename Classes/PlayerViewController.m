@@ -41,7 +41,7 @@ PlayerViewController* PlayerViewControllerPtr = nil;
 static ASIHTTPRequest* currentRequest;
 BOOL isBought = NO;
 //static int bookId;
-NSInteger trackLength = 0, trackSize = 0;
+//NSInteger trackSize = 0, metaTrackSize = 0;
 bool NeedToStartWithFistDownloadedBytes = false;
 static BOOL bindProgressVal;
 ChaptersViewController *chaptersControllerPtr;
@@ -376,19 +376,26 @@ BOOL buyQueryStarted = NO;
 
 - (void) request:(ASIHTTPRequest *)request didReceiveBytes:(unsigned long long) bytes
 {
-    //    NSLog(@"++bytes received: %lld", bytes);
+    // NSLog(@"++bytes received: %lld", bytes);
+    if (!progressViewPtr)  // if not visible then nothing calculate and display
+        return;
+
+    
     NSString* strURL = [PlayerViewController chapterIdentityFromRequest:request];
-    NSString* bid = [gss() bidFromChapterIdentity:strURL];
-    NSString* chid = [gss() chidFromChapterIdentity:strURL];
+    NSString *bid = [gss() bidFromChapterIdentity:strURL];
+    NSString *chid = [gss() chidFromChapterIdentity:strURL];
     
     float progressVal = 0.0;
     if([[StaticPlayer sharedInstance].bookID isEqualToString: bid] && [sPlayer.chapter isEqualToString:chid])
     {
-        trackLength += bytes;
-        progressVal = (float)trackLength/(float)trackSize;
-        if (progressViewPtr) {
-            progressViewPtr.progress = progressVal;
-        }
+        NSInteger trackSize = [PlayerViewController actualSizeForChapter:bid chapter:chid];            
+        
+        NSInteger metaTrackSize = [PlayerViewController metaSizeForChapter:bid chapter:chid];
+
+        //trackSize += bytes;
+        progressVal = (float)trackSize/(float)metaTrackSize;
+        progressViewPtr.progress = progressVal;
+        
         if (NeedToStartWithFistDownloadedBytes)
         {
             NeedToStartWithFistDownloadedBytes = false;
@@ -803,7 +810,18 @@ static Book *book;
 
 +(NSInteger) metaSizeForChapter:(NSString*)bid chapter:(NSString*) chid
 {
-    NSInteger returnValue = 0;
+    static NSInteger returnValue = 0;
+    
+    static NSString *prevbid = @"";
+    static NSString *prevchid = @"";
+    if (![bid isEqualToString:prevbid] || ![chid isEqualToString:prevchid]) { // retake metasize from xml for new chapter
+        prevbid = bid;
+        prevchid = chid;
+    }
+    else { // return last result
+        return returnValue;
+    }
+    
     DDXMLDocument *xmldoc = [gss() docForFile:[gss() pathForBookMeta:[StaticPlayer sharedInstance].bookID]];
     // set meta file size
     NSArray* arr1 = [gss() arrayForDoc:xmldoc xpath:[NSString stringWithFormat:@"//abook[@id='%@']/content/track[@number='%@']/file/size", [StaticPlayer sharedInstance].bookID, chid]];
@@ -834,6 +852,7 @@ static Book *book;
         NSNumber *length = [fileAttributes objectForKey:NSFileSize];
         returnValue = [length intValue];
     }
+//    NSLog(@"++actualSizeForChapter: %@:%@:%d", bid, chid, returnValue);
     return returnValue;
 }
 
@@ -841,12 +860,13 @@ static Book *book;
 {
     @synchronized(self)
     {
-        trackSize = [self metaSizeForChapter:bid chapter:chid];
+        NSInteger metaTrackSize = [self metaSizeForChapter:bid chapter:chid];
         
-        trackLength = [self actualSizeForChapter:bid chapter:chid];
+        NSInteger trackSize = [self actualSizeForChapter:bid chapter:chid];
         
-        float downloadProgress = (float)trackLength / (float)trackSize;
-        
+        float downloadProgress = (float)trackSize / (float)metaTrackSize;
+//        NSLog(@"progress val: %f", downloadProgress);
+
         return downloadProgress;
     }
 }
@@ -1007,7 +1027,6 @@ static Book *book;
             
         
         if ([bid intValue] > 0) { // if 0 - button Player clicked - use current bookID : means returning to last opened in player book
-            trackSize = 0;
             book = [gs db_GetBookWithID:[NSString stringWithFormat:@"%@",bid]];
             [StaticPlayer sharedInstance].bookID = bid;
         }
@@ -1247,17 +1266,20 @@ static Book *book;
 //        [gss().playerButton setHidden:NO];
 //    }
     [StaticPlayer sharedInstance]. shouldShowPlayerButton = YES; // set it to initial state
+    
+    lbTimePassedPtr = nil;
+    lbTimeLeftPtr = nil;
+    progressSliderPtr = nil;
+    progressViewPtr = nil;
+    chaptersControllerPtr = nil;
+    btnPlayPtr = nil;
+    btnBuyPtr = nil;
+    toolbarPlayerPtr = nil;
 }
 
 - (void)viewDidUnload {
     toolbarPlayer = nil;
     [super viewDidUnload];
-    
-    chaptersTableView = nil;
-    chaptersController = nil;
-    lbTimeLeft = nil;
-    lbTimePassed = nil;
-    progressView = nil;
 }
 
 - (NSString*)firstChapter

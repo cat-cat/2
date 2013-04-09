@@ -359,7 +359,10 @@ static NSString* BTN_CANCEL = @"отменить";
     NSString* chid = [gss() chidFromChapterIdentity:chapterIdentity];
     
     float progress = [PlayerViewController calcDownProgressForBook:[StaticPlayer sharedInstance].bookID chapter:chid];
-    [self setProgressForChapter:chid value: progress];
+    //[self setProgressForChapter:chid value: progress];
+//    UITableViewCell* cell = [self findCellByChapter:chid];
+//    UIProgressView* progressView = (UIProgressView*) [cell viewWithTag:3];
+//    float progress = progressView.progress;
     
     if (progress < 1.0) {
         [self setBtnTitleForChapter:chid title:BTN_DOWNLOAD];
