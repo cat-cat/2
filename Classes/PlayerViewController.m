@@ -133,7 +133,7 @@ enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
 //    
 //	success = removeFolder("tmp/book/ca");
 //	if(folder.notexist or success)
-//		db.mybooks.remove(bid);    
+//		db.mybooks.remove(bid);
 }
 
 +(void) buyBook
@@ -148,7 +148,7 @@ enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
 
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Покупка книги"
                                                     message:@"Книга куплена, поздравляем!"
-                                                   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                                                   delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
     [alert show];
 }
 
@@ -256,7 +256,7 @@ enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
         {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Ошибка сети"
                                                             message:@"Для получения бесплатной книги нужен интернет. Проверьте соединение."
-                                                           delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                                                           delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
             [alert show];
             
             return;
@@ -920,7 +920,7 @@ static Book *book;
     {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Сообщение"
                                                         message:@"Для загрузки главы нужен интернет. Проверьте соединение."
-                                                       delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                                                       delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
         [alert show];
         
         return;
@@ -997,7 +997,7 @@ static Book *book;
     {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Сообщение"
                                                         message:@"Для загрузки главы нужен интернет. Проверьте соединение."
-                                                       delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                                                       delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
         [alert show];
         
         return;
@@ -1300,7 +1300,7 @@ static Book *book;
 {
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Информация"
                                                         message:msg
-                                                       delegate:self
+                                                       delegate:nil
                                               cancelButtonTitle:nil
                                               otherButtonTitles:nil];
     //[alertView show];
