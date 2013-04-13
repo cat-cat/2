@@ -25,6 +25,7 @@ static int TAG_PLAYER_VIEW = 20;
     UINavigationController *navigationController;
 //    ASINetworkQueue* queue;
 }
++(NSString*)nibFor:(NSString*)nibname;
 +(BOOL)canGetMetaForBook:(NSString*)bookId;
 + (bool) nfInternetAvailable:(NSNotification *)notice;
 +(UITableViewCell*) catalogCellForBook:(CatalogItem*)ci tableView:(UITableView*)tableView;
@@ -35,7 +36,7 @@ static int TAG_PLAYER_VIEW = 20;
 //+(NSArray*)srvArrForUrl:(NSString*)strWithFormat args:(NSArray*)arguments xpath:(NSString*)xp message:(NSString*)msg;
 +(NSArray*)srvArrForUrl:(NSString*)strUrl xpath:(NSString*)xp message:(NSString*)msg;
 -(NSString*)pathForBuy:(NSString*)bid;
-//+(NSString*)md5:(NSString*)object;
++(NSString*)md5:(NSString*)object;
 -(NSString*)bidFromChapterIdentity:(NSString*)ci;
 
 -(NSString*)chidFromChapterIdentity:(NSString*)ci;

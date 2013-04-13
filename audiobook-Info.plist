@@ -14,6 +14,8 @@
 		<string>Default@2x.png</string>
 		<string>57-1.PNG</string>
 		<string>114.PNG</string>
+		<string>72.png</string>
+		<string>144.PNG</string>
 	</array>
 	<key>CFBundleIcons</key>
 	<dict>
@@ -25,6 +27,8 @@
 				<string>Default@2x.png</string>
 				<string>57-1.PNG</string>
 				<string>114.PNG</string>
+				<string>72.png</string>
+				<string>144.PNG</string>
 			</array>
 			<key>UIPrerenderedIcon</key>
 			<true/>
@@ -39,11 +43,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>5.7</string>
+	<string>5.9</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>5.7</string>
+	<string>5.9</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIBackgroundModes</key>

@@ -8,6 +8,7 @@
 
 #import "InfoViewController.h"
 #import "Myshop.h"
+#import "gs.h"
 
 @interface InfoViewController ()
 
@@ -20,7 +21,7 @@
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    self = [super initWithNibName:[gs nibFor:@"InfoViewController" ] bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
         

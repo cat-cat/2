@@ -22,7 +22,7 @@
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil bookId:(NSString*)bid
 {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    self = [super initWithNibName:[gs nibFor:@"BookViewController" ] bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
         bookId = [[NSString alloc] initWithString:bid];

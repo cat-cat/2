@@ -197,6 +197,63 @@ SKPaymentTransaction* currentTransaction = nil;
     HUD2.labelText = @"проверка книги...";
 }
 
+- (NSString *)base64:(NSData *)dt
+{
+    const uint8_t *input = (const uint8_t *)[dt bytes];
+    NSInteger length = [dt length];
+    
+    static char table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+    
+    NSMutableData *data = [NSMutableData dataWithLength:((length + 2) / 3) * 4];
+    uint8_t *output = (uint8_t *)data.mutableBytes;
+    
+    NSInteger i;
+    for(i = 0; i < length; i += 3)
+    {
+        NSInteger value = 0;
+        NSInteger j;
+        for(j = i; j < (i + 3); j ++)
+        {
+            value <<= 8;
+            
+            if(j < length)
+            {
+                value |= (0xFF & input[j]);
+            }
+        }
+        
+        NSInteger theIndex = (i / 3) * 4;
+        output[theIndex + 0] =                    table[(value >> 18) & 0x3F];
+        output[theIndex + 1] =                    table[(value >> 12) & 0x3F];
+        output[theIndex + 2] = (i + 1) < length ? table[(value >> 6)  & 0x3F] : '=';
+        output[theIndex + 3] = (i + 2) < length ? table[(value >> 0)  & 0x3F] : '=';
+    }
+    
+    return [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+}
+
+- (BOOL)verifyReceipt:(SKPaymentTransaction *)transaction {
+    
+    @synchronized(self)
+    {
+        if (HUD2) {
+            HUD2.labelText = @"получаем книгу...";
+        }
+        
+        NSString *tr = [self base64:transaction.transactionReceipt];
+        
+        NSString *completeString = [NSString stringWithFormat:@"http://book-smile.ru/validateaction.php?receipt=%@&sandbox=%s",tr,"0"];
+//        NSString *completeString = [NSString stringWithFormat:@"http://192.168.0.100:8080/validateaction.php?receipt=%@&sandbox=0", tr];
+        NSURL *urlForValidation = [NSURL URLWithString:completeString];
+        ASIHTTPRequest* currentRequest = [ASIHTTPRequest requestWithURL:urlForValidation];
+        [currentRequest startSynchronous];
+        NSString *responseString = [currentRequest.responseString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+
+        NSString *secretString = [gs md5:[NSString stringWithFormat:@"er45fm9-%@",tr]];
+        return [responseString isEqualToString:secretString];
+    }
+}
+
 //NSArray* myProducts;
 - (void) completeTransaction: (SKPaymentTransaction *)transaction
 
@@ -206,6 +263,14 @@ SKPaymentTransaction* currentTransaction = nil;
     // Your application should implement these two methods.
     
     //[self recordTransaction:transaction];
+    
+    if(![self verifyReceipt:transaction])
+    {
+        NSLog(@"**err: invalid transaction");
+        [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
+        [self hideHUD];
+        return;
+    }
     
     [[Myshop sharedInstance] startWithBook:transaction.payment.productIdentifier isfree:NO];
     

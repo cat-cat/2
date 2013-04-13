@@ -33,10 +33,19 @@
 static int connectionType;
 static Reachability* hostReachable;
 //static CatalogViewController* delegate;
-//static NSString* AppConnectionHost = @"www.librofon.ru";
 static NSString* databaseName;
 #define ReachableViaWiFiNetwork          2
 #define ReachableDirectWWAN               (1 << 18)
+
++(NSString*)nibFor:(NSString*)nibname
+{
+    NSString* returnName = nibname;
+    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+        returnName = [NSString stringWithFormat:@"w%@",nibname];
+    
+    return returnName;
+}
 
 +(BOOL)canGetMetaForBook:(NSString*)bookId
 {
@@ -1220,22 +1229,22 @@ static NSString* databaseName;
     return sharedInstance;
 }
 
-//+ (NSString*)md5:(NSString*)object
-//{
-//    const char *object_str = [object UTF8String];
-//    unsigned char result[CC_MD5_DIGEST_LENGTH];
-//	
-//    CC_MD5(object_str, strlen(object_str), result);
-//	
-//    NSMutableString *hash = [NSMutableString string];
-//	
-//    for (int i = 0; i < CC_MD5_DIGEST_LENGTH; i++)
-//	{
-//        [hash appendFormat:@"%02X", result[i]];
-//	}
-//	
-//    return [hash lowercaseString];
-//}
++ (NSString*)md5:(NSString*)object
+{
+    const char *object_str = [object UTF8String];
+    unsigned char result[CC_MD5_DIGEST_LENGTH];
+	
+    CC_MD5(object_str, strlen(object_str), result);
+	
+    NSMutableString *hash = [NSMutableString string];
+	
+    for (int i = 0; i < CC_MD5_DIGEST_LENGTH; i++)
+	{
+        [hash appendFormat:@"%02X", result[i]];
+	}
+	
+    return [hash lowercaseString];
+}
 
 //+(NSArray*)srvArrForUrl:(NSString*)strWithFormat args:(NSArray*)arguments xpath:(NSString*)xp message:(NSString*)msg
 +(NSArray*)srvArrForUrl:(NSString*)strUrl xpath:(NSString*)xp message:(NSString*)msg
@@ -1271,7 +1280,7 @@ static NSString* databaseName;
     static NSString *MyIdentifier = @"CatalogBookCell";
     UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
     if (cell == nil) {
-        CatalogCellController* c = [[CatalogCellController alloc] init];
+        CatalogCellController* c = [[CatalogCellController alloc] initWithNibName:[gs nibFor:@"CatalogCell"] bundle:nil];
         cell = (UITableViewCell *) [c view];
     }
     cell.accessoryType = UITableViewCellAccessoryNone;

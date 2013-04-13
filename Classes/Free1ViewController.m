@@ -69,7 +69,7 @@ static ASIHTTPRequest* currentRequest = nil;
     
     if (str && [str rangeOfString:@"yes"].location != NSNotFound) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Поздравляем!"
-                                                        message:@"Проверка кода успешна! Теперь вы можете выбрать для бесплатного прослушивания 1 любую книгу."
+                                                        message:@"Вы можете бесплатно получить книгу."
                                                        delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
         [alert show];
     }

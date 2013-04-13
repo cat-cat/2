@@ -47,11 +47,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Classes/PlayerViewController.m"
-         timestampString = "387155241.058767"
+         timestampString = "387392071.365891"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "813"
-         endingLineNumber = "813"
+         startingLineNumber = "815"
+         endingLineNumber = "815"
          landmarkName = "+metaSizeForChapter:chapter:"
          landmarkType = "5">
       </FileBreakpoint>

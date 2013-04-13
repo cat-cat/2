@@ -84,7 +84,7 @@
     if (sv)
         sv = nil;
     
-    sv = [[SearchViewController alloc] initWithNibName:@"SearchView" bundle:nil];
+    sv = [[SearchViewController alloc] initWithNibName:[gs nibFor:@"SearchView"]  bundle:nil];
     //searchViewController.listContent = genres;
     [gss().navigationController pushViewController:sv animated:YES];
 }
@@ -107,7 +107,7 @@
         static NSString *MyIdentifier = @"CatalogOptionCell";
         cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
         if (cell == nil) {
-            CatalogOptionCell* c = [[CatalogOptionCell alloc] init];
+            CatalogOptionCell* c = [[CatalogOptionCell alloc] initWithNibName:[gs nibFor:@"CatalogOptionCell"] bundle:nil];
             cell = (UITableViewCell *) [c view];
         }
         
@@ -188,7 +188,7 @@
             if (sv)
                 sv = nil;
             
-            sv = [[SearchViewController alloc] initWithNibName:@"SearchView" bundle:nil];
+            sv = [[SearchViewController alloc] initWithNibName:[gs nibFor:@"SearchView"] bundle:nil];
             //searchViewController.listContent = genres;
             [gss().navigationController pushViewController:sv animated:YES];
         }

@@ -211,6 +211,8 @@ enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
     NSLog(@"++ player IsWaiting");
     if (PlayerViewControllerPtr) {
         [self showHUD];
+        HUD.labelText = @"пожалуйста, подождите...";
+        [self performSelector:@selector(hideHUD) withObject:nil afterDelay:5];
     }
 }
 - (void) streamingPlayerDidStartPlaying:(StreamingPlayer *) anPlayer {
@@ -293,7 +295,7 @@ BOOL buyQueryStarted = NO;
                 case 0: // should register email and promocode first
                 {
                     self.shouldShowPlayerButton = NO;
-                    Free1ViewController* vc = [[Free1ViewController alloc] init];
+                    Free1ViewController* vc = [[Free1ViewController alloc] initWithNibName:[gs nibFor: @"Free1ViewController"] bundle:nil];
                     [[gss() navigationController] pushViewController:vc animated:YES];
                     break;
                 }
@@ -910,6 +912,8 @@ static Book *book;
         if ([[[StaticPlayer sharedInstance] downq] count] == 1) {
             [self startDownloadBook:bid chapter:chid];
         }
+        else
+         [self showAlertAtTimer:@"добавлено в очередь загрузки" delay:1];        
     }
 }
 
@@ -1022,7 +1026,7 @@ static Book *book;
 
 - (id)initWithBook:(NSString*)bid
 {
-    if (self = [super init]) {
+    if (self = [super initWithNibName:[gs nibFor:@"PlayerView"] bundle:nil]) {
         // custom initialization
             
         
