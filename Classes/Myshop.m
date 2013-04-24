@@ -316,7 +316,7 @@ SKPaymentTransaction* currentTransaction = nil;
         
         // Optionally, display an error here.
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Покупка книги"
-                                                        message:@"книга не куплена :("
+                                                        message:@"Покупка отменена."
                                                        delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
         [alert show];
         

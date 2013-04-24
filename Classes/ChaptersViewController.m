@@ -107,9 +107,9 @@ static NSString* BTN_CANCEL = @"отменить";
     [chapters removeAllObjects];
     for (DDXMLElement *item in items) {
         //NSLog(@"++item contents: %s", [[item XMLString] UTF8String]);
-        doc = [doc initWithXMLString:[item XMLString] options:0 error:&error];
-        NSString *cId = [[[doc nodesForXPath:@"//@number" error:&error] objectAtIndex:0] stringValue];
-        NSString *cName = [[[doc nodesForXPath:@"//name" error:&error] objectAtIndex:0] stringValue];
+        //doc = [doc initWithXMLString:[item XMLString] options:0 error:&error];
+        NSString *cId = [[[item nodesForXPath:@"@number" error:&error] objectAtIndex:0] stringValue];
+        NSString *cName = [[[item nodesForXPath:@"name" error:&error] objectAtIndex:0] stringValue];
         Chapter* c = [[Chapter alloc] init];
         c.name = cName;
         c.cId = cId;
