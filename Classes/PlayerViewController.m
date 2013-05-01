@@ -235,6 +235,7 @@ enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
     NSString* bid = sPlayer.bookId;
     [sPlayer myrelease];
     sPlayer = nil;
+    double stopValue = progressSliderPtr.value;
     if (progressSliderPtr) {
         progressSliderPtr.value = 0.0;
     }
@@ -246,6 +247,14 @@ enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
     
     if (PlayerViewControllerPtr) {
         [self hideHUD];
+    }
+    
+    // create a standardUserDefaults variable
+    NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];
+    // getting an NSString object
+    bool autoplay = [standardUserDefaults boolForKey:@"autoplay"];
+    if (stopValue==progressSliderPtr.maximumValue&&autoplay) {
+        [chaptersControllerPtr next:NULL];
     }
 }
 

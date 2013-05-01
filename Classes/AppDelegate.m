@@ -142,6 +142,11 @@ NSTimer *backgroundTimer;
     //[GAI sharedInstance].debug = YES;
     // Create tracker instance.
     id<GAITracker> tracker = [[GAI sharedInstance] trackerWithTrackingId:@"UA-39335784-1"];
+    
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    if (![ud objectForKey:@"autoplay"]) {
+        [ud setBool:YES forKey:@"autoplay"];
+    }
 
 }
 

@@ -10,5 +10,7 @@
 
 @interface InfoViewController : UIViewController
 
+@property (strong, nonatomic) IBOutlet UISwitch *switchAutoPlay;
 - (IBAction)btnRestorePurchasesClick:(UIButton *)sender;
+- (IBAction)switchAutoPlayValueChanged:(UISwitch *)sender;
 @end

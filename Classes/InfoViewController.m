@@ -38,6 +38,11 @@
     // Do any additional setup after loading the view from its nib.
     self.title = @"Информация";
 
+    // create a standardUserDefaults variable
+    NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];
+    // getting an NSString object
+    bool myBool = [standardUserDefaults boolForKey:@"autoplay"];
+    [self.switchAutoPlay setOn:myBool animated:YES];
 }
 
 - (void)didReceiveMemoryWarning
@@ -49,5 +54,20 @@
 - (IBAction)btnRestorePurchasesClick:(UIButton *)sender {
     [self dismissModalViewControllerAnimated:YES];
     [[Myshop sharedInstance] restorePurchases];
+}
+
+- (IBAction)switchAutoPlayValueChanged:(UISwitch *)sender {
+    // create a standardUserDefaults variable
+    NSUserDefaults * standardUserDefaults = [NSUserDefaults standardUserDefaults];
+    
+    [standardUserDefaults setBool:self.switchAutoPlay.on forKey:@"autoplay"];
+
+    // synchronize the settings
+    [standardUserDefaults synchronize];
+}
+
+- (void)viewDidUnload {
+    [self setSwitchAutoPlay:nil];
+    [super viewDidUnload];
 }
 @end

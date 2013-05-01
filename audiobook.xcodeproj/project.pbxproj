@@ -389,12 +389,6 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				CE52A7F5171A10B2006F1D61 /* 144.PNG */,
-				CE52A7F1171A0E42006F1D61 /* 72.png */,
-				CE52A7EF171A0D07006F1D61 /* Default-Landscape@2x~ipad.png */,
-				CE52A7ED171A0CE4006F1D61 /* Default-Landscape~ipad.png */,
-				CE52A7EB171A0CC9006F1D61 /* Default-Portrait@2x~ipad.png */,
-				CE52A7E9171A0CC2006F1D61 /* Default-Portrait~ipad.png */,
 				8D1107310486CEB800E47090 /* audiobook-Info.plist */,
 				CE82EA6916BA6D8400F33698 /* xibs */,
 				080E96DDFE201D6D7F000001 /* Classes */,
@@ -546,6 +540,12 @@
 		CE17B28A16C2794300D0FB36 /* img */ = {
 			isa = PBXGroup;
 			children = (
+				CE52A7F5171A10B2006F1D61 /* 144.PNG */,
+				CE52A7F1171A0E42006F1D61 /* 72.png */,
+				CE52A7EF171A0D07006F1D61 /* Default-Landscape@2x~ipad.png */,
+				CE52A7ED171A0CE4006F1D61 /* Default-Landscape~ipad.png */,
+				CE52A7EB171A0CC9006F1D61 /* Default-Portrait@2x~ipad.png */,
+				CE52A7E9171A0CC2006F1D61 /* Default-Portrait~ipad.png */,
 				CE0C419716EE4343008E12E6 /* 57-1.PNG */,
 				CE0C419516EE433C008E12E6 /* 114.PNG */,
 				CE7FD1C216EE33C30024E589 /* Default-568h@2x.png */,
