@@ -62,7 +62,7 @@ SKPaymentTransaction* currentTransaction = nil;
     {
         int isfree = [[request.userInfo valueForKey:@"isfree"] intValue];
         if (isfree) {
-            NSString *devid = [[UIDevice currentDevice] uniqueIdentifier];
+            NSString *devid = [OpenUDID value];
             NSArray *arr = [gs srvArrForUrl:[NSString stringWithFormat:@"http://%@/free1closecode.php?dev=%@&bookid=%@", BookHost, devid,[request.userInfo objectForKey:@"bid" ]] xpath:@"//canuse" message:[NSString stringWithFormat:@"**err:unable to request success to close code: %s", __func__ ]];
             NSString* canuse = [arr objectAtIndex:0];
             NSLog(@"++close code: %@", canuse);
@@ -105,7 +105,7 @@ SKPaymentTransaction* currentTransaction = nil;
 //    }
     
     // create main request
-    NSString *devid =[[UIDevice currentDevice] uniqueIdentifier];
+    NSString *devid =[OpenUDID value];
     NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/buy.php?bid=%@&dev=%@&bt=1", BookHost, bid, devid]];
     ASIHTTPRequest* currentRequest = [ASIHTTPRequest requestWithURL:url];
     NSString *downloadPath = [gss() pathForBuy:bid];

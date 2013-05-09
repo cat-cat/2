@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <sqlite3.h>
 #import "GAI.h"
+#import "OpenUDID.h"
 @class CatalogItem;
 @class DDXMLDocument;
 @class ASINetworkQueue;

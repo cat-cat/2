@@ -498,7 +498,7 @@ static NSString* databaseName;
     
     //@synchronized(self) {
         
-        NSString *devid = [[UIDevice currentDevice] uniqueIdentifier];
+        NSString *devid = [OpenUDID value];
         NSString* updateid = [self db_GetLastUpdate];
         DDXMLDocument* doc = [gs docForPage:[NSString stringWithFormat:@"update.php?dev=%@&updateid=%@", devid, updateid]];
         NSArray* ar = [gss() arrayForDoc:doc xpath:@"//sql"];

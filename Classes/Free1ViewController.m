@@ -144,7 +144,7 @@ static ASIHTTPRequest* currentRequest = nil;
     }
     
     // create main request
-    NSString *devid =  [[UIDevice currentDevice] uniqueIdentifier];
+    NSString *devid =  [OpenUDID value];
     NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/free1getcode.php?dev=%@&email=%@", BookHost, devid, txtEmail.text]];
     currentRequest = [ASIHTTPRequest requestWithURL:url];
     [currentRequest setDelegate:self];
@@ -161,7 +161,7 @@ static ASIHTTPRequest* currentRequest = nil;
     }
     
     // create main request
-    NSString *devid = [[UIDevice currentDevice] uniqueIdentifier];
+    NSString *devid = [OpenUDID value];
     NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/free1setcode.php?dev=%@&email=%@&code5=%@", BookHost, devid, txtEmail.text, txtCode.text]];
     currentRequest = [ASIHTTPRequest requestWithURL:url];
     [currentRequest setDelegate:self];

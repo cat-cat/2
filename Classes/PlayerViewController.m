@@ -287,7 +287,7 @@ BOOL buyQueryStarted = NO;
         case BB_GETFREE:
         {
             // TODO: check inet, then loading screen
-            NSString *devid = [[UIDevice currentDevice] uniqueIdentifier];
+            NSString *devid = [OpenUDID value];
             NSArray *arr = [gs srvArrForUrl:[NSString stringWithFormat:@"http://%@/free1checkcode.php?dev=%@", BookHost, devid] xpath:@"//freeflag" message:[NSString stringWithFormat:@"unable to get freeflag: %s", __func__ ]];
             int freeflag = [[arr objectAtIndex:0] intValue];
 
