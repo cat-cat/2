@@ -52,7 +52,8 @@ UIBarButtonItem* btnBuyPtr;
 UIToolbar* toolbarPlayerPtr;
 
 @implementation StaticPlayer
-enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
+//enum BuyButtons {BB_BUY, BB_GETFREE, BB_CANCEL};
+enum BuyButtons {BB_BUY, BB_CANCEL, BB_GETFREE};
 
 -(void)goVote:(id)sender
 {
@@ -348,7 +349,7 @@ BOOL buyQueryStarted = NO;
         float actual = anProgress;
         float max = progressSliderPtr.maximumValue;
         float procSize = (actual / max) * 100;
-        if (procSize > 70.0 && anProgress > 350.0 && [sPlayer.streamer isPlaying] && !buyQueryStarted) {
+        if (procSize > 70.0 && anProgress > 25.0 && [sPlayer.streamer isPlaying] && !buyQueryStarted) {
             buyQueryStarted = YES;
             if ([sPlayer.streamer isPlaying]) {
                 [sPlayer.streamer stop];   
@@ -357,7 +358,7 @@ BOOL buyQueryStarted = NO;
             // show action sheet
             UIActionSheet *
             actionSheet = [[UIActionSheet alloc]
-                           initWithTitle:@"Ограничение прослушивания книги" delegate:self cancelButtonTitle:@"Отмена" destructiveButtonTitle:nil otherButtonTitles:@"Купить", @"Получить бесплатно", nil];
+                           initWithTitle:@"Ограничение прослушивания книги" delegate:self cancelButtonTitle:@"Отмена" destructiveButtonTitle:nil otherButtonTitles:@"Купить"/*, @"Получить бесплатно"*/, nil];
             [actionSheet showInView:PlayerViewControllerPtr.view];
         }
 //        int length = [self metaLengthForChapter:sPlayer.chapter];
