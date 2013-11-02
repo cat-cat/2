@@ -38,6 +38,9 @@
 {
     [super viewDidLoad];
     
+    if ([self respondsToSelector:@selector(edgesForExtendedLayout)])
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+    
     // Do any additional setup after loading the view from its nib.
     UIImageView* iv = (UIImageView*) [self.view viewWithTag:10];
     //AsyncImageView* iv = (AsyncImageView*) [cell viewWithTag:3];

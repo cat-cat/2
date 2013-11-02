@@ -30,6 +30,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    if ([self respondsToSelector:@selector(edgesForExtendedLayout)])
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+    
     self.title = @"Мои книги";
 
     // Uncomment the following line to preserve selection between presentations.

@@ -27,6 +27,7 @@
         //	window = [[UIWindow alloc] initWithFrame:[[UIScreen  mainScreen] bounds]] ;
         CatalogViewController *genresViewController = [[CatalogViewController alloc] initWithStyle:UITableViewStylePlain andParentGenre:@"-1"];
         gss().navigationController = [[UINavigationController alloc] initWithRootViewController:genresViewController];
+        gss().navigationController.navigationBar.translucent = NO;
 
         
         //[gss().navigationController.navigationBar setBarStyle:UIBarStyleBlack];

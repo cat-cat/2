@@ -1109,6 +1109,7 @@ static Book *book;
                                           bundle:nil];
     UINavigationController *secondaryNavigationCtrl = [[UINavigationController alloc]
                                                        initWithRootViewController:secondaryCtrl1];
+    secondaryNavigationCtrl.navigationBar.translucent = NO;
     [self presentModalViewController:secondaryNavigationCtrl animated:YES];
 }
 
@@ -1118,6 +1119,10 @@ static Book *book;
     [StaticPlayer sharedInstance]. shouldShowPlayerButton = NO;
 
     [super viewDidLoad];
+    
+    if ([self respondsToSelector:@selector(edgesForExtendedLayout)])
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+    
     
     PlayerViewControllerPtr = self;
     PlayerViewControllerPtr.view.tag = TAG_PLAYER_VIEW;

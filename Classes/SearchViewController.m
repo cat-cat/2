@@ -132,6 +132,10 @@
 
 - (void)viewDidLoad
 {
+    
+    if ([self respondsToSelector:@selector(edgesForExtendedLayout)])
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+    
 	self.title = @"Поиск";
     // get data from database
     self.listContent = [[NSMutableArray alloc] initWithArray:[self db_GetBooksWithScope:@"Все" searchPhrase:@""]];

@@ -184,6 +184,10 @@ static ASIHTTPRequest* currentRequest = nil;
 {
     [super viewDidLoad];
     
+    if ([self respondsToSelector:@selector(edgesForExtendedLayout)])
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+    
+    
     // create a standardUserDefaults variable
     NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];    
     // getting an NSString object

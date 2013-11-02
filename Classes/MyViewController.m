@@ -34,7 +34,11 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view.
+	
+    // Do any additional setup after loading the view.
+    if ([self respondsToSelector:@selector(edgesForExtendedLayout)])
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+    
     
     if ([StaticPlayer sharedInstance].shouldShowPlayerButton) {
         UIBarButtonItem *rightButton = [[UIBarButtonItem alloc]
