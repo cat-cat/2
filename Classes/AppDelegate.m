@@ -83,7 +83,7 @@ NSTimer *backgroundTimer;
 	mainViewController = [[MainViewController alloc]
                      initWithMessage:@"Triangle"
                      andImage:[UIImage imageNamed:@"tri.png"]];
-	mainViewController.title =  @"BookSmile - Каталог";
+	mainViewController.title =  @"Каталог";
     // init main navigation controller in catalogViewController as well
     
 //	viewController2 = [[CDBViewController alloc]

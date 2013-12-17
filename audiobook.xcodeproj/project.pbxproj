@@ -839,7 +839,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Boris Elenin";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -855,7 +855,7 @@
 					"\"$(SRCROOT)/Library\"",
 				);
 				PRODUCT_NAME = audiobook;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "C52B4E5E-48E0-416F-B2FA-C48F5041D07D";
 				RUN_CLANG_STATIC_ANALYZER = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -867,7 +867,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Boris Elenin";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = audiobook_Prefix.pch;
@@ -881,7 +881,7 @@
 					"\"$(SRCROOT)/Library\"",
 				);
 				PRODUCT_NAME = audiobook;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "C52B4E5E-48E0-416F-B2FA-C48F5041D07D";
 				RUN_CLANG_STATIC_ANALYZER = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
