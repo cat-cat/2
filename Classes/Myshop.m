@@ -10,7 +10,7 @@
 #import <StoreKit/StoreKit.h>
 #import "ASIHTTPRequest.h"
 #import "gs.h"
-#import "PlayerViewController.h"
+#import "PlayerViewController2.h"
 #import "MBProgressHUD.h"
 #import "ASINetworkQueue.h"
 
@@ -74,7 +74,7 @@ SKPaymentTransaction* currentTransaction = nil;
         if (currentTransaction) {
             [[SKPaymentQueue defaultQueue] finishTransaction: currentTransaction];
             currentTransaction = nil;
-            [StaticPlayer buyBook];
+            [StaticPlayer2 buyBook];
         }
         
     }
@@ -175,12 +175,28 @@ SKPaymentTransaction* currentTransaction = nil;
 
 -(void) requestProductData:(NSString*)kMyFeatureIdentifier
 {
+    // if book available for sale ?
+    NSString *completeString = [NSString stringWithFormat:@"http://%@/check_buy_book.php?bookId=%@",BookHost, kMyFeatureIdentifier];
+    NSURL *urlForCheck = [NSURL URLWithString:completeString];
+    ASIHTTPRequest* currentRequest = [ASIHTTPRequest requestWithURL:urlForCheck];
+    [currentRequest startSynchronous];
+    NSString *responseString = [currentRequest.responseString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    if (![responseString isEqualToString:@"ok"]) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Покупка книги"
+                                                        message:@"Покупка данной книги временно не доступна, попробуйте произвести покупку позже."
+                                                       delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        [alert show];
+        
+        return;
+    }
+
+    
     NSLog(@"^^^ %s %@", __func__, kMyFeatureIdentifier);
    
     if (![SKPaymentQueue canMakePayments]) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Покупка книги"
                                                         message:@"Книга не куплена. Возможность покупок отключена в настройках вашего айфона/айпода/айпада."
-                                                       delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                                                       delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
         [alert show];
         
         return;
@@ -232,7 +248,7 @@ SKPaymentTransaction* currentTransaction = nil;
     return [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
 }
 
-- (BOOL)verifyReceipt:(SKPaymentTransaction *)transaction {
+- (BOOL)verifyReceipt:(SKPaymentTransaction *)transaction bookId:(NSString*)bookId devId:(NSString*)devid {
     
     @synchronized(self)
     {
@@ -242,8 +258,7 @@ SKPaymentTransaction* currentTransaction = nil;
         
         NSString *tr = [self base64:transaction.transactionReceipt];
         
-        NSString *completeString = [NSString stringWithFormat:@"http://book-smile.ru/validateaction.php?receipt=%@&sandbox=%s",tr,"0"];
-//        NSString *completeString = [NSString stringWithFormat:@"http://192.168.0.100:8080/validateaction.php?receipt=%@&sandbox=0", tr];
+        NSString *completeString = [NSString stringWithFormat:@"http://%@/validateaction.php?receipt=%@&sandbox=%s&bid=%@&devid=%@",BookHost,tr,"0",bookId,devid];
         NSURL *urlForValidation = [NSURL URLWithString:completeString];
         ASIHTTPRequest* currentRequest = [ASIHTTPRequest requestWithURL:urlForValidation];
         [currentRequest startSynchronous];
@@ -263,8 +278,8 @@ SKPaymentTransaction* currentTransaction = nil;
     // Your application should implement these two methods.
     
     //[self recordTransaction:transaction];
-    
-    if(![self verifyReceipt:transaction])
+    NSString *devid =[OpenUDID value];
+    if(![self verifyReceipt:transaction bookId:(NSString*)transaction.payment.productIdentifier devId:(NSString*)devid])
     {
         NSLog(@"**err: invalid transaction");
         [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
@@ -374,7 +389,7 @@ SKPaymentTransaction* currentTransaction = nil;
 NSString* lastInvalidProductId = nil;
 UIAlertView* alertViewToCheck = nil;
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-	if (buttonIndex == 0 && alertViewToCheck == alertView) {
+	if (buttonIndex == 1 && alertViewToCheck == alertView) {
 		[self requestProductData:lastInvalidProductId];
         lastInvalidProductId = nil;
 	}
@@ -416,7 +431,7 @@ UIAlertView* alertViewToCheck = nil;
         {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Ошибка сервера"
                                                             message:@"Книга не куплена."
-                                                           delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                                                           delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
             [alert show];
         }
     }

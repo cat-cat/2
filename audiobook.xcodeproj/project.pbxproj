@@ -22,7 +22,7 @@
 		8E71F3DF1600BEAC00639B4D /* Book.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E71F3DE1600BEAC00639B4D /* Book.m */; };
 		8EC60C4D15F623A600D34892 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8EC60C4C15F623A600D34892 /* MainViewController.m */; };
 		8EC60C5115F62A3400D34892 /* CatalogViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8EC60C5015F62A3400D34892 /* CatalogViewController.m */; };
-		8ED3BCA715F798E800326459 /* database.db in Resources */ = {isa = PBXBuildFile; fileRef = 8ED3BCA615F798E800326459 /* database.db */; };
+		8ED3BCA715F798E800326459 /* database_old.db in Resources */ = {isa = PBXBuildFile; fileRef = 8ED3BCA615F798E800326459 /* database_old.db */; };
 		8ED3BCB815F7A5E300326459 /* StandardPaths.m in Sources */ = {isa = PBXBuildFile; fileRef = 8ED3BCB715F7A5E300326459 /* StandardPaths.m */; };
 		8ED3BCBF15F8E9C100326459 /* CatalogItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 8ED3BCBE15F8E9C100326459 /* CatalogItem.m */; };
 		8ED3BCC315FA4B7200326459 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 8ED3BCC215FA4B7200326459 /* Default.png */; };
@@ -103,6 +103,8 @@
 		CEC6416416BC0B4800AC325F /* AudioStreamer.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC6416116BC0B4800AC325F /* AudioStreamer.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		CEC6416516BC0B4800AC325F /* StreamingPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC6416316BC0B4800AC325F /* StreamingPlayer.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		CEC6416A16BC0D6200AC325F /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC6416916BC0D6200AC325F /* AudioToolbox.framework */; };
+		CECAEDD718C2780F00B2A61D /* database_lrs.db in Resources */ = {isa = PBXBuildFile; fileRef = CECAEDD618C2780F00B2A61D /* database_lrs.db */; };
+		CECAEDDA18C3D97300B2A61D /* PlayerViewController2.m in Sources */ = {isa = PBXBuildFile; fileRef = CECAEDD918C3D97300B2A61D /* PlayerViewController2.m */; };
 		CECCBA0216DF7F0A00FF9222 /* CatalogCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CECCBA0116DF7F0A00FF9222 /* CatalogCell.xib */; };
 		CECCBA0616DFA86700FF9222 /* CatalogCellController.m in Sources */ = {isa = PBXBuildFile; fileRef = CECCBA0516DFA86700FF9222 /* CatalogCellController.m */; };
 		CED363E816D2D89500F2337F /* DownloadsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CED363E616D2D89500F2337F /* DownloadsViewController.m */; };
@@ -115,6 +117,9 @@
 		CEE8D29916F125AC00AB78B1 /* download.png in Resources */ = {isa = PBXBuildFile; fileRef = CEE8D29716F125AC00AB78B1 /* download.png */; };
 		CEE8D29A16F125AC00AB78B1 /* stop.png in Resources */ = {isa = PBXBuildFile; fileRef = CEE8D29816F125AC00AB78B1 /* stop.png */; };
 		CEE9E30C16F6C27600AF85F8 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEE9E30B16F6C27600AF85F8 /* AVFoundation.framework */; };
+		CEEED13D18C4ADAB00EB5938 /* ChaptersViewController2.m in Sources */ = {isa = PBXBuildFile; fileRef = CEEED13C18C4ADAB00EB5938 /* ChaptersViewController2.m */; };
+		CEEED13F18C4ADC100EB5938 /* PlayerView2.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEEED13E18C4ADC100EB5938 /* PlayerView2.xib */; };
+		CEEED14118C4ADCF00EB5938 /* wPlayerView2.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEEED14018C4ADCF00EB5938 /* wPlayerView2.xib */; };
 		CEF837B416D78BDC00603C6E /* Free1ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF837B216D78BDC00603C6E /* Free1ViewController.m */; };
 		CEF837B516D78BDC00603C6E /* Free1ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEF837B316D78BDC00603C6E /* Free1ViewController.xib */; };
 /* End PBXBuildFile section */
@@ -150,7 +155,7 @@
 		8EC60C4C15F623A600D34892 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		8EC60C4F15F62A3400D34892 /* CatalogViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CatalogViewController.h; sourceTree = "<group>"; };
 		8EC60C5015F62A3400D34892 /* CatalogViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CatalogViewController.m; sourceTree = "<group>"; };
-		8ED3BCA615F798E800326459 /* database.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = database.db; sourceTree = "<group>"; };
+		8ED3BCA615F798E800326459 /* database_old.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = database_old.db; sourceTree = "<group>"; };
 		8ED3BCB615F7A5E300326459 /* StandardPaths.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StandardPaths.h; path = Classes/StandardPaths.h; sourceTree = "<group>"; };
 		8ED3BCB715F7A5E300326459 /* StandardPaths.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StandardPaths.m; path = Classes/StandardPaths.m; sourceTree = "<group>"; };
 		8ED3BCBD15F8E9C100326459 /* CatalogItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CatalogItem.h; sourceTree = "<group>"; };
@@ -281,6 +286,9 @@
 		CEC6416216BC0B4800AC325F /* StreamingPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamingPlayer.h; sourceTree = "<group>"; };
 		CEC6416316BC0B4800AC325F /* StreamingPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StreamingPlayer.m; sourceTree = "<group>"; };
 		CEC6416916BC0D6200AC325F /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		CECAEDD618C2780F00B2A61D /* database_lrs.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = database_lrs.db; sourceTree = "<group>"; };
+		CECAEDD818C3D96100B2A61D /* PlayerViewController2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerViewController2.h; sourceTree = "<group>"; };
+		CECAEDD918C3D97300B2A61D /* PlayerViewController2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayerViewController2.m; sourceTree = "<group>"; };
 		CECCBA0116DF7F0A00FF9222 /* CatalogCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CatalogCell.xib; sourceTree = "<group>"; };
 		CECCBA0416DFA86700FF9222 /* CatalogCellController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CatalogCellController.h; sourceTree = "<group>"; };
 		CECCBA0516DFA86700FF9222 /* CatalogCellController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CatalogCellController.m; sourceTree = "<group>"; };
@@ -297,6 +305,10 @@
 		CEE8D29716F125AC00AB78B1 /* download.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = download.png; sourceTree = "<group>"; };
 		CEE8D29816F125AC00AB78B1 /* stop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stop.png; sourceTree = "<group>"; };
 		CEE9E30B16F6C27600AF85F8 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		CEEED13B18C4AD9900EB5938 /* ChaptersViewController2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChaptersViewController2.h; sourceTree = "<group>"; };
+		CEEED13C18C4ADAB00EB5938 /* ChaptersViewController2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChaptersViewController2.m; sourceTree = "<group>"; };
+		CEEED13E18C4ADC100EB5938 /* PlayerView2.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlayerView2.xib; sourceTree = "<group>"; };
+		CEEED14018C4ADCF00EB5938 /* wPlayerView2.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = wPlayerView2.xib; sourceTree = "<group>"; };
 		CEF837B116D78BDC00603C6E /* Free1ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Free1ViewController.h; sourceTree = "<group>"; };
 		CEF837B216D78BDC00603C6E /* Free1ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Free1ViewController.m; sourceTree = "<group>"; };
 		CEF837B316D78BDC00603C6E /* Free1ViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Free1ViewController.xib; sourceTree = "<group>"; };
@@ -352,9 +364,11 @@
 				CED363E516D2D89500F2337F /* DownloadsViewController.h */,
 				CED363E616D2D89500F2337F /* DownloadsViewController.m */,
 				CEDFAAAA16BFA9DD008601F6 /* ChaptersViewController.h */,
+				CEEED13B18C4AD9900EB5938 /* ChaptersViewController2.h */,
 				CE220C5D16CED53D008E4A29 /* ChapterCellViewController.h */,
 				CE220C5E16CED53D008E4A29 /* ChapterCellViewController.m */,
 				CEDFAAAB16BFA9DD008601F6 /* ChaptersViewController.m */,
+				CEEED13C18C4ADAB00EB5938 /* ChaptersViewController2.m */,
 				1D3623240D0F684500981E51 /* AppDelegate.h */,
 				1D3623250D0F684500981E51 /* AppDelegate.m */,
 				8EE9B1CC16B0149B00C46C60 /* AuthorSettings.h */,
@@ -372,7 +386,9 @@
 				8E4D7B0716A9AA1B00CC2BEC /* gs.h */,
 				8E4D7B0816A9AA1B00CC2BEC /* gs.m */,
 				CE7FD5EA16B9397C00748E29 /* PlayerViewController.h */,
+				CECAEDD818C3D96100B2A61D /* PlayerViewController2.h */,
 				CE7FD5EB16B9397C00748E29 /* PlayerViewController.m */,
+				CECAEDD918C3D97300B2A61D /* PlayerViewController2.m */,
 				8EE9B1D016B0149C00C46C60 /* PublisherSettings.h */,
 				8EE9B1D116B0149C00C46C60 /* PublisherSettings.m */,
 				8EE9B1D216B0149C00C46C60 /* ReaderSettings.h */,
@@ -427,9 +443,10 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				CECAEDD618C2780F00B2A61D /* database_lrs.db */,
 				CEB778AC16F373D400336C4B /* Library */,
 				CE17B28A16C2794300D0FB36 /* img */,
-				8ED3BCA615F798E800326459 /* database.db */,
+				8ED3BCA615F798E800326459 /* database_old.db */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -585,6 +602,7 @@
 				CE220C5F16CED53D008E4A29 /* ChapterCellView.xib */,
 				CECCBA0116DF7F0A00FF9222 /* CatalogCell.xib */,
 				CE7FD5ED16B93DEA00748E29 /* PlayerView.xib */,
+				CEEED13E18C4ADC100EB5938 /* PlayerView2.xib */,
 			);
 			name = xibs;
 			path = Classes;
@@ -628,6 +646,7 @@
 				CEAC8EF61716FDF300CFDB32 /* wFree1ViewController.xib */,
 				CEAC8EF71716FDF300CFDB32 /* wInfoViewController.xib */,
 				CEAC8EF91716FDF300CFDB32 /* wPlayerView.xib */,
+				CEEED14018C4ADCF00EB5938 /* wPlayerView2.xib */,
 				CEAC8EFA1716FDF300CFDB32 /* wSearchView.xib */,
 			);
 			name = ipad;
@@ -725,8 +744,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8ED3BCA715F798E800326459 /* database.db in Resources */,
+				8ED3BCA715F798E800326459 /* database_old.db in Resources */,
 				8ED3BCC315FA4B7200326459 /* Default.png in Resources */,
+				CEEED14118C4ADCF00EB5938 /* wPlayerView2.xib in Resources */,
+				CECAEDD718C2780F00B2A61D /* database_lrs.db in Resources */,
 				CE7FD5EE16B93DEA00748E29 /* PlayerView.xib in Resources */,
 				CE220C6116CED53D008E4A29 /* ChapterCellView.xib in Resources */,
 				CEF837B516D78BDC00603C6E /* Free1ViewController.xib in Resources */,
@@ -742,6 +763,7 @@
 				CE0876A116EFE68500AF56B3 /* UITabBarSearch.jpg in Resources */,
 				CEDB95C916F0A4A6009F9245 /* player_button_pause.png in Resources */,
 				CEDB95CA16F0A4A6009F9245 /* player_button_pause@2x.png in Resources */,
+				CEEED13F18C4ADC100EB5938 /* PlayerView2.xib in Resources */,
 				CEDB95CB16F0A4A6009F9245 /* player_button_play.png in Resources */,
 				CEDB95CC16F0A4A6009F9245 /* player_button_play@2x.png in Resources */,
 				CEE8D29916F125AC00AB78B1 /* download.png in Resources */,
@@ -790,6 +812,7 @@
 				8E11FBB516AE9B1F0079411A /* DDXMLElement.m in Sources */,
 				8E11FBB616AE9B1F0079411A /* DDXMLNode.m in Sources */,
 				8EE9B1C416AFE21F00C46C60 /* Reachability.m in Sources */,
+				CECAEDDA18C3D97300B2A61D /* PlayerViewController2.m in Sources */,
 				8EE9B1D416B0149C00C46C60 /* AuthorSettings.m in Sources */,
 				8EE9B1D516B0149C00C46C60 /* GenreSettings.m in Sources */,
 				8EE9B1D616B0149C00C46C60 /* PublisherSettings.m in Sources */,
@@ -812,6 +835,7 @@
 				CE9AC37216DA2CB60014095C /* SearchViewController.m in Sources */,
 				CEDD9C6116DDDFCB00AD83EB /* MyBooksView.m in Sources */,
 				CECCBA0616DFA86700FF9222 /* CatalogCellController.m in Sources */,
+				CEEED13D18C4ADAB00EB5938 /* ChaptersViewController2.m in Sources */,
 				CE5E9D7E16E79EBB00A83D78 /* MBProgressHUD.m in Sources */,
 				CEA3206E16EB7C660025555E /* Myshop.m in Sources */,
 				CE0C418D16EE3B47008E12E6 /* MKAnnotationView+WebCache.m in Sources */,
@@ -839,7 +863,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Boris Elenin";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Boris Elenin (TA4J2H95Z5)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -847,7 +871,7 @@
 				GCC_PREFIX_HEADER = audiobook_Prefix.pch;
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INFOPLIST_FILE = "audiobook-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -855,7 +879,7 @@
 					"\"$(SRCROOT)/Library\"",
 				);
 				PRODUCT_NAME = audiobook;
-				PROVISIONING_PROFILE = "C52B4E5E-48E0-416F-B2FA-C48F5041D07D";
+				PROVISIONING_PROFILE = "8C519BC5-421C-408E-BC19-E0BE6B19ED23";
 				RUN_CLANG_STATIC_ANALYZER = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -867,13 +891,13 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Boris Elenin";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Boris Elenin (TA4J2H95Z5)";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = audiobook_Prefix.pch;
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INFOPLIST_FILE = "audiobook-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -881,7 +905,7 @@
 					"\"$(SRCROOT)/Library\"",
 				);
 				PRODUCT_NAME = audiobook;
-				PROVISIONING_PROFILE = "C52B4E5E-48E0-416F-B2FA-C48F5041D07D";
+				PROVISIONING_PROFILE = "8C519BC5-421C-408E-BC19-E0BE6B19ED23";
 				RUN_CLANG_STATIC_ANALYZER = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";

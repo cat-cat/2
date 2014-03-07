@@ -16,6 +16,15 @@
 
 @implementation BookViewController
 
+-(void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    UIScrollView *sv = (UIScrollView*) self.view;
+    UILabel* lblBig = (UILabel*)[self.view viewWithTag:102];
+    CGFloat origin_y = lblBig.frame.origin.y;
+    [sv setContentSize:CGSizeMake(sv.frame.size.width, origin_y + 25)];
+}
+
 -(void) dismissModalController { 
     [self dismissModalViewControllerAnimated:YES];
 }
@@ -38,6 +47,8 @@
 {
     [super viewDidLoad];
     
+//    self.view.translatesAutoresizingMaskIntoConstraints = NO;
+    
     if ([self respondsToSelector:@selector(edgesForExtendedLayout)])
         self.edgesForExtendedLayout = UIRectEdgeNone;
     
@@ -57,6 +68,14 @@
         lblBig.text = self.title;
     }
     
+    arr = [gss() arrayForDoc:xmldoc xpath:@"/abooks/abook/publishers/name"];
+    
+    if ([arr count] > 0) {
+        NSString* s = [arr componentsJoinedByString:@", "];
+        UILabel* lblBig = (UILabel*)[self.view viewWithTag:101];
+        lblBig.text = [s stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    }
+
     arr = [gss() arrayForDoc:xmldoc xpath:@"/abooks/abook/description"];
     
     if ([arr count] == 1) {

@@ -7,7 +7,8 @@
 //
 
 #import "MyTableViewController.h"
-#import "PlayerViewController.h"
+//#import "PlayerViewController.h"
+#import "PlayerViewController2.h"
 
 @interface MyTableViewController ()
 
@@ -28,14 +29,15 @@
 -(void)goPlayer:(id)sender
 {
     //    NSLog(@"++ player button click");
-    PlayerViewController* playerView = [[PlayerViewController alloc] initWithBook:0];
+    // TODO: add PlayerViewController
+    PlayerViewController2* playerView = [[PlayerViewController2 alloc] initWithBook:@"current"];
     [self.navigationController pushViewController:playerView animated:YES];
 }
 
 
 - (void)viewWillAppear:(BOOL)animated
 {    
-    if ([StaticPlayer sharedInstance].shouldShowPlayerButton) {
+    if ([StaticPlayer2 sharedInstance].shouldShowPlayerButton) {
         UIBarButtonItem *rightButton = [[UIBarButtonItem alloc]
                                         initWithTitle: @"Плеер"
                                         style:UIBarButtonItemStylePlain

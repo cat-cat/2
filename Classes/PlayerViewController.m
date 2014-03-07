@@ -259,24 +259,24 @@ enum BuyButtons {BB_BUY, BB_CANCEL, BB_GETFREE};
     }
 }
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    NSLog(@"++alertView button clicked at index %d", buttonIndex);
-    if (buttonIndex == 1) { // yes
-        
-        if (![gs nfInternetAvailable:nil])
-        {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Ошибка сети"
-                                                            message:@"Для получения бесплатной книги нужен интернет. Проверьте соединение."
-                                                           delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
-            [alert show];
-            
-            return;
-        }
-
-        [[Myshop sharedInstance] startWithBook:[StaticPlayer sharedInstance].bookID isfree:YES];
-    }
-}
+//- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+//{
+//    NSLog(@"++alertView button clicked at index %d", buttonIndex);
+//    if (buttonIndex == 1) { // yes
+//        
+//        if (![gs nfInternetAvailable:nil])
+//        {
+//            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Ошибка сети"
+//                                                            message:@"Для получения бесплатной книги нужен интернет. Проверьте соединение."
+//                                                           delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+//            [alert show];
+//            
+//            return;
+//        }
+//
+//        [[Myshop sharedInstance] startWithBook:[StaticPlayer sharedInstance].bookID isfree:YES];
+//    }
+//}
 
 
 BOOL buyQueryStarted = NO;
@@ -1040,7 +1040,7 @@ static Book *book;
         // custom initialization
             
         
-        if ([bid intValue] > 0) { // if 0 - button Player clicked - use current bookID : means returning to last opened in player book
+        if (![bid isEqualToString:@"current"]) { // if @"current" - button Player clicked - use current bookID : means returning to last opened in player book
             book = [gs db_GetBookWithID:[NSString stringWithFormat:@"%@",bid]];
             [StaticPlayer sharedInstance].bookID = bid;
         }

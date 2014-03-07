@@ -7,7 +7,7 @@
 //
 
 #import "DownloadsViewController.h"
-#import "PlayerViewController.h"
+#import "PlayerViewController2.h"
 #import "gs.h"
 
 @interface DownloadsViewController ()
@@ -16,7 +16,7 @@
 
 @implementation DownloadsViewController
 
-- (id)initWithStyle:(UITableViewStyle)style andDelegate:(StaticPlayer*)d
+- (id)initWithStyle:(UITableViewStyle)style andDelegate:(StaticPlayer2*)d
 {
     self = [super initWithStyle:style];
     if (self) {
@@ -29,7 +29,7 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
-    [StaticPlayer sharedInstance]. shouldShowPlayerButton = NO;
+    [StaticPlayer2 sharedInstance]. shouldShowPlayerButton = NO;
     [super viewWillAppear:animated];
 }
 

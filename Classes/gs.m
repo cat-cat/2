@@ -146,7 +146,7 @@ static NSString* databaseName;
     
     int returnCode = sqlite3_open([gs dbname], &db);
     [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"Unable to open db: %s", sqlite3_errmsg(db) ]];
-    const char *query = [[NSString stringWithFormat:@"DELETE FROM mybooks WHERE abook_id = %@", bid] UTF8String];
+    const char *query = [[NSString stringWithFormat:@"DELETE FROM mybooks WHERE abook_id = '%@'", bid] UTF8String];
     
     
     sqlite3_stmt *statement;
@@ -488,6 +488,8 @@ static NSString* databaseName;
     
     returnCode = sqlite3_exec(db, "COMMIT", 0, 0, 0);
     [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"Unable to commit transaction db: %s", sqlite3_errmsg(db) ]];
+    
+    sqlite3_close(db);
     
     return YES;
 }
@@ -1155,10 +1157,10 @@ static NSString* databaseName;
         //******************** save database path for future use
         // find database file path
         NSString *documentsDir = [[NSFileManager defaultManager] publicDataPath];
-        NSString *dbWorkingCopyPath = [documentsDir stringByAppendingPathComponent:@"database.db"];
+        NSString *dbWorkingCopyPath = [documentsDir stringByAppendingPathComponent:@"database_lrs.db"];
         if(![[NSFileManager defaultManager] fileExistsAtPath:dbWorkingCopyPath])
         {
-            NSString *dbSourcePath = [[NSBundle mainBundle] pathForResource:@"database" ofType:@"db"];
+            NSString *dbSourcePath = [[NSBundle mainBundle] pathForResource:@"database_lrs" ofType:@"db"];
             [[NSFileManager defaultManager] copyItemAtPath:dbSourcePath toPath:dbWorkingCopyPath error:nil];
             
             // add skip backup attribute to database

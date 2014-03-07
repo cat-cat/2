@@ -8,10 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "MyTableViewController.h"
-@class StaticPlayer;
+@class StaticPlayer2;
 @interface DownloadsViewController : MyTableViewController
 @property (nonatomic,strong) NSMutableArray* downq;
-@property (nonatomic,strong) StaticPlayer* delegate;
-- (id)initWithStyle:(UITableViewStyle)style andDelegate:(StaticPlayer*)d;
+@property (nonatomic,strong) StaticPlayer2* delegate;
+- (id)initWithStyle:(UITableViewStyle)style andDelegate:(StaticPlayer2*)d;
 
 @end

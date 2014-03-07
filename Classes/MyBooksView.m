@@ -10,6 +10,7 @@
 #import "gs.h"
 #import "Book.h"
 #import "PlayerViewController.h"
+#import "PlayerViewController2.h"
 
 @interface MyBooksView ()
 
@@ -128,12 +129,15 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Navigation logic may go here. Create and push another view controller.
-    
-    PlayerViewController *detailViewController = [[PlayerViewController alloc] initWithBook:[mybooks objectAtIndex:indexPath.row ]];
-     // ...
+    NSString *bookId = [mybooks objectAtIndex:indexPath.row ];
+    UIViewController *plConroller;
+    if([bookId hasPrefix:@"lrs"]) // book from litres catalog
+        plConroller = [[PlayerViewController2 alloc] initWithBook:bookId];
+    else
+        plConroller = [[PlayerViewController alloc] initWithBook:bookId];
+
      // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];     
+     [self.navigationController pushViewController:plConroller animated:YES];
 }
 
 @end

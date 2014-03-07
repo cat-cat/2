@@ -25,8 +25,9 @@
 //#import "CDBViewController.h"
 #import "MainViewController.h"
 #import "gs.h"
-#import "PlayerViewController.h"
+#import "PlayerViewController2.h"
 #import "Myshop.h"
+#import "CatalogViewController.h"
 #import <AVFoundation/AVFoundation.h>
 
 @implementation AppDelegate
@@ -40,7 +41,8 @@ NSTimer *backgroundTimer;
 
 -(BOOL)taskActive
 {
-    return [StaticPlayer playerIsPlaying] || [UIApplication sharedApplication].networkActivityIndicatorVisible;
+    // TODO: add StaticPlayer as well
+    return [StaticPlayer2 playerIsPlaying] || [UIApplication sharedApplication].networkActivityIndicatorVisible;
 }
 
 -(void) onPerformBackgroundTask:(id) sender
@@ -73,17 +75,43 @@ NSTimer *backgroundTimer;
     }
 }
 
+- (void)application:(UIApplication*)application didReceiveRemoteNotification:(NSDictionary*)userInfo
+{
+	NSLog(@"Received notification: %@", userInfo);
+//	[self addMessageFromRemoteNotification:userInfo updateUI:YES];
+}
 
-- (void)applicationDidFinishLaunching:(UIApplication *)application {
+- (void)application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken
+{
+	NSLog(@"My token is: %@", deviceToken);
+}
+
+- (void)application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error
+{
+	NSLog(@"Failed to get token, error: %@", error);
+}
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
+    // Let the device know we want to receive push notifications
+	[[UIApplication sharedApplication] registerForRemoteNotificationTypes:
+     (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
   
+//    [[UIApplication sharedApplication]setStatusBarStyle:UIStatusBarStyleBlackTranslucent];
+    
 	window = [[UIWindow alloc] initWithFrame:[[UIScreen  mainScreen] bounds]] ;
     gss();
 
 	
-	mainViewController = [[MainViewController alloc]
-                     initWithMessage:@"Triangle"
-                     andImage:[UIImage imageNamed:@"tri.png"]];
-	mainViewController.title =  @"Каталог";
+//	mainViewController = [[MainViewController alloc]
+//                     initWithMessage:@"Triangle"
+//                     andImage:[UIImage imageNamed:@"tri.png"]];
+//	mainViewController.title =  @"Каталог";
+    
+    CatalogViewController *genresViewController = [[CatalogViewController alloc] initWithStyle:UITableViewStylePlain andParentGenre:@"-1"];
+    gss().navigationController = [[UINavigationController alloc] initWithRootViewController:genresViewController];
+    gss().navigationController.navigationBar.translucent = NO;
+
     // init main navigation controller in catalogViewController as well
     
 //	viewController2 = [[CDBViewController alloc]
@@ -120,7 +148,8 @@ NSTimer *backgroundTimer;
 	//[window addSubview:tabBarController.view]; // warning: Application windows are expected to have a root view controller at the end of application launch
     //[tabBarController setHidesBottomBarWhenPushed:YES];
     //window.rootViewController = tabBarController;
-    window.rootViewController = mainViewController;
+//    window.rootViewController = mainViewController;
+    window.rootViewController = gss().navigationController;
     
 	[window makeKeyAndVisible];
     
@@ -147,7 +176,18 @@ NSTimer *backgroundTimer;
     if (![ud objectForKey:@"autoplay"]) {
         [ud setBool:YES forKey:@"autoplay"];
     }
+    
+    if (launchOptions != nil)
+	{
+		NSDictionary *dictionary = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+		if (dictionary != nil)
+		{
+			NSLog(@"Launched from push notification: %@", dictionary);
+//			[self addMessageFromRemoteNotification:dictionary updateUI:NO];
+		}
+	}
 
+    return YES;
 }
 
 //- (void)changeViewControllerToIndex:(NSUInteger)idx

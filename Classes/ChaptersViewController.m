@@ -11,7 +11,6 @@
 #import "ASIHTTPRequest.h"
 #import "DDXMLDocument.h"
 #import "PlayerViewController.h"
-#import "PlayerViewController.h"
 #import "Book.h"
 #import "ChapterCellViewController.h"
 

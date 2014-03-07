@@ -22,6 +22,7 @@
  ******************************************************************************/
 #import "CatalogViewController.h"
 #import "PlayerViewController.h"
+#import "PlayerViewController2.h"
 #import "MainViewController.h"
 #import "CatalogItem.h"
 #import "gs.h"
@@ -45,6 +46,7 @@
 //        parent = p;
 		self.title = @"BookSmile - Каталог";
         //self.navigationItem.backBarButtonItem.title = @"назад";
+        self.wantsFullScreenLayout = YES;
         
         dbOffset = 0; // will be 0 with first call to db
         
@@ -168,7 +170,11 @@
         {
             if([gs canGetMetaForBook:g.ID])
             {
-                PlayerViewController *plConroller = [[PlayerViewController alloc] initWithBook:g.ID];
+                UIViewController *plConroller;
+                if([g.ID hasPrefix:@"lrs"]) // book from litres catalog
+                    plConroller = [[PlayerViewController2 alloc] initWithBook:g.ID];
+                else
+                    plConroller = [[PlayerViewController alloc] initWithBook:g.ID];
                 // ...
                 // Pass the selected object to the new view controller.
                 [gss().navigationController pushViewController:plConroller animated:YES];
@@ -284,7 +290,7 @@
                      " t_abooks_genres"
                      " WHERE t_genres.genre_parent_id = '%s' AND t_genres.genre_id = t_abooks_genres.genre_id"
                      " GROUP BY name"
-                     " ORDER BY  type, name DESC  LIMIT %d, %d", [parentItem UTF8String], [parentItem UTF8String], offset, limit ]];
+                     " ORDER BY  id ASC  LIMIT %d, %d", [parentItem UTF8String], [parentItem UTF8String], offset, limit ]];
         
     }
     else{

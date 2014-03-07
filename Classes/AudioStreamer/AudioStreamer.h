@@ -172,6 +172,7 @@ extern NSString * const ASStatusChangedNotification;
 	NSInteger readedBytes;
     NSString *keyDevId;
 }
+@property (assign) BOOL needDecode;
 //@property (readwrite,assign) BOOL aqChangedUnexpected;
 @property AudioStreamerErrorCode errorCode;
 @property (readwrite, nonatomic) AudioStreamerState state;

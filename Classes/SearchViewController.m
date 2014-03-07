@@ -49,6 +49,7 @@
 #import "CatalogItem.h"
 #import "gs.h"
 #import "PlayerViewController.h"
+#import "PlayerViewController2.h"
 
 @implementation SearchViewController
 
@@ -240,7 +241,11 @@
     
     if([gs canGetMetaForBook:genre.ID])
     {
-        PlayerViewController *plConroller = [[PlayerViewController alloc] initWithBook:genre.ID];
+        UIViewController *plConroller;
+        if([genre.ID hasPrefix:@"lrs"]) // book from litres catalog
+            plConroller = [[PlayerViewController2 alloc] initWithBook:genre.ID];
+        else
+            plConroller = [[PlayerViewController alloc] initWithBook:genre.ID];
         // ...
         // Pass the selected object to the new view controller.
         [gss().navigationController pushViewController:plConroller animated:YES];

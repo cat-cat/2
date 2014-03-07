@@ -1633,47 +1633,51 @@ cleanup:
 			}
 		}
 
-//		char *dataPtr = (char *)bytes;
-//		char key = 0x23;
-//		
-//		for (int x = 0; x < length; x++) 
-//		{
-//			*dataPtr = *dataPtr++ ^ key; 
-//		}		
-		
-		// Create data object from the string
-		//NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];
-		
-		// Get pointer to data to obfuscate
-		char *dataPtr = (char *)bytes;//(char *) [data bytes];
-		
-		// Get pointer to key data
-		char *keyData = (char *) [[keyDevId dataUsingEncoding:NSUTF8StringEncoding] bytes];
-		
-		// Points to each char in sequence in the key
-		char *keyPtr = keyData;
-		int keyIndex = readedBytes % [keyDevId length];
-		keyPtr += keyIndex;
-		readedBytes += length;
+        if (self.needDecode == YES) {
+            /**************** DECODE ****************/
+    //		char *dataPtr = (char *)bytes;
+    //		char key = 0x23;
+    //		
+    //		for (int x = 0; x < length; x++) 
+    //		{
+    //			*dataPtr = *dataPtr++ ^ key; 
+    //		}		
+            
+            // Create data object from the string
+            //NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];
+            
+            // Get pointer to data to obfuscate
+            char *dataPtr = (char *)bytes;//(char *) [data bytes];
+            
+            // Get pointer to key data
+            char *keyData = (char *) [[keyDevId dataUsingEncoding:NSUTF8StringEncoding] bytes];
+            
+            // Points to each char in sequence in the key
+            char *keyPtr = keyData;
+            int keyIndex = readedBytes % [keyDevId length];
+            keyPtr += keyIndex;
+            readedBytes += length;
 
-		// For each character in data, xor with current value in key
-		for (int x = 0; x < length; x++) 
-		{
-			// Replace current character in data with 
-			// current character xor'd with current key value.
-			// Bump each pointer to the next character
-			*dataPtr = *dataPtr ^ *keyPtr;
-            dataPtr++;
-            keyPtr++;
-			
-			// If at end of key data, reset count and 
-			// set key pointer back to start of key value
-            keyIndex++;
-			if (keyIndex == [keyDevId length])
-				keyIndex = 0, keyPtr = keyData;
-		}
+            // For each character in data, xor with current value in key
+            for (int x = 0; x < length; x++) 
+            {
+                // Replace current character in data with 
+                // current character xor'd with current key value.
+                // Bump each pointer to the next character
+                *dataPtr = *dataPtr ^ *keyPtr;
+                dataPtr++;
+                keyPtr++;
+                
+                // If at end of key data, reset count and 
+                // set key pointer back to start of key value
+                keyIndex++;
+                if (keyIndex == [keyDevId length])
+                    keyIndex = 0, keyPtr = keyData;
+            }
+            /*************** END DECODE ****************/
+        }
 		
-		//return [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];		
+		//return [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
 		
 		if (discontinuous)
 		{

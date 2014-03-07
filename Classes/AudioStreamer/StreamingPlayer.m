@@ -22,6 +22,11 @@
         NSURL* anURL = [NSURL fileURLWithPath: [[gs sharedInstance] pathForBook:bid andChapter:ch]];
 		streamer = [[AudioStreamer alloc] initWithURL:anURL] ;
         NSLog(@"++stream URL: %@", anURL);
+        if ([bid hasPrefix:@"lrs"]) { // litres book - no need to decore stream
+            streamer.needDecode = NO;
+        } else {
+            streamer.needDecode = YES;
+        }
 		
 		progressUpdateTimer =
 		[NSTimer

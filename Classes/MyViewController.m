@@ -7,7 +7,8 @@
 //
 
 #import "MyViewController.h"
-#import "PlayerViewController.h"
+//#import "PlayerViewController.h"
+#import "PlayerViewController2.h"
 
 @interface MyViewController ()
 
@@ -26,8 +27,8 @@
 
 -(void)goPlayer:(id)sender
 {
-    //    NSLog(@"++ player button click");
-    PlayerViewController* playerView = [[PlayerViewController alloc] initWithBook:0];
+    // TODO: add PlayerViewController as target
+    PlayerViewController2* playerView = [[PlayerViewController2 alloc] initWithBook:@"current"];
     [self.navigationController pushViewController:playerView animated:YES];
 }
 
@@ -39,8 +40,8 @@
     if ([self respondsToSelector:@selector(edgesForExtendedLayout)])
         self.edgesForExtendedLayout = UIRectEdgeNone;
     
-    
-    if ([StaticPlayer sharedInstance].shouldShowPlayerButton) {
+    // TODO: add StaticPlayer as well
+    if ([StaticPlayer2 sharedInstance].shouldShowPlayerButton) {
         UIBarButtonItem *rightButton = [[UIBarButtonItem alloc]
                                        initWithTitle: @"Плеер"
                                        style:UIBarButtonItemStylePlain
