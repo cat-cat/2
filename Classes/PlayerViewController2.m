@@ -315,7 +315,7 @@ BOOL buyQueryStarted2 = NO;
         {
             // TODO: check inet, then loading screen
             NSString *devid = [OpenUDID value];
-            NSArray *arr = [gs srvArrForUrl:[NSString stringWithFormat:@"http://%@/free1checkcode.php?dev=%@", BookHost, devid] xpath:@"//freeflag" message:[NSString stringWithFormat:@"unable to get freeflag: %s", __func__ ]];
+            NSArray *arr = [gs srvArrForUrl:[NSString stringWithFormat:@"http://%@/v2/free1checkcode.php?dev=%@", BookHost, devid] xpath:@"//freeflag" message:[NSString stringWithFormat:@"unable to get freeflag: %s", __func__ ]];
             int freeflag = [[arr objectAtIndex:0] intValue];
 
             switch (freeflag) {
@@ -969,6 +969,11 @@ static Book *book;
 
 +(void)startDownloadBook:(NSString*)bid chapter:(NSString*)chid
 {
+    if (!isBought2 && ![[StaticPlayer2 sharedInstance] isFreeFragmentBookId:[StaticPlayer2 sharedInstance].bookID chapter:chid]) { // play only free fragment
+        [[StaticPlayer2 sharedInstance] showBuyActionSheet];
+        return;
+    }
+
     if (![gs nfInternetAvailable:nil])
     {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Сообщение"
@@ -981,7 +986,7 @@ static Book *book;
     
     // if not doewnloaded yet, start downloading or partial downloading
     NSString *devid = [OpenUDID value];
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/lrs_get_mm_file.php?bid=%@&fileid=%@&devid=%@", BookHost, bid, chid, devid ]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/v2/lrs_get_mm_file.php?bid=%@&fileid=%@&devid=%@", BookHost, bid, chid, devid ]];
     ASIHTTPRequest *req1 = [ASIHTTPRequest requestWithURL:url];
     [req1 startSynchronous];
     NSError *error;

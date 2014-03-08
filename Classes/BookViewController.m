@@ -56,7 +56,7 @@
     UIImageView* iv = (UIImageView*) [self.view viewWithTag:10];
     //AsyncImageView* iv = (AsyncImageView*) [cell viewWithTag:3];
     //[iv setImage:nil];
-    [iv setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@/books/%@/BookImage.jpg", BookHost, bookId]]
+    [iv setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@/v2/books/%@/BookImage.jpg", BookHost, bookId]]
        placeholderImage:[UIImage imageNamed:@"Placeholder"]];
     
     DDXMLDocument *xmldoc = [gss() docForFile:[gss() pathForBookMeta:bookId]];

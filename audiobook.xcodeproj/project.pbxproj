@@ -122,6 +122,9 @@
 		CEEED14118C4ADCF00EB5938 /* wPlayerView2.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEEED14018C4ADCF00EB5938 /* wPlayerView2.xib */; };
 		CEF837B416D78BDC00603C6E /* Free1ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF837B216D78BDC00603C6E /* Free1ViewController.m */; };
 		CEF837B516D78BDC00603C6E /* Free1ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEF837B316D78BDC00603C6E /* Free1ViewController.xib */; };
+		CEFE28B218CA691900F6FD2B /* 76.png in Resources */ = {isa = PBXBuildFile; fileRef = CEFE28AF18CA691900F6FD2B /* 76.png */; };
+		CEFE28B318CA691900F6FD2B /* 120.png in Resources */ = {isa = PBXBuildFile; fileRef = CEFE28B018CA691900F6FD2B /* 120.png */; };
+		CEFE28B418CA691900F6FD2B /* 152.png in Resources */ = {isa = PBXBuildFile; fileRef = CEFE28B118CA691900F6FD2B /* 152.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -312,6 +315,9 @@
 		CEF837B116D78BDC00603C6E /* Free1ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Free1ViewController.h; sourceTree = "<group>"; };
 		CEF837B216D78BDC00603C6E /* Free1ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Free1ViewController.m; sourceTree = "<group>"; };
 		CEF837B316D78BDC00603C6E /* Free1ViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Free1ViewController.xib; sourceTree = "<group>"; };
+		CEFE28AF18CA691900F6FD2B /* 76.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 76.png; sourceTree = "<group>"; };
+		CEFE28B018CA691900F6FD2B /* 120.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 120.png; sourceTree = "<group>"; };
+		CEFE28B118CA691900F6FD2B /* 152.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 152.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -561,6 +567,9 @@
 		CE17B28A16C2794300D0FB36 /* img */ = {
 			isa = PBXGroup;
 			children = (
+				CEFE28AF18CA691900F6FD2B /* 76.png */,
+				CEFE28B018CA691900F6FD2B /* 120.png */,
+				CEFE28B118CA691900F6FD2B /* 152.png */,
 				CE52A7F5171A10B2006F1D61 /* 144.PNG */,
 				CE52A7F1171A0E42006F1D61 /* 72.png */,
 				CE52A7EF171A0D07006F1D61 /* Default-Landscape@2x~ipad.png */,
@@ -754,6 +763,7 @@
 				CE9AC37316DA2CB60014095C /* SearchView.xib in Resources */,
 				CECCBA0216DF7F0A00FF9222 /* CatalogCell.xib in Resources */,
 				CE5E9DAF16E7D7A700A83D78 /* Placeholder.png in Resources */,
+				CEFE28B218CA691900F6FD2B /* 76.png in Resources */,
 				CE1019DF16ED33D900060C41 /* Default@2x.png in Resources */,
 				CE7FD1C316EE33C30024E589 /* Default-568h@2x.png in Resources */,
 				CE0C419616EE433C008E12E6 /* 114.PNG in Resources */,
@@ -762,6 +772,7 @@
 				CE0876A016EFE68500AF56B3 /* UITabBarHistory.jpg in Resources */,
 				CE0876A116EFE68500AF56B3 /* UITabBarSearch.jpg in Resources */,
 				CEDB95C916F0A4A6009F9245 /* player_button_pause.png in Resources */,
+				CEFE28B418CA691900F6FD2B /* 152.png in Resources */,
 				CEDB95CA16F0A4A6009F9245 /* player_button_pause@2x.png in Resources */,
 				CEEED13F18C4ADC100EB5938 /* PlayerView2.xib in Resources */,
 				CEDB95CB16F0A4A6009F9245 /* player_button_play.png in Resources */,
@@ -778,6 +789,7 @@
 				CEAC8EFC1716FDF300CFDB32 /* wCatalogCell.xib in Resources */,
 				CEAC8EFD1716FDF300CFDB32 /* wCatalogOptionCell.xib in Resources */,
 				CEAC8EFE1716FDF300CFDB32 /* wChapterCellView.xib in Resources */,
+				CEFE28B318CA691900F6FD2B /* 120.png in Resources */,
 				CEAC8F001716FDF300CFDB32 /* wFree1ViewController.xib in Resources */,
 				CEAC8F011716FDF300CFDB32 /* wInfoViewController.xib in Resources */,
 				CEAC8F031716FDF300CFDB32 /* wPlayerView.xib in Resources */,
@@ -862,8 +874,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Boris Elenin (TA4J2H95Z5)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Boris Elenin";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -879,7 +892,7 @@
 					"\"$(SRCROOT)/Library\"",
 				);
 				PRODUCT_NAME = audiobook;
-				PROVISIONING_PROFILE = "8C519BC5-421C-408E-BC19-E0BE6B19ED23";
+				PROVISIONING_PROFILE = "02D569D8-C839-49BF-9AEF-E47F424A1955";
 				RUN_CLANG_STATIC_ANALYZER = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -890,8 +903,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Boris Elenin (TA4J2H95Z5)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Boris Elenin";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = audiobook_Prefix.pch;
@@ -905,7 +919,7 @@
 					"\"$(SRCROOT)/Library\"",
 				);
 				PRODUCT_NAME = audiobook;
-				PROVISIONING_PROFILE = "8C519BC5-421C-408E-BC19-E0BE6B19ED23";
+				PROVISIONING_PROFILE = "02D569D8-C839-49BF-9AEF-E47F424A1955";
 				RUN_CLANG_STATIC_ANALYZER = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -921,10 +935,10 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "/usr/include/libxml2/**";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-ObjC";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "C52B4E5E-48E0-416F-B2FA-C48F5041D07D";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -938,9 +952,9 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "/usr/include/libxml2/**";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				OTHER_LDFLAGS = "-ObjC";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "C52B4E5E-48E0-416F-B2FA-C48F5041D07D";
 				SDKROOT = iphoneos;
 			};
 			name = Release;

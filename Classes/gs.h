@@ -17,10 +17,10 @@
 @class MainViewController;
 @class Reachability;
 
-static NSString* BookHost = @"192.168.0.100:8080"; // for PhpEd
+//static NSString* BookHost = @"192.168.0.100:8080"; // for PhpEd
 //static NSString* BookHost = @"192.168.0.100"; // for WAMP
 //static NSString* BookHost = @"178.218.217.70"; // for books server
-//static NSString* BookHost = @"book-smile.ru";
+static NSString* BookHost = @"book-smile.ru";
 static int TAG_PLAYER_VIEW = 20;
 
 @interface gs : NSObject

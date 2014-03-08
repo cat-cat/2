@@ -63,7 +63,7 @@ SKPaymentTransaction* currentTransaction = nil;
         int isfree = [[request.userInfo valueForKey:@"isfree"] intValue];
         if (isfree) {
             NSString *devid = [OpenUDID value];
-            NSArray *arr = [gs srvArrForUrl:[NSString stringWithFormat:@"http://%@/free1closecode.php?dev=%@&bookid=%@", BookHost, devid,[request.userInfo objectForKey:@"bid" ]] xpath:@"//canuse" message:[NSString stringWithFormat:@"**err:unable to request success to close code: %s", __func__ ]];
+            NSArray *arr = [gs srvArrForUrl:[NSString stringWithFormat:@"http://%@/v2/free1closecode.php?dev=%@&bookid=%@", BookHost, devid,[request.userInfo objectForKey:@"bid" ]] xpath:@"//canuse" message:[NSString stringWithFormat:@"**err:unable to request success to close code: %s", __func__ ]];
             NSString* canuse = [arr objectAtIndex:0];
             NSLog(@"++close code: %@", canuse);
             //            if (![canuse isEqualToString:@"yes"]) {
@@ -106,7 +106,7 @@ SKPaymentTransaction* currentTransaction = nil;
     
     // create main request
     NSString *devid =[OpenUDID value];
-    NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/buy.php?bid=%@&dev=%@&bt=1", BookHost, bid, devid]];
+    NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/v2/buy.php?bid=%@&dev=%@&bt=1", BookHost, bid, devid]];
     ASIHTTPRequest* currentRequest = [ASIHTTPRequest requestWithURL:url];
     NSString *downloadPath = [gss() pathForBuy:bid];
     
@@ -176,7 +176,7 @@ SKPaymentTransaction* currentTransaction = nil;
 -(void) requestProductData:(NSString*)kMyFeatureIdentifier
 {
     // if book available for sale ?
-    NSString *completeString = [NSString stringWithFormat:@"http://%@/check_buy_book.php?bookId=%@",BookHost, kMyFeatureIdentifier];
+    NSString *completeString = [NSString stringWithFormat:@"http://%@/v2/check_buy_book.php?bookId=%@",BookHost, kMyFeatureIdentifier];
     NSURL *urlForCheck = [NSURL URLWithString:completeString];
     ASIHTTPRequest* currentRequest = [ASIHTTPRequest requestWithURL:urlForCheck];
     [currentRequest startSynchronous];
@@ -258,7 +258,7 @@ SKPaymentTransaction* currentTransaction = nil;
         
         NSString *tr = [self base64:transaction.transactionReceipt];
         
-        NSString *completeString = [NSString stringWithFormat:@"http://%@/validateaction.php?receipt=%@&sandbox=%s&bid=%@&devid=%@",BookHost,tr,"0",bookId,devid];
+        NSString *completeString = [NSString stringWithFormat:@"http://%@/v2/validateaction.php?receipt=%@&sandbox=%s&bid=%@&devid=%@",BookHost,tr,"0",bookId,devid];
         NSURL *urlForValidation = [NSURL URLWithString:completeString];
         ASIHTTPRequest* currentRequest = [ASIHTTPRequest requestWithURL:urlForValidation];
         [currentRequest startSynchronous];

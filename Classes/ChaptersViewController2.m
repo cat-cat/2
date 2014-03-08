@@ -66,7 +66,7 @@ static NSString* BTN_CANCEL2 = @"отменить";
 - (void)requestBookMeta:(NSString*)bid
 {
     NSString *devid = [OpenUDID value];
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/bookmeta.php?bid=%@&dev=%@", BookHost, bid, devid]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/v2/bookmeta.php?bid=%@&dev=%@", BookHost, bid, devid]];
     //NSURL *url = [NSURL URLWithString:@"http://dl.dropbox.com/u/4115029/bookMeta.xml"];
     ASIHTTPRequest* request = [ASIHTTPRequest requestWithURL:url];
     [request setDelegate:self];

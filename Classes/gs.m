@@ -387,7 +387,7 @@ static NSString* databaseName;
 //    @synchronized(gss())
 //    {
         NSError* e;
-        NSString *tmp = [NSString stringWithContentsOfURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@/%@", BookHost, page]] encoding:NSUTF8StringEncoding error:&e];
+        NSString *tmp = [NSString stringWithContentsOfURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@/v2/%@", BookHost, page]] encoding:NSUTF8StringEncoding error:&e];
         
         //NSLog(@"url string content: %@", tmp);
         
@@ -1300,12 +1300,12 @@ static NSString* databaseName;
     UIImageView* iv = (UIImageView*) [cell viewWithTag:3];
     //AsyncImageView* iv = (AsyncImageView*) [cell viewWithTag:3];
     //[iv setImage:nil];
-    [iv setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@/books/%@/BookImage.jpg", BookHost, ci.ID]]
+    [iv setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@/v2/books/%@/BookImage.jpg", BookHost, ci.ID]]
        placeholderImage:[UIImage imageNamed:@"Placeholder"]];
-//    [iv setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@/image.php?bid=%@", BookHost, bid]]
+//    [iv setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@/v2/image.php?bid=%@", BookHost, bid]]
 //       placeholderImage:[UIImage imageNamed:@"Placeholder"]];
 
-//    iv.imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/image.php?bid=%@", AppConnectionHost, bid]];
+//    iv.imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/v2/image.php?bid=%@", AppConnectionHost, bid]];
     return cell;
 }
 @end

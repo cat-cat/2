@@ -289,7 +289,7 @@ BOOL buyQueryStarted = NO;
         {
             // TODO: check inet, then loading screen
             NSString *devid = [OpenUDID value];
-            NSArray *arr = [gs srvArrForUrl:[NSString stringWithFormat:@"http://%@/free1checkcode.php?dev=%@", BookHost, devid] xpath:@"//freeflag" message:[NSString stringWithFormat:@"unable to get freeflag: %s", __func__ ]];
+            NSArray *arr = [gs srvArrForUrl:[NSString stringWithFormat:@"http://%@/v2/free1checkcode.php?dev=%@", BookHost, devid] xpath:@"//freeflag" message:[NSString stringWithFormat:@"unable to get freeflag: %s", __func__ ]];
             int freeflag = [[arr objectAtIndex:0] intValue];
 
             switch (freeflag) {
@@ -941,7 +941,7 @@ static Book *book;
     }
     
     // if not doewnloaded yet, start downloading or partial downloading
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/chapter.php?bid=%@&ch=%@", BookHost, bid, chid ]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/v2/chapter.php?bid=%@&ch=%@", BookHost, bid, chid ]];
     ASIHTTPRequest *req1 = [ASIHTTPRequest requestWithURL:url];
     [req1 startSynchronous];
     NSError *error;
