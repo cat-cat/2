@@ -367,11 +367,16 @@ BOOL buyQueryStarted2 = NO;
 
 - (void) showBuyActionSheet
 {
+    if (buyQueryStarted2) { // may come here from different places at different time
+        return;
+    }
+    
     // show action sheet
     UIActionSheet *
     actionSheet = [[UIActionSheet alloc]
                    initWithTitle:@"Купите книгу для прослушивания всех глав полностью" delegate:self cancelButtonTitle:@"Отмена" destructiveButtonTitle:nil otherButtonTitles:@"Купить"/*, @"Получить бесплатно"*/, nil];
     [actionSheet showInView:PlayerViewController2Ptr.view];
+    buyQueryStarted2 = YES;
 }
 
 - (void) streamingPlayer:(StreamingPlayer *) anPlayer didUpdateProgress:(double) anProgress {
@@ -381,11 +386,10 @@ BOOL buyQueryStarted2 = NO;
 //    }
     
     if (!isBought2 && [[StaticPlayer2 sharedInstance].bookID isEqualToString: sPlayer.bookId] && ![sPlayer.bookId hasPrefix:@"lrs"] /*don't interrupt at 70% litres books*/) {
-        float actual = anProgress;
-        float max = progressSliderPtr2.maximumValue;
-        float procSize = (actual / max) * 100;
-        if (procSize > 70.0 && anProgress > 25.0 && [sPlayer.streamer isPlaying] && !buyQueryStarted2) {
-            buyQueryStarted2 = YES;
+//        float actual = anProgress;
+//        float max = progressSliderPtr2.maximumValue;
+//        float procSize = (actual / max) * 100;
+        if ([sPlayer.streamer isPlaying] && !buyQueryStarted2) {
             if ([sPlayer.streamer isPlaying]) {
                 [sPlayer.streamer stop];   
             }

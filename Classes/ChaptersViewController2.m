@@ -122,13 +122,13 @@ static NSString* BTN_CANCEL2 = @"отменить";
     
     
     //NSArray *sortedArray;
-    NSArray* arr =  [chapters sortedArrayUsingComparator:^NSComparisonResult(id a, id b) {
-        NSString *first = [(Chapter2*)a cId];
-        NSString *second = [(Chapter2*)b cId];
-        return [first localizedCompare:second];
-    }];
-    [chapters removeAllObjects];
-    [chapters addObjectsFromArray:arr];
+//    NSArray* arr =  [chapters sortedArrayUsingComparator:^NSComparisonResult(id a, id b) {
+//        NSString *first = [(Chapter2*)a cId];
+//        NSString *second = [(Chapter2*)b cId];
+//        return [first localizedCompare:second];
+//    }];
+//    [chapters removeAllObjects];
+//    [chapters addObjectsFromArray:arr];
     
     // reload table view
     [(UITableView*)[self view] reloadData];
