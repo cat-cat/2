@@ -29,6 +29,7 @@
 #import "Myshop.h"
 #import "CatalogViewController.h"
 #import <AVFoundation/AVFoundation.h>
+#import "ASIHTTPRequest.h"
 
 @implementation AppDelegate
 
@@ -83,7 +84,25 @@ NSTimer *backgroundTimer;
 
 - (void)application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken
 {
-	NSLog(@"My token is: %@", deviceToken);
+    if ([gs nfInternetAvailable:nil])
+    {
+        NSString *keyName = @"deviceToken";
+        NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+        NSString *tokenPrevStr = [ud stringForKey:keyName];
+        NSString *tokenStr = [[NSString alloc] initWithData:deviceToken encoding:NSUTF8StringEncoding];
+        if (!tokenPrevStr || ![tokenPrevStr isEqualToString:tokenStr]) {
+            NSString *devid = [OpenUDID value];
+            NSString *completeString = [NSString stringWithFormat:@"http://%@/v2/ios_reg_push_id.php?devid=%@&pushid=%@", BookHost, devid, [tokenStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+            NSURL *urlForCheck = [NSURL URLWithString:completeString];
+            ASIHTTPRequest* currentRequest = [ASIHTTPRequest requestWithURL:urlForCheck];
+            [currentRequest startSynchronous];
+            NSString *responseString = [currentRequest.responseString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+            if ([responseString isEqualToString:@"ok"]) {
+                [ud setObject:tokenStr forKey:keyName];
+                [ud synchronize];
+            }
+        }
+    }
 }
 
 - (void)application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error
