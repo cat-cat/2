@@ -89,10 +89,13 @@ NSTimer *backgroundTimer;
         NSString *keyName = @"deviceToken";
         NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
         NSString *tokenPrevStr = [ud stringForKey:keyName];
-        NSString *tokenStr = [[NSString alloc] initWithData:deviceToken encoding:NSUTF8StringEncoding];
+        NSString *tokenStr = [[[[deviceToken description]
+                                stringByReplacingOccurrencesOfString:@"<" withString:@""]
+                               stringByReplacingOccurrencesOfString:@">" withString:@""]
+                              stringByReplacingOccurrencesOfString:@" " withString:@""];
         if (!tokenPrevStr || ![tokenPrevStr isEqualToString:tokenStr]) {
             NSString *devid = [OpenUDID value];
-            NSString *completeString = [NSString stringWithFormat:@"http://%@/v2/ios_reg_push_id.php?devid=%@&pushid=%@", BookHost, devid, [tokenStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+            NSString *completeString = [NSString stringWithFormat:@"http://%@/v2/ios_reg_push_id.php?devid=%@&pushid=%@", BookHost, devid, tokenStr];
             NSURL *urlForCheck = [NSURL URLWithString:completeString];
             ASIHTTPRequest* currentRequest = [ASIHTTPRequest requestWithURL:urlForCheck];
             [currentRequest startSynchronous];
