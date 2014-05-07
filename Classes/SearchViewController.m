@@ -77,7 +77,7 @@
         
     else // Все - sort by popular
         
-        query = [query stringByAppendingString:[NSString stringWithFormat:@" GROUP BY t_abooks.abook_id ORDER BY  order_popular DESC"]];
+        query = [query stringByAppendingString:[NSString stringWithFormat:@" GROUP BY t_abooks.abook_id ORDER BY  priceios ASC"]];
     
 //    else // Все
 //        
