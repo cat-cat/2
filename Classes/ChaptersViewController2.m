@@ -395,7 +395,10 @@ static NSString* BTN_CANCEL2 = @"отменить";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         ChapterCellViewController* c = [[ChapterCellViewController alloc] initWithNibName:[gs nibFor:@"ChapterCellView" ] bundle:nil];
+        DownloadProgressView *dpv = [[DownloadProgressView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+        [dpv setTag:3];
         cell = (UITableViewCell *) [c view];
+        [cell addSubview:dpv];
     }
     
     cell.tag = 1000+indexPath.row;

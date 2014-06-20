@@ -1162,6 +1162,11 @@ static Book *book;
     [self presentModalViewController:secondaryNavigationCtrl animated:YES];
 }
 
+-(void)goBack:(UIButton*)sender
+{
+    [gss().navigationController popViewControllerAnimated:YES];
+}
+
 - (void) viewDidLoad
 {
     // must be before [super viewDidLoad]
@@ -1181,9 +1186,40 @@ static Book *book;
 //    
 //    self.navigationItem.rightBarButtonItem = rightButton;
     
-    UIButton* infoButton = [UIButton buttonWithType:UIButtonTypeInfoDark];
-    [infoButton addTarget:self action:@selector(showInfo) forControlEvents:UIControlEventTouchUpInside];
-    self.navigationItem.rightBarButtonItem =[[UIBarButtonItem alloc] initWithCustomView:infoButton];
+//    UIButton* infoButton = [UIButton buttonWithType:UIButtonTypeInfoDark];
+//    [infoButton addTarget:self action:@selector(showInfo) forControlEvents:UIControlEventTouchUpInside];
+//    self.navigationItem.rightBarButtonItem =[[UIBarButtonItem alloc] initWithCustomView:infoButton];
+    
+    NSString* s = [book.authors objectAtIndex:0];
+    [labelAuthorName setText:s];
+
+    [labelBookTitle setText:book.title];
+    
+    UIBarButtonItem *rightButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightViewController];
+    
+    UIBarButtonItem *negativeSpacer = [[UIBarButtonItem alloc]
+                                       initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
+                                       target:nil action:nil];
+    negativeSpacer.width = -5;
+    // Note: We use 5 above b/c that's how many pixels of padding iOS seems to add
+    
+    // Add the two buttons together on the left:
+    self.navigationItem.rightBarButtonItems = [NSArray
+                                              arrayWithObjects:rightButtonItem, negativeSpacer, nil];
+    
+    UIButton *btnBack = [UIButton buttonWithType:UIButtonTypeCustom];
+    btnBack.frame = CGRectMake(0, 0, 66, 22);
+    btnBack.tag=1;
+    [btnBack setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [btnBack setTitle:@"Назад" forState:UIControlStateNormal];
+    [btnBack.titleLabel setFont:[UIFont systemFontOfSize:16]];
+//    [btnBack setBackgroundImage:[UIImage imageNamed:@"btn_back"] forState:UIControlStateNormal];
+    [btnBack addTarget:self action:@selector(goBack:) forControlEvents:UIControlEventTouchUpInside];
+    
+    if (gss().system < 7.0) {
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:btnBack];
+    }
+
 
     
     // init controls
@@ -1201,7 +1237,7 @@ static Book *book;
     
     //    [labelHeader setText:book.title];
     //    [labelSmallHeader setText:book.title];
-    self.title = book.title;
+//    self.title = book.title;
     self.trackedViewName = book.title;
     
     // TODO: doesn't work

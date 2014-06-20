@@ -28,6 +28,7 @@ static int TAG_PLAYER_VIEW = 20;
     UINavigationController *navigationController;
 //    ASINetworkQueue* queue;
 }
+@property (assign) float system;
 +(NSString*)nibFor:(NSString*)nibname;
 +(BOOL)canGetMetaForBook:(NSString*)bookId;
 + (bool) nfInternetAvailable:(NSNotification *)notice;

@@ -1,0 +1,50 @@
+//
+//  DownloadProgressView.m
+//  audiobook
+//
+//  Created by User on 15.06.14.
+//
+//
+
+#import "DownloadProgressView.h"
+
+@implementation DownloadProgressView
+
+- (id)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        // Initialization code
+    }
+    return self;
+}
+
+- (void)drawRect:(CGRect)rect
+{
+    // lets prepare UIImage first, with stretching to fit our requirements
+    UIImage *background = [[UIImage imageNamed:@"player_progressbar_background.png"]
+                           resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 4)];
+    UIImage *fill = [[UIImage imageNamed:@"player_progressbar_progress.png"]
+                     resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 4)];
+    // Draw the background in the current rect with background UIImage
+    [background drawInRect:rect];
+    // Compute the max width in pixels for the fill.  Max width being how
+    // wide the fill should be at 100% progress. (maximun fill width)
+    NSInteger maxWidth = rect.size.width; // here we are filling whole width of ProgressView
+    // Compute the width for the current progress value, 0.0 - 1.0 corresponding
+    // to 0% and 100% respectively.
+    NSInteger curWidth = floor([self progress] * maxWidth);
+    //[self progress] gives the current progress rate of UIprogressView
+    // floor returns absolute integer
+    // Create the rectangle for our fill image accounting for the position offsets,
+    // resizing the filling image rect to cover the background
+    // (adjust as per your design, like from where you want to start fill,
+    // where you want to end, how many pixel you want to left in upper side etc)
+    CGRect fillRect = CGRectMake(rect.origin.x,
+                                 rect.origin.y+1,
+                                 curWidth,
+                                 rect.size.height-2);
+    // Draw the fill
+    [fill drawInRect:fillRect];}
+
+@end

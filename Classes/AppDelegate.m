@@ -130,6 +130,21 @@ NSTimer *backgroundTimer;
 //                     andImage:[UIImage imageNamed:@"tri.png"]];
 //	mainViewController.title =  @"Каталог";
     
+    CGRect rect = CGRectMake(0, 0, 320, 44);
+    // Create a 1 by 1 pixel context
+    UIGraphicsBeginImageContextWithOptions(rect.size, NO, 0);
+    [[UIColor colorWithRed:34.0f/255.0f green:152.0f/255.0f blue:234.0f/255.0f alpha:1.0f] setFill];
+//    [[UIColor blackColor] setFill];
+    UIRectFill(rect);   // Fill it with your color
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    //        // Set the background image for *all* UINavigationBars
+    [[UINavigationBar appearance] setBackgroundImage:image
+                                       forBarMetrics:UIBarMetricsDefault];
+    [[UINavigationBar appearance]setShadowImage:[[UIImage alloc] init]];
+
+    
     CatalogViewController *genresViewController = [[CatalogViewController alloc] initWithStyle:UITableViewStylePlain andParentGenre:@"-1"];
     gss().navigationController = [[UINavigationController alloc] initWithRootViewController:genresViewController];
     gss().navigationController.navigationBar.translucent = NO;

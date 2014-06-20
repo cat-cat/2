@@ -43,6 +43,9 @@
 @class ASIHTTPRequest;
 @class ChaptersViewController;
 @interface PlayerViewController2 : MyViewController {
+    IBOutlet UILabel *labelBookTitle;
+    IBOutlet UILabel *labelAuthorName;
+    IBOutlet UIView *rightViewController;
     IBOutlet UIBarButtonItem *btnPlay;
     IBOutlet UIToolbar *toolbarPlayer;
     IBOutlet UIBarButtonItem *btnBuy;

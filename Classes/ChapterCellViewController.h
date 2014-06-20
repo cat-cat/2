@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "DownloadProgressView.h"
 
 @interface ChapterCellViewController : UIViewController
 {

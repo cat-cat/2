@@ -219,12 +219,13 @@ static NSString* databaseName;
     [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"Unable to open db: %s", sqlite3_errmsg(db) ]];
     char *sqlStatement;
     
-    sqlStatement = sqlite3_mprintf("SELECT abook_id"
+    sqlStatement = sqlite3_mprintf("SELECT t_abooks.abook_id"
                                    " , rate"
                                    " , title"
                                    " , bought"
-                                   " FROM [t_abooks]"
-                                   " WHERE abook_id='%s'"
+                                   " , t_authors.name"
+                                   " FROM [t_abooks] left join t_abooks_authors on t_abooks.abook_id=t_abooks_authors.abook_id join t_authors on t_abooks_authors.author_id = t_authors.author_id"
+                                   " WHERE t_abooks.abook_id='%s'"
                                    " LIMIT 0,1", [bid UTF8String]);
     
     sqlite3_stmt *statement;
@@ -244,6 +245,7 @@ static NSString* databaseName;
         NSString* fieldID = [NSString stringWithCString:(char*)sqlite3_column_text(statement, 0) encoding:NSUTF8StringEncoding];
         locBook.abookId = fieldID ? @"-1" : fieldID;
         locBook.title = [NSString stringWithCString:sqlite3_column_text(statement, 2) == nil ? "" : (char *)sqlite3_column_text(statement, 2) encoding:NSUTF8StringEncoding];
+        locBook.authors = [NSArray arrayWithObject:[NSString stringWithCString:sqlite3_column_text(statement, 4) == nil ? "Незвестный автор" : (char *)sqlite3_column_text(statement, 4) encoding:NSUTF8StringEncoding]];
         //        printf("name %s count %s ID %s\n",
         //               name, count, ID);
         returnCode = sqlite3_step(statement);
@@ -1137,6 +1139,8 @@ static NSString* databaseName;
     dispatch_once(&onceToken, ^{
         sharedInstance = [[gs alloc] init];
         // Do any other initialisation stuff here
+        
+        sharedInstance.system = [[[UIDevice currentDevice] systemVersion] floatValue];
         
         //****************** init requests queue
         //CGRect	rectFrame = CGRectMake(220.0, 440.0, 100, 20);

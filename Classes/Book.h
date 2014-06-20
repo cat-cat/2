@@ -12,7 +12,7 @@
 // from abook service:
 @property (nonatomic, retain) NSString* abookId;
 @property (nonatomic, retain) NSString *title;
-@property (nonatomic, retain) NSMutableArray *authors;
+@property (nonatomic, retain) NSArray *authors;
 @property (nonatomic, retain) NSMutableArray *readers;
 @property (nonatomic, retain) NSMutableArray *genres;
 @property (nonatomic, retain) NSMutableArray *publishers;
