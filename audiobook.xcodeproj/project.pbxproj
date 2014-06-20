@@ -114,6 +114,7 @@
 		CEDB95CC16F0A4A6009F9245 /* player_button_play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CEDB95C816F0A4A6009F9245 /* player_button_play@2x.png */; };
 		CEDD9C6116DDDFCB00AD83EB /* MyBooksView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEDD9C5F16DDDFCB00AD83EB /* MyBooksView.m */; };
 		CEDFAAAD16BFA9DD008601F6 /* ChaptersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEDFAAAB16BFA9DD008601F6 /* ChaptersViewController.m */; };
+		CEDFFA531953C26A00F7760C /* MyUISearchBar.m in Sources */ = {isa = PBXBuildFile; fileRef = CEDFFA521953C26A00F7760C /* MyUISearchBar.m */; };
 		CEE8D29916F125AC00AB78B1 /* download.png in Resources */ = {isa = PBXBuildFile; fileRef = CEE8D29716F125AC00AB78B1 /* download.png */; };
 		CEE8D29A16F125AC00AB78B1 /* stop.png in Resources */ = {isa = PBXBuildFile; fileRef = CEE8D29816F125AC00AB78B1 /* stop.png */; };
 		CEE9E30C16F6C27600AF85F8 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEE9E30B16F6C27600AF85F8 /* AVFoundation.framework */; };
@@ -305,6 +306,8 @@
 		CEDD9C5F16DDDFCB00AD83EB /* MyBooksView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyBooksView.m; sourceTree = "<group>"; };
 		CEDFAAAA16BFA9DD008601F6 /* ChaptersViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChaptersViewController.h; sourceTree = "<group>"; };
 		CEDFAAAB16BFA9DD008601F6 /* ChaptersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChaptersViewController.m; sourceTree = "<group>"; };
+		CEDFFA511953C26A00F7760C /* MyUISearchBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyUISearchBar.h; sourceTree = "<group>"; };
+		CEDFFA521953C26A00F7760C /* MyUISearchBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyUISearchBar.m; sourceTree = "<group>"; };
 		CEE8D29716F125AC00AB78B1 /* download.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = download.png; sourceTree = "<group>"; };
 		CEE8D29816F125AC00AB78B1 /* stop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stop.png; sourceTree = "<group>"; };
 		CEE9E30B16F6C27600AF85F8 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -399,6 +402,8 @@
 				8EE9B1D116B0149C00C46C60 /* PublisherSettings.m */,
 				8EE9B1D216B0149C00C46C60 /* ReaderSettings.h */,
 				8EE9B1D316B0149C00C46C60 /* ReaderSettings.m */,
+				CEDFFA511953C26A00F7760C /* MyUISearchBar.h */,
+				CEDFFA521953C26A00F7760C /* MyUISearchBar.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -864,6 +869,7 @@
 				CE0C419316EE3B47008E12E6 /* UIButton+WebCache.m in Sources */,
 				CE0C419416EE3B47008E12E6 /* UIImageView+WebCache.m in Sources */,
 				CE08769B16EFDBD000AF56B3 /* CatalogOptionCell.m in Sources */,
+				CEDFFA531953C26A00F7760C /* MyUISearchBar.m in Sources */,
 				CE0876A416EFFF5800AF56B3 /* MyViewController.m in Sources */,
 				CE0876A716F001B400AF56B3 /* MyTableViewController.m in Sources */,
 				CEB7789F16F3426900336C4B /* BookViewController.m in Sources */,
