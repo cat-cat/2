@@ -468,6 +468,39 @@ static NSString* databaseName;
     return fieldID;
 }
 
++(void)db_createUpdatesTable {
+    
+    NSString *sql = @"CREATE TABLE IF NOT EXISTS \"myupdates\""
+    "(abook_id VARCHAR(64) NOT NULL,"
+     "last_touched TIMESTAMP,"
+    "PRIMARY KEY (abook_id))";
+//    "PRIMARY KEY (abook_id));"
+//    "INSERT OR REPLACE INTO myupdates (abook_id, last_touched) VALUES('lrs1000', CURRENT_TIMESTAMP);"
+//    "INSERT OR REPLACE INTO myupdates (abook_id, last_touched) VALUES('lrs1001', CURRENT_TIMESTAMP);"
+//    "INSERT OR REPLACE INTO myupdates (abook_id, last_touched) VALUES('lrs1002', CURRENT_TIMESTAMP)";
+    
+    NSArray* dbStatements = [sql componentsSeparatedByString:@";"];
+    sqlite3* db;
+    
+    int returnCode = sqlite3_open([gs dbname], &db);
+    [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"Unable to open db: %s", sqlite3_errmsg(db) ]];
+    
+    returnCode = sqlite3_exec(db, "BEGIN", 0, 0, 0);
+    [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"Unable to begin transaction db: %s", sqlite3_errmsg(db) ]];
+    
+    
+    for (NSString* st in dbStatements) {
+        returnCode = sqlite3_exec(db, [st UTF8String], 0, 0, 0);
+        [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"Unable to exec statement db: %s", sqlite3_errmsg(db) ]];
+    }
+    
+    
+    returnCode = sqlite3_exec(db, "COMMIT", 0, 0, 0);
+    [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"Unable to commit transaction db: %s", sqlite3_errmsg(db) ]];
+    
+    sqlite3_close(db);
+}
+
 + (BOOL)db_PerformUpdate:(NSString*)sql
 {
     NSArray* dbStatements = [sql componentsSeparatedByString:@";"];    
@@ -1188,7 +1221,9 @@ static NSString* databaseName;
             }            
         }
         databaseName = [[NSString alloc] initWithString: dbWorkingCopyPath];
-
+        
+        // TODO: remove in future
+        [self db_createUpdatesTable];
         
         
         

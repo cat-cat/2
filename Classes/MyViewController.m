@@ -9,6 +9,7 @@
 #import "MyViewController.h"
 //#import "PlayerViewController.h"
 #import "PlayerViewController2.h"
+#import "NewViewController.h"
 
 @interface MyViewController ()
 

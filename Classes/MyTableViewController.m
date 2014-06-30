@@ -9,9 +9,11 @@
 #import "MyTableViewController.h"
 //#import "PlayerViewController.h"
 #import "PlayerViewController2.h"
+#import "NewViewController.h"
+#import "gs.h"
 
 @interface MyTableViewController ()
-
+-(NSArray*) db_getNewItems;
 @end
 
 @implementation MyTableViewController
@@ -26,6 +28,13 @@
 }
 
 
+-(void)goNew:(id)sender
+{
+    // TODO: add PlayerViewController as target
+    NewViewController* newView = [[NewViewController alloc] initWithStyle:UITableViewStylePlain];
+    [self.navigationController pushViewController:newView animated:YES];
+}
+
 -(void)goPlayer:(id)sender
 {
     //    NSLog(@"++ player button click");
@@ -34,17 +43,80 @@
     [self.navigationController pushViewController:playerView animated:YES];
 }
 
+-(NSArray*)db_getNewItems
+{
+    // assuming its not called from multiple threads, only from gui
+    
+    sqlite3* db;
+    
+    int returnCode = sqlite3_open([gs dbname], &db);
+    [gs assertNoError: returnCode == SQLITE_OK withMsg:[NSString stringWithFormat:@"Unable to open db: %s", sqlite3_errmsg(db) ]];
+    char *sqlStatement;
+    
+    sqlStatement = sqlite3_mprintf("SELECT abook_id"
+                                   " FROM myupdates"
+                                   " ORDER BY last_touched DESC");
+    
+    sqlite3_stmt *statement;
+    
+    returnCode =
+    sqlite3_prepare_v2(db, sqlStatement, strlen(sqlStatement), &statement, NULL);
+    [gs assertNoError:returnCode==SQLITE_OK withMsg: [NSString stringWithFormat: @"Unable to prepare statement: %s",sqlite3_errmsg(db) ]];
+    
+    sqlite3_free(sqlStatement);
+    
+    
+    // get result
+    NSMutableArray* arr = [[NSMutableArray alloc] init];
+    returnCode = sqlite3_step(statement);
+    while(returnCode == SQLITE_ROW){
+        NSString* bid = [NSString stringWithCString:sqlite3_column_text(statement, 0) == nil ? "" : (char *)sqlite3_column_text(statement, 0) encoding:NSUTF8StringEncoding];
+        //        printf("name %s count %s ID %s\n",
+        //               name, count, ID);
+        [arr addObject:bid];
+        returnCode = sqlite3_step(statement);
+        
+        
+    }
+    returnCode = sqlite3_finalize(statement);
+    [gs assertNoError:returnCode==SQLITE_OK withMsg:[NSString stringWithFormat:@"Cannot finalize %s", sqlite3_errmsg(db) ]];
+    returnCode = sqlite3_close(db);
+    [gs assertNoError:returnCode==SQLITE_OK withMsg:[NSString stringWithFormat:@"Cannot close %s", sqlite3_errmsg(db) ]];
+    return arr;
+}
 
 - (void)viewWillAppear:(BOOL)animated
-{    
+{
+    UIBarButtonItem *rightButton = nil;
     if ([StaticPlayer2 sharedInstance].shouldShowPlayerButton) {
-        UIBarButtonItem *rightButton = [[UIBarButtonItem alloc]
+        rightButton = [[UIBarButtonItem alloc]
                                         initWithTitle: @"Плеер"
                                         style:UIBarButtonItemStylePlain
                                         target:self
                                         action:@selector(goPlayer:)];
         
-        self.navigationItem.rightBarButtonItem = rightButton;
+//      self.navigationItem.rightBarButtonItem = rightButton;
+    }
+  
+    NSMutableArray *rightArray = [[NSMutableArray alloc] init];
+    if (rightButton != nil) {
+        [rightArray addObject:rightButton];
+    }
+    
+    NSArray *newItems = [self db_getNewItems];
+    
+    if ([newItems count] > 0 && ![self isKindOfClass:[NewViewController class]]) {
+        UIView* xibView = [[[NSBundle mainBundle] loadNibNamed:@"Common" owner:self options:nil] objectAtIndex:0];
+        // now add the view to ourselves...
+        UILabel *lv = (UILabel*) [xibView viewWithTag:22];
+        [lv setText:[NSString stringWithFormat:@"%d",[newItems count]]];
+        UIButton *nbtn = (UIButton*) [xibView viewWithTag:33];
+        [nbtn addTarget:self action:@selector(goNew:) forControlEvents:UIControlEventTouchUpInside];
+        [rightArray addObject:[[UIBarButtonItem alloc] initWithCustomView:xibView]];
+    }
+    
+    if ([rightArray count] > 0) {
+        self.navigationItem.rightBarButtonItems = rightArray;
     }
 }
 

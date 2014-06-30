@@ -22,7 +22,6 @@
 		8E71F3DF1600BEAC00639B4D /* Book.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E71F3DE1600BEAC00639B4D /* Book.m */; };
 		8EC60C4D15F623A600D34892 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8EC60C4C15F623A600D34892 /* MainViewController.m */; };
 		8EC60C5115F62A3400D34892 /* CatalogViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8EC60C5015F62A3400D34892 /* CatalogViewController.m */; };
-		8ED3BCA715F798E800326459 /* database_old.db in Resources */ = {isa = PBXBuildFile; fileRef = 8ED3BCA615F798E800326459 /* database_old.db */; };
 		8ED3BCB815F7A5E300326459 /* StandardPaths.m in Sources */ = {isa = PBXBuildFile; fileRef = 8ED3BCB715F7A5E300326459 /* StandardPaths.m */; };
 		8ED3BCBF15F8E9C100326459 /* CatalogItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 8ED3BCBE15F8E9C100326459 /* CatalogItem.m */; };
 		8ED3BCC315FA4B7200326459 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 8ED3BCC215FA4B7200326459 /* Default.png */; };
@@ -123,6 +122,12 @@
 		CEEED14118C4ADCF00EB5938 /* wPlayerView2.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEEED14018C4ADCF00EB5938 /* wPlayerView2.xib */; };
 		CEF837B416D78BDC00603C6E /* Free1ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF837B216D78BDC00603C6E /* Free1ViewController.m */; };
 		CEF837B516D78BDC00603C6E /* Free1ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEF837B316D78BDC00603C6E /* Free1ViewController.xib */; };
+		CEFDC1AB195F1BB00079DEDE /* comments.png in Resources */ = {isa = PBXBuildFile; fileRef = CEFDC1A7195F1BB00079DEDE /* comments.png */; };
+		CEFDC1AC195F1BB00079DEDE /* comments@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CEFDC1A8195F1BB00079DEDE /* comments@2x.png */; };
+		CEFDC1AD195F1BB00079DEDE /* notification-small.png in Resources */ = {isa = PBXBuildFile; fileRef = CEFDC1A9195F1BB00079DEDE /* notification-small.png */; };
+		CEFDC1AE195F1BB00079DEDE /* notification-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CEFDC1AA195F1BB00079DEDE /* notification-small@2x.png */; };
+		CEFDC1B0195F1D8C0079DEDE /* Common.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEFDC1AF195F1D8C0079DEDE /* Common.xib */; };
+		CEFDC1B31961BE2C0079DEDE /* NewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEFDC1B21961BE2C0079DEDE /* NewViewController.m */; };
 		CEFE28B218CA691900F6FD2B /* 76.png in Resources */ = {isa = PBXBuildFile; fileRef = CEFE28AF18CA691900F6FD2B /* 76.png */; };
 		CEFE28B318CA691900F6FD2B /* 120.png in Resources */ = {isa = PBXBuildFile; fileRef = CEFE28B018CA691900F6FD2B /* 120.png */; };
 		CEFE28B418CA691900F6FD2B /* 152.png in Resources */ = {isa = PBXBuildFile; fileRef = CEFE28B118CA691900F6FD2B /* 152.png */; };
@@ -159,7 +164,6 @@
 		8EC60C4C15F623A600D34892 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		8EC60C4F15F62A3400D34892 /* CatalogViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CatalogViewController.h; sourceTree = "<group>"; };
 		8EC60C5015F62A3400D34892 /* CatalogViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CatalogViewController.m; sourceTree = "<group>"; };
-		8ED3BCA615F798E800326459 /* database_old.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = database_old.db; sourceTree = "<group>"; };
 		8ED3BCB615F7A5E300326459 /* StandardPaths.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StandardPaths.h; path = Classes/StandardPaths.h; sourceTree = "<group>"; };
 		8ED3BCB715F7A5E300326459 /* StandardPaths.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StandardPaths.m; path = Classes/StandardPaths.m; sourceTree = "<group>"; };
 		8ED3BCBD15F8E9C100326459 /* CatalogItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CatalogItem.h; sourceTree = "<group>"; };
@@ -318,6 +322,13 @@
 		CEF837B116D78BDC00603C6E /* Free1ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Free1ViewController.h; sourceTree = "<group>"; };
 		CEF837B216D78BDC00603C6E /* Free1ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Free1ViewController.m; sourceTree = "<group>"; };
 		CEF837B316D78BDC00603C6E /* Free1ViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Free1ViewController.xib; sourceTree = "<group>"; };
+		CEFDC1A7195F1BB00079DEDE /* comments.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = comments.png; sourceTree = "<group>"; };
+		CEFDC1A8195F1BB00079DEDE /* comments@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "comments@2x.png"; sourceTree = "<group>"; };
+		CEFDC1A9195F1BB00079DEDE /* notification-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "notification-small.png"; sourceTree = "<group>"; };
+		CEFDC1AA195F1BB00079DEDE /* notification-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "notification-small@2x.png"; sourceTree = "<group>"; };
+		CEFDC1AF195F1D8C0079DEDE /* Common.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Common.xib; sourceTree = "<group>"; };
+		CEFDC1B11961BE110079DEDE /* NewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewViewController.h; sourceTree = "<group>"; };
+		CEFDC1B21961BE2C0079DEDE /* NewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewViewController.m; sourceTree = "<group>"; };
 		CEFE28AF18CA691900F6FD2B /* 76.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 76.png; sourceTree = "<group>"; };
 		CEFE28B018CA691900F6FD2B /* 120.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 120.png; sourceTree = "<group>"; };
 		CEFE28B118CA691900F6FD2B /* 152.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 152.png; sourceTree = "<group>"; };
@@ -387,7 +398,9 @@
 				8EE9B1CE16B0149C00C46C60 /* GenreSettings.h */,
 				8EE9B1CF16B0149C00C46C60 /* GenreSettings.m */,
 				8EC60C4F15F62A3400D34892 /* CatalogViewController.h */,
+				CEFDC1B11961BE110079DEDE /* NewViewController.h */,
 				8EC60C5015F62A3400D34892 /* CatalogViewController.m */,
+				CEFDC1B21961BE2C0079DEDE /* NewViewController.m */,
 				CE08769816EFDBD000AF56B3 /* CatalogOptionCell.h */,
 				CE08769916EFDBD000AF56B3 /* CatalogOptionCell.m */,
 				CECCBA0416DFA86700FF9222 /* CatalogCellController.h */,
@@ -457,7 +470,6 @@
 				CECAEDD618C2780F00B2A61D /* database_lrs.db */,
 				CEB778AC16F373D400336C4B /* Library */,
 				CE17B28A16C2794300D0FB36 /* img */,
-				8ED3BCA615F798E800326459 /* database_old.db */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -572,6 +584,10 @@
 		CE17B28A16C2794300D0FB36 /* img */ = {
 			isa = PBXGroup;
 			children = (
+				CEFDC1A7195F1BB00079DEDE /* comments.png */,
+				CEFDC1A8195F1BB00079DEDE /* comments@2x.png */,
+				CEFDC1A9195F1BB00079DEDE /* notification-small.png */,
+				CEFDC1AA195F1BB00079DEDE /* notification-small@2x.png */,
 				CEFE28AF18CA691900F6FD2B /* 76.png */,
 				CEFE28B018CA691900F6FD2B /* 120.png */,
 				CEFE28B118CA691900F6FD2B /* 152.png */,
@@ -617,6 +633,7 @@
 				CECCBA0116DF7F0A00FF9222 /* CatalogCell.xib */,
 				CE7FD5ED16B93DEA00748E29 /* PlayerView.xib */,
 				CEEED13E18C4ADC100EB5938 /* PlayerView2.xib */,
+				CEFDC1AF195F1D8C0079DEDE /* Common.xib */,
 			);
 			name = xibs;
 			path = Classes;
@@ -763,7 +780,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8ED3BCA715F798E800326459 /* database_old.db in Resources */,
 				8ED3BCC315FA4B7200326459 /* Default.png in Resources */,
 				CEEED14118C4ADCF00EB5938 /* wPlayerView2.xib in Resources */,
 				CECAEDD718C2780F00B2A61D /* database_lrs.db in Resources */,
@@ -782,6 +798,9 @@
 				CE0876A016EFE68500AF56B3 /* UITabBarHistory.jpg in Resources */,
 				CE0876A116EFE68500AF56B3 /* UITabBarSearch.jpg in Resources */,
 				CEDB95C916F0A4A6009F9245 /* player_button_pause.png in Resources */,
+				CEFDC1B0195F1D8C0079DEDE /* Common.xib in Resources */,
+				CEFDC1AC195F1BB00079DEDE /* comments@2x.png in Resources */,
+				CEFDC1AB195F1BB00079DEDE /* comments.png in Resources */,
 				CEFE28B418CA691900F6FD2B /* 152.png in Resources */,
 				CEDB95CA16F0A4A6009F9245 /* player_button_pause@2x.png in Resources */,
 				CEEED13F18C4ADC100EB5938 /* PlayerView2.xib in Resources */,
@@ -798,6 +817,7 @@
 				CEAC8EFB1716FDF300CFDB32 /* wBookViewController.xib in Resources */,
 				CEAC8EFC1716FDF300CFDB32 /* wCatalogCell.xib in Resources */,
 				CEAC8EFD1716FDF300CFDB32 /* wCatalogOptionCell.xib in Resources */,
+				CEFDC1AD195F1BB00079DEDE /* notification-small.png in Resources */,
 				CEAC8EFE1716FDF300CFDB32 /* wChapterCellView.xib in Resources */,
 				CEFE28B318CA691900F6FD2B /* 120.png in Resources */,
 				CEAC8F001716FDF300CFDB32 /* wFree1ViewController.xib in Resources */,
@@ -806,6 +826,7 @@
 				CEAC8F041716FDF300CFDB32 /* wSearchView.xib in Resources */,
 				CE52A7EA171A0CC2006F1D61 /* Default-Portrait~ipad.png in Resources */,
 				CE52A7EC171A0CC9006F1D61 /* Default-Portrait@2x~ipad.png in Resources */,
+				CEFDC1AE195F1BB00079DEDE /* notification-small@2x.png in Resources */,
 				CE52A7EE171A0CE4006F1D61 /* Default-Landscape~ipad.png in Resources */,
 				CE52A7F0171A0D07006F1D61 /* Default-Landscape@2x~ipad.png in Resources */,
 				CE52A7F2171A0E42006F1D61 /* 72.png in Resources */,
@@ -827,6 +848,7 @@
 				8ED3BCB815F7A5E300326459 /* StandardPaths.m in Sources */,
 				8ED3BCBF15F8E9C100326459 /* CatalogItem.m in Sources */,
 				8E71F3DF1600BEAC00639B4D /* Book.m in Sources */,
+				CEFDC1B31961BE2C0079DEDE /* NewViewController.m in Sources */,
 				8E4D7B0916A9AA1B00CC2BEC /* gs.m in Sources */,
 				8E11FBB216AE9B1F0079411A /* DDXMLElementAdditions.m in Sources */,
 				8E11FBB316AE9B1F0079411A /* NSString+DDXML.m in Sources */,
