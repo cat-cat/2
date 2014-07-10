@@ -257,8 +257,8 @@ SKPaymentTransaction* currentTransaction = nil;
         }
         
         NSString *tr = [self base64:transaction.transactionReceipt];
-        
-        NSString *completeString = [NSString stringWithFormat:@"http://%@/v2/validateaction.php?receipt=%@&sandbox=%s&bid=%@&devid=%@",BookHost,tr,"0",bookId,devid];
+        NSString* version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
+        NSString *completeString = [NSString stringWithFormat:@"http://%@/v2/validateaction.php?receipt=%@&sandbox=%s&bid=%@&devid=%@&ver=%@",BookHost,tr,"0",bookId,devid,version];
         NSURL *urlForValidation = [NSURL URLWithString:completeString];
         ASIHTTPRequest* currentRequest = [ASIHTTPRequest requestWithURL:urlForValidation];
         [currentRequest startSynchronous];

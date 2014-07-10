@@ -38,7 +38,7 @@
 
 	if (self = [super initWithStyle:style]) {
 //        parent = p;
-		self.title = @"Пополнения";
+		self.title = @"Новинки";
         //self.navigationItem.backBarButtonItem.title = @"назад";
         self.wantsFullScreenLayout = YES;
         
